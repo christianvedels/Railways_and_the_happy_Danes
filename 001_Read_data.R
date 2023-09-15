@@ -6,11 +6,18 @@
 
 # ==== Libraries ====
 library(tidyverse)
-library(sf)
+library(sp)
+library(rgdal)
 
 # ==== Popdata ====
 path = "https://raw.githubusercontent.com/christianvedels/A_perfect_storm_replication/main/Data/Pop_reg.csv"
 popdata = read_csv2(path)
+
+# ==== Geo data ==== 
+path = "https://raw.githubusercontent.com/christianvedels/A_perfect_storm_replication/main/Data/Parish_soil.csv"
+soil = read_csv2(path)
+path = "https://raw.githubusercontent.com/christianvedels/A_perfect_storm_replication/main/Data/Geo.csv"
+geo = read_csv2(path, guess_max = 2000)
 
 # ==== Creameries ====
 creameries = read_csv2("Data/MDS_DM_merge_w_add_data.csv")
@@ -31,8 +38,11 @@ election = read_rds("../Data not redistributable/Danish Legislators Database/ele
 members = read_rds("../Data not redistributable/Danish Legislators Database/member1849-2022.Rds")
 
 # ==== Railways ====
-railways = st_read("../Data not redistributable/Railways Fertner/jernbane_historisk_v050413/jernbane_historisk.shp")
-shape_parishes = st_read("Data/sogne_shape/sogne.shp")
+railways = readOGR("../Data not redistributable/Railways Fertner/jernbane_historisk_v050413/jernbane_historisk.shp")
+shape_parishes = readOGR("Data/sogne_shape/sogne.shp")
+
+railways = spTransform(railways, "+proj=longlat +zone=32 +ellps=GRS80")
+shape_parishes = spTransform(shape_parishes, "+proj=longlat +zone=32 +ellps=GRS80")
 
 # ==== Save image ====
 save.image("../Data not redistributable/All_raw_data_for_project.Rdata")

@@ -9,9 +9,11 @@
 
 ## Data description
 
-### Parish level population data
-Files: *'Pop_reg.csv'*
+### Parish level population data, geo data, soil data
+Files: *'Pop_reg.csv', 'Parish_soil.csv'*
 Taken from Vedel (2023). Parish level demographic statistics based on digtized census data from Link Lives, available at www.rigsarkivet.dk/udforsk/link-lives-data/. This also contains HISCO level summaries. Based on Vedel & Dahl (2023). 
+Soil types from Pedersen et al (2019) via Vedel (2023).
+
 ### Assmebly houses
 Files: *'Huse_panel.Rdata', 'key.Rdata'*
 Sourced from Bentzen et al (2023). 
@@ -23,8 +25,8 @@ Sourced from Bentzen et al (2023) and Sharp et al (2023)
 ### Højskoler (Grundtvigian High Schools)
 Files: *'Hoejskoler_clean_panel.csv'*
 
-### sogne_shape
-
+### Geographical stuff
+Files: *'shape_parishes', 'Geo.csv',*
 'Sogne' tranlates to parishes. This is the shape file of Danish parishes as of January 1, 1820. Which was passed on to me from the authors of Boberg-Fazlic et al (2023). Originally this comes from www.digdag.dk. The market town of Lemvig (which is important in this application) was missing and added manually using borders downloaded directly from www.digdag.dk.
 
 ## References
@@ -35,6 +37,8 @@ Boberg-Fazlic, N., Jensen, P.S., Lampe, M. et al. 'Getting to Denmark': the role
 Dahl, C. M., Vedel, C. (2023). Breaking the HISCO Barrier: AI and Occupational Data Standardization. (UNPUBLISHED MANUSCRIPT). https://sites.google.com/view/christianvedel
 
 Klint, Thorkil, 2023, "The Danish Legislator Database (DLD)", https://doi.org/10.7910/DVN/4SFNC0, Harvard Dataverse, V1
+
+Pedersen, S., Hermansen, B., Nathan, C., & Tougaard, L. (2019). Surface geology map of Denmark 1:200 000, version 2. GEUS. https://eng.geus.dk/products-services-facilities/data-and-maps/maps-of-denmark
 
 Sharp, P., Henriques, S., McLaughlin, E., Tsoukli, X., & Vedel, C. (2023). A Microlevel Analysis of Danish Dairy Cooperatives: Opportunities for Large Data in Business History. Enterprise & Society, 1-29. doi:10.1017/eso.2023.5 
 
