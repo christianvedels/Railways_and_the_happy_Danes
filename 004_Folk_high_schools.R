@@ -2,7 +2,7 @@
 #
 # Date updated:   2023-10-02
 # Auhtor:         Christian Vedel 
-# Purpose:        Cleans data on high schools# ==== Libraries ====
+# Purpose:        Cleans data on high schools
 
 # ==== Libraries ====
 library(tidyverse)
