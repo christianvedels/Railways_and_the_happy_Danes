@@ -34,15 +34,8 @@ hoejskoler = read_csv2("Data/Hoejskoler_clean_panel.csv")
 # ==== Legislators database ====
 # Klint, Thorkil, 2023, "The Danish Legislator Database (DLD)", 
 # https://doi.org/10.7910/DVN/4SFNC0, Harvard Dataverse, V1
-election = read_rds("../Data not redistributable/Danish Legislators Database/election1849-2022.Rds")
-members = read_rds("../Data not redistributable/Danish Legislators Database/member1849-2022.Rds")
-
-# ==== Railways ====
-railways = readOGR("../Data not redistributable/Railways Fertner/jernbane_historisk_v050413/jernbane_historisk.shp")
-shape_parishes = readOGR("Data/sogne_shape/sogne.shp")
-
-railways = spTransform(railways, "+proj=longlat +zone=32 +ellps=GRS80")
-shape_parishes = spTransform(shape_parishes, "+proj=longlat +zone=32 +ellps=GRS80")
+# election = read_rds("../Data not redistributable/Danish Legislators Database/election1849-2022.Rds")
+# members = read_rds("../Data not redistributable/Danish Legislators Database/member1849-2022.Rds")
 
 # ==== Save image ====
 save.image("../Data not redistributable/All_raw_data_for_project.Rdata")
