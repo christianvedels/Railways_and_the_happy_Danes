@@ -10,6 +10,7 @@ library(tidyverse)
 library(sf)
 library(ggspatial)
 library(foreach)
+source("000_Functions.R")
 
 # ==== Load data ====
 load("../Data not redistributable/All_raw_data_for_project.Rdata")
@@ -101,6 +102,48 @@ foreach(y = seq(min(panel_assembly_houses$Year), max(panel_assembly_houses$Year)
   ggsave(fname_y, plot = p1, width = w, height = 0.7*w)
 }
 
+# ==== Compute market access ====
+MA_assembly = MA(
+  destination = shape_parishes,
+  origin = assembly_houses %>% 
+    filter(Forsamlingshuse > 0) %>% 
+    filter(Year <= 1920),
+  verbose = TRUE
+)
+
+# ==== Plot MA ====
+foreach(y = seq(min(panel_assembly_houses$Year), max(panel_assembly_houses$Year))) %do% {
+  tmp_y = MA_assembly %>% 
+    filter(Year == y) %>% 
+    mutate(GIS_ID = as.character(GIS_ID))
+  
+  shape_y = shape_parishes %>% left_join(tmp_y, by = "GIS_ID")
+  
+  p1 = ggplot() +
+    layer_spatial(
+      aes(fill = MA),
+      size = 0,
+      data = shape_y
+    ) + 
+    scale_fill_gradient(
+      low = "white",
+      high = "#DE7500"
+    ) + 
+    theme_bw()
+  
+  # p1 = p1 +
+  #   expand_limits(fill = c(0, max(panel_assembly_houses$Assembly_house)))
+  
+  fname_y = paste0("Plots/Assembly_houses_MA/","Y",y,".png")
+  w = 6
+  ggsave(fname_y, plot = p1, width = w, height = 0.7*w)
+  
+  cat("\n",y)
+}
+
 # ==== Save data ====
 panel_assembly_houses %>% 
   write_csv2("Data/Panel_of_assembly_houses.csv")
+
+MA_assembly %>% 
+  write_csv2("Data/Panel_of_MA_assembly_houses.csv")
