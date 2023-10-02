@@ -27,7 +27,7 @@ Files: *'Hoejskoler_clean_panel.csv'*
 
 ### Geographical stuff
 Files: *'shape_parishes', 'Geo.csv',*
-'Sogne' tranlates to parishes. This is the shape file of Danish parishes as of January 1, 1820. Which was passed on to me from the authors of Boberg-Fazlic et al (2023). Originally this comes from www.digdag.dk. The market town of Lemvig (which is important in this application) was missing and added manually using borders downloaded directly from www.digdag.dk.
+'Sogne' tranlates to parishes. This is the shape file of Danish parishes as of January 1, 1820. Which was passed on to this project from the authors of Boberg-Fazlic et al (2023). Originally this comes from www.digdag.dk. The market town of Lemvig was missing and added manually using borders downloaded directly from www.digdag.dk in Vedel (2023).
 
 ## References
 Bentzen, J., Boberg-Fazlic, N., Sharp, P., Vedel, C. (2023) Holy Cows and Spilt Milk: A Firm Level Analysis of the Impact of Religiosity on Productivity (UNPUBLISHED MANUSCRIPT)
@@ -42,7 +42,7 @@ Pedersen, S., Hermansen, B., Nathan, C., & Tougaard, L. (2019). Surface geology 
 
 Sharp, P., Henriques, S., McLaughlin, E., Tsoukli, X., & Vedel, C. (2023). A Microlevel Analysis of Danish Dairy Cooperatives: Opportunities for Large Data in Business History. Enterprise & Society, 1-29. doi:10.1017/eso.2023.5 
 
-Vedel, C. (2023), A Perfect Storm and The Natural Endowments of Infrastructure (UNPUBLISHED MANUSCRIPT). https://github.com/christianvedels/A_perfect_storm_replication
+Vedel, C. (2023), Chapter 1: A Perfect Storm and The Natural Endowments of Infrastructure. *Natural Experiments in Geography and Institutions: Essays in the Economic History of Denmark. [PhD thesis, SDU]*. https://doi.org/10.21996/jt34-zc23
 
 
 
