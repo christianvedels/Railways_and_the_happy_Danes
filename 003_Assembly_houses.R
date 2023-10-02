@@ -107,7 +107,8 @@ MA_assembly = MA(
   destination = shape_parishes,
   origin = assembly_houses %>% 
     filter(Forsamlingshuse > 0) %>% 
-    filter(Year <= 1920),
+    filter(Year <= 1920) %>% 
+    mutate(w = Forsamlingshuse),
   verbose = TRUE
 )
 
