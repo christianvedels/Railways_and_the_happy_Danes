@@ -6,8 +6,6 @@
 
 # ==== Libraries ====
 library(tidyverse)
-library(sp)
-library(rgdal)
 
 # ==== Popdata ====
 path = "https://raw.githubusercontent.com/christianvedels/A_perfect_storm_replication/main/Data/Pop_reg.csv"
