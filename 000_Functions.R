@@ -89,7 +89,7 @@ MA = function(destination, origin, theta = 1, verbose = FALSE){
     )
     
     if(verbose){
-      cat("\nEstiamted MA for",y)
+      cat("\nEstimated MA for",y)
     }
     
     return(res_y)
