@@ -42,6 +42,11 @@ MA = function(destination, origin, theta = 1, verbose = FALSE){
     origin$Year = 9999
   }
   
+  # Add equal weight if no weight
+  if(!"w" %in% names(origin)){
+    origin$w = 1
+  }
+  
   # Remove missing
   origin = origin %>% drop_na(lat, long)
   
@@ -59,11 +64,22 @@ MA = function(destination, origin, theta = 1, verbose = FALSE){
     # Compute distance matrix
     distM_y = st_distance(origin_y, destination_points)
     
+    # Convert to proper matrix
+    distM_y = matrix(as.numeric(distM_y), ncol = NCOL(distM_y))
+    
+    # Convert to km
+    distM_y = distM_y/1000
+    
+    # Add one to avoid exploding
+    distM_y = distM_y + 1
+    
     # Inverted distance (inverted by theta)
     distM_y = distM_y^(-theta)
     
     # Compute MA
-    MA_y = apply(distM_y, 2, sum) 
+    MA_y = apply(distM_y, 2, function(x){
+      sum(x*origin_y$w) # Multiplied by weight
+    })
     
     # Res
     res_y = data.frame(
@@ -79,5 +95,5 @@ MA = function(destination, origin, theta = 1, verbose = FALSE){
     return(res_y)
   }
   
-  return(res_y)
+  return(res)
 }
