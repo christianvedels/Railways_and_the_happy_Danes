@@ -20,17 +20,17 @@ census = read_csv2("Data/Census_data.csv", guess_max = 10000)
 
 # ==== Join assembly houses ====
 railways_assembly_houses = railways %>% 
-  inner_join(
+  left_join(
     Assembly_houses %>% mutate(GIS_ID = as.character(GIS_ID)), 
     by = c("GIS_ID", "Year")
   ) %>% 
-  inner_join(
+  left_join(
     Assembly_houses_MA %>% mutate(GIS_ID = as.character(GIS_ID)), 
     by = c("GIS_ID", "Year")
   ) %>% 
   rename(MA_assembly = MA) %>% 
   select(-long, -lat) %>% 
-  inner_join(
+  left_join(
     Folk_high_schools %>% mutate(GIS_ID = as.character(GIS_ID)), 
     by = c("GIS_ID", "Year")
   ) %>% 
