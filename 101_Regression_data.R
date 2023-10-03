@@ -34,7 +34,7 @@ railways_assembly_houses = railways %>%
     Folk_high_schools %>% mutate(GIS_ID = as.character(GIS_ID)), 
     by = c("GIS_ID", "Year")
   ) %>% 
-  inner_join(
+  left_join(
     Folk_high_schools_MA %>% mutate(GIS_ID = as.character(GIS_ID)), 
     by = c("GIS_ID", "Year")
   ) %>% 
