@@ -18,6 +18,10 @@ Folk_high_schools_MA = read_csv2("Data/Panel_of_MA_folk_high_schools.csv", guess
 
 census = read_csv2("Data/Census_data.csv", guess_max = 10000)  
 
+# To add:
+# - Creameries
+# - Soil types (for controls)
+
 # ==== Join assembly houses ====
 railways_assembly_houses = railways %>% 
   left_join(

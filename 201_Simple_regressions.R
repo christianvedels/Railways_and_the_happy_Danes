@@ -37,7 +37,13 @@ mod4 = feols(
   cluster = ~ GIS_ID
 )
 
-etable(mod1, mod2, mod3, mod4)
+mod5 = feols(
+  log(Born_different_county) ~ Connected_rail | GIS_ID + Year,
+  data = census,
+  cluster = ~ GIS_ID
+)
+
+etable(mod1, mod2, mod3, mod4, mod5)
 
 # ==== TWFE regressions (Grundtvigianisme) ====
 mod1 = feols(
@@ -66,3 +72,5 @@ mod4 = feols(
 
 
 etable(mod1, mod2, mod3, mod4)
+
+# Add mission houses 
