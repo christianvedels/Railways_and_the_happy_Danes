@@ -54,13 +54,13 @@ mod2 = feols(
 
 mod3 = feols(
   HighSchool ~ Connected_rail | GIS_ID + Year,
-  data = census,
+  data = grundtvig,
   cluster = ~ GIS_ID
 )
 
 mod4 = feols(
   log(MA_folkhigh) ~ Connected_rail | GIS_ID + Year,
-  data = census,
+  data = grundtvig,
   cluster = ~ GIS_ID
 )
 
