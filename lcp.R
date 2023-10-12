@@ -38,7 +38,7 @@ outline_dk_cropped <- crop(outline_dk_sp, my_extent)
 outline_dk_cropped_sf <- st_as_sf(outline_dk_cropped)
 
 ### Obtain elevation data
-denmark_elev <- get_elev_raster(outline_dk_cropped_sf, z = 9, source = "aws", clip = "locations")
+denmark_elev <- get_elev_raster(outline_dk_cropped_sf, z = 9, source = "aws", clip = "locations") # (z)oom = resolution
 
 # Create slope raster
 slope_raster <- terrain(denmark_elev, opt='slope', unit='degrees')
