@@ -70,8 +70,8 @@ altDiff <- function(x) 0 + abs( x[2] - x[1] )
 transitions <- transition(denmark_elev, transitionFunction = altDiff, directions = 8)  # directions = 8 = NSWO + diagonals
 
 
-# base cost + slope
-transitions <- transition(slope_raster, transitionFunction = function(x) x[2], directions = 8)
+# base cost + slope of cell 2
+transitions <- transition(slope_raster, transitionFunction = function(x) 0 + x[2], directions = 8)
 
 # exponential function: the steeper the slope, the higher the cost
 # when x[2] = 0, cost = 1
