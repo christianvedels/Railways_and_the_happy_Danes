@@ -59,31 +59,30 @@ colnames(slope_raster_df) <- c("lng", "lat", "degrees")
 plot(denmark_elev)
 plot(slope_raster)
 
-
 ###################
 ### Transitions ###
 ###################
 
-altDiff <- function(x) abs({ x[2] - x[1] })
+altDiff <- function(x) 0 + abs( x[2] - x[1] )
 
 
 # use elevation raster
-transitions <- transition(denmark_elev, transitionFunction = altDiff, directions = 8)
+transitions <- transition(denmark_elev, transitionFunction = altDiff, directions = 8)  # directions = 8 = NSWO + diagonals
 
-# use elevation raster
-transitions <- transition(denmark_elev, transitionFunction = function(x) 4 + abs(diff(x)), directions = 16) # directtions = 8 = NSWO + diagonals
 
 # base cost + slope
-transitions <- transition(slope_raster, transitionFunction = function(x) x, directions = 8)
+transitions <- transition(slope_raster, transitionFunction = function(x) x[2], directions = 8)
 
-# exponential function
-transitions <- transition(slope_raster, transitionFunction = function(x) 2^x, directions = 8)
+# exponential function: the steeper the slope, the higher the cost
+# when x[2] = 0, cost = 1
+# when x[x2] > 0 & < 1 => 1 < x < 2
+# when x[2] = 1, cost = 2
+# when x[2] = 2, cost = 4
+# when x[2] = 3, cost = 2^3 = 8
+# no negative values when using slope
 
-# max
-transitions <- transition(slope_raster, transitionFunction = function(x) max(x), directions = 16)
+transitions <- transition(slope_raster, transitionFunction = function(x) 2^x[2], directions = 8)
 
-# x^2
-transitions <- transition(slope_raster, transitionFunction = function(x) x^2, directions = 8)
 
 
 # Transition function penalizing both uphill and downhill movements, emphazising the penalty of going uphill
@@ -103,7 +102,11 @@ transitions <- transition(slope_raster,
                           directions = 16) # 4, 8, 16
 
 
-### GeoCorrection
+### GeoCorrection: The function transition calculates transition values based on the values of adjacent cells in the input raster.
+# However, diagonal neighbours are more remote from each other than orthogonal neighbours. Also, on equirectangular (longitude-latitude) grids,
+# West-East connections are longer at the equator and become shorter towards the poles, as the meridians approach each other.
+# Therefore, the values in the matrix need to be corrected for these two types of distance distortion. Both types of distortion can be corrected
+# by dividing each conductance matrix value by the distance between cell centres. This is what function geoCorrection does when type is set to “c”.
 transitions <- geoCorrection(transitions, type="c")
 
 
