@@ -1,6 +1,7 @@
 # Clear workspace
 rm(list=ls())
 
+# Hi
 
 # Install and load the required libraries
 library(sf)
