@@ -18,9 +18,18 @@ Folk_high_schools_MA = read_csv2("Data/Panel_of_MA_folk_high_schools.csv", guess
 
 census = read_csv2("Data/Census_data.csv", guess_max = 10000)  
 
-# To add:
-# - Creameries
-# - Soil types (for controls)
+geo = read_csv2("Data/Geo_info.csv", guess_max = 2000)
+
+# ==== Misc small data juggling ====
+pop1801 = census %>% 
+  filter(Year == 1801) %>% 
+  select(GIS_ID, Pop) %>% 
+  rename(Pop1801 = Pop)
+
+pop1787 = census %>% 
+  filter(Year == 1787) %>% 
+  select(GIS_ID, Pop) %>% 
+  rename(Pop1787 = Pop)
 
 # ==== Join assembly houses ====
 railways_assembly_houses = railways %>% 
@@ -43,7 +52,11 @@ railways_assembly_houses = railways %>%
     by = c("GIS_ID", "Year")
   ) %>% 
   rename(MA_folkhigh = MA) %>% 
-  select(-long, -lat)
+  select(-long, -lat) %>% 
+  select(-Parish) %>% 
+  left_join(geo, by = "GIS_ID") %>% 
+  left_join(pop1787, by = "GIS_ID") %>% 
+  left_join(pop1801, by = "GIS_ID")
 
 railways_census = railways_assembly_houses %>% 
   inner_join(census, by = c("GIS_ID", "Year"))

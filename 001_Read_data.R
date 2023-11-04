@@ -29,6 +29,12 @@ rm(huse_panel)
 # ==== Hoejskoler (Grundtvigian High Schools) ====
 hoejskoler = read_csv2("Data/Hoejskoler_clean_panel.csv")
 
+# ==== OxRoads ====
+oxroads = haven::read_dta("../Data not redistributable/Parish_data_Boberg_Fazlic_et_al_2023.dta")
+oxroads %>% 
+  select(GIS_ID, DistOxRoad) %>% 
+  write_csv2("Data/OxRoads.csv")
+
 # ==== Legislators database ====
 # Klint, Thorkil, 2023, "The Danish Legislator Database (DLD)", 
 # https://doi.org/10.7910/DVN/4SFNC0, Harvard Dataverse, V1
@@ -37,3 +43,4 @@ hoejskoler = read_csv2("Data/Hoejskoler_clean_panel.csv")
 
 # ==== Save image ====
 save.image("../Data not redistributable/All_raw_data_for_project.Rdata")
+

@@ -29,6 +29,9 @@ Files: *'Hoejskoler_clean_panel.csv'*
 Files: *'shape_parishes', 'Geo.csv',*
 'Sogne' tranlates to parishes. This is the shape file of Danish parishes as of January 1, 1820. Which was passed on to this project from the authors of Boberg-Fazlic et al (2023). Originally this comes from www.digdag.dk. The market town of Lemvig was missing and added manually using borders downloaded directly from www.digdag.dk in Vedel (2023).
 
+### OxRoads
+Data on the distances from ox roads comes from Boberg-Fazlic et al (2023).
+
 ## References
 Bentzen, J., Boberg-Fazlic, N., Sharp, P., Vedel, C. (2023) Holy Cows and Spilt Milk: A Firm Level Analysis of the Impact of Religiosity on Productivity (UNPUBLISHED MANUSCRIPT)
 
