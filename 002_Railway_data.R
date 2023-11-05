@@ -98,7 +98,7 @@ calc_rail = function(shape,
       dist_i = calculate_distance(shape_parishes[i, ], shape_y)
       dist_i = as.numeric(dist_i) / 1000 # Convert to km
       if(verbose){
-        cat(paste0(i," is ", round(dist_i, 2), " from rail in ", y, "                               \r"))
+        cat(paste0(i," is ", round(dist_i, 2), "m from rail in ", y, "                               \r"))
       }
       
       return(dist_i)
@@ -172,8 +172,8 @@ calc_rail = function(shape,
         )
       
       # Save plots
-      fname1 = paste0("Plots/Plots_parish_connected/",id ,"N_Y", y, ".png")
-      fname2 = paste0("Plots/Plots_distance_to_rail/",id ,"N_Y", y, ".png")
+      fname1 = paste0("Plots/Plots_parish_connected/", id ,"N_Y", y, ".png")
+      fname2 = paste0("Plots/Plots_distance_to_rail/", id ,"N_Y", y, ".png")
       w = 6
       ggsave(fname1,
              plot = p1,
