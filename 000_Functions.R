@@ -97,3 +97,22 @@ MA = function(destination, origin, theta = 1, verbose = FALSE){
   
   return(res)
 }
+
+# ==== first_occurence ====
+# Registers first occurence of a dummy.
+# e.g. (0, 0, 1, 1) --> (0, 0, 1, 0)
+
+testNA = function(x){ # Handle NA in test
+  ifelse(is.na(x), FALSE, x)
+}
+
+first_occurence = function(x){
+  res = rep(0, length(x))
+  for(i in seq(length(x))){
+    if(testNA(x[i] == 1)){
+      res[i] = 1
+      break
+    }
+  }
+  return(res)
+}
