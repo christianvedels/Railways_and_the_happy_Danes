@@ -24,7 +24,7 @@ test = calc_rail( # Comes from functions
   verbose = TRUE,
   plots = TRUE,
   id = "test",
-  years = 1846:1856
+  years = 1854:1856
 )
 
 # ==== Run it ====
