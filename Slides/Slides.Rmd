@@ -1,8 +1,9 @@
 ---
-title: "News and Market Sentiment Analytics"
-subtitle: "Lecture 6: The meaning of sentences"
-author: 'Christian Vedel,<br> Department of Economics<br><br>
-Email: christian-vs@sam.sdu.dk'
+title: "Railroads and the happy Danes"
+author: 'Tom Görges, Christian Vedel,<br> Department of Economics<br><br>
+Email: christian-vs@sam.sdu.dk<br>
+Twitter: @ChristianVedel<br><br><br>
+.small123[*[github.com/christianvedels/Railways_and_the_happy_Danes](https://github.com/christianvedels/Railways_and_the_happy_Danes)*]'
 date: "Updated `r Sys.Date()`" 
 output:
   xaringan::moon_reader:
@@ -102,6 +103,9 @@ xaringanExtra::use_progress_bar(color = "#808080", location = "top")
 ![Trees](Figures/Trees.jpg)
 ]
 
+
+---
+https://blogs.loc.gov/international-collections/2020/10/the-happy-danes-vs-the-sad-danes-assimilation-and-religious-divide-amongst-danish-american-immigrants/
 
 ---
 ## References
