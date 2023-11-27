@@ -1,0 +1,114 @@
+---
+title: "News and Market Sentiment Analytics"
+subtitle: "Lecture 6: The meaning of sentences"
+author: 'Christian Vedel,<br> Department of Economics<br><br>
+Email: christian-vs@sam.sdu.dk'
+date: "Updated `r Sys.Date()`" 
+output:
+  xaringan::moon_reader:
+    includes:
+      after_body: insert-logo.html
+    self_contained: false
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(eval=TRUE, include=TRUE, cache=FALSE)
+library(reticulate)
+use_condaenv("sentimentF23")
+```
+
+```{r xaringan-panelset, echo=FALSE}
+xaringanExtra::use_panelset()
+```
+
+```{r xaringan-tile-view, echo=FALSE}
+xaringanExtra::use_tile_view()
+```
+
+```{r xaringanExtra, echo = FALSE}
+xaringanExtra::use_progress_bar(color = "#808080", location = "top")
+```
+
+```{css echo=FALSE}
+.pull-left {
+  float: left;
+  width: 44%;
+}
+.pull-right {
+  float: right;
+  width: 44%;
+}
+.pull-right ~ p {
+  clear: both;
+}
+
+
+.pull-left-wide {
+  float: left;
+  width: 66%;
+}
+.pull-right-wide {
+  float: right;
+  width: 66%;
+}
+.pull-right-wide ~ p {
+  clear: both;
+}
+
+.pull-left-narrow {
+  float: left;
+  width: 30%;
+}
+.pull-right-narrow {
+  float: right;
+  width: 30%;
+}
+
+.small123 {
+  font-size: 0.80em;
+}
+
+.large123 {
+  font-size: 2em;
+}
+
+.red {
+  color: red
+}
+```
+
+# Railways and the Happy Danes
+
+.pull-left[
+### Motivaiton
+- It is reasonable to suppose that there is interplay between institutions, human capital, culture and geography (market access)
+- To understand long-run economic development, we need to appreciate and untangle complexity 
+- **Hypothesis:** Danish railways brought Grudtvigianism - socalled 'happy' Danes
+
+### This talk 
+- Very preliminary - mostly speculative 
+- Brief historical background
+- Some preliminary results and ideas for identification
+]
+
+.pull-right[
+![Trees](Figures/Trees.jpg)
+]
+
+
+---
+## References
+
+.small123[
+Sharp, P., Henriques, S., McLaughlin, E., Tsoukli, X., & Vedel, C. (2023). A Microlevel Analysis of Danish Dairy Cooperatives: Opportunities for Large Data in Business History. Enterprise & Society, 1-29. https://doi.org/10.1017/eso.2023.13 
+]
+
+
+
