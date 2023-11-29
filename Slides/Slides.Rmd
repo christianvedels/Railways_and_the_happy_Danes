@@ -391,6 +391,8 @@ Fogel, R. W. (1964). Railroads and American Economic Growth: Essays in Econometr
 
 Mullainathan, S., Spiess, J. (2017) Machine Learning: An Applied Econometric Approach Journal of Economic Perspectives Vol. 31 (2). DOI: 10.1257/jep.31.2.87
 
+Vedel, C. (2023). Natural Experiments in Geography and Institutions: Essays in the Economic History of Denmark. [Ph.D. thesis, SDU]. Syddansk Universitet. Det Samfundsvidenskabelige Fakultet. https://doi.org/10.21996/jt34-zc23
+
 Zimran, A. (2020). Transportation and Health in the Antebellum United States, 1820–1847. The Journal of Economic History, 80(3), 670-709. doi:10.1017/S0022050720000315 
 ]
 
