@@ -3,8 +3,8 @@
   <head>
     <title>Railroads and the happy Danes</title>
     <meta charset="utf-8" />
-    <meta name="author" content="Tom Görges, Christian Vedel,  Department of Economics   Email: christian-vs@sam.sdu.dk  Twitter: @ChristianVedel&lt;br&gt;   .small123[github.com/christianvedels/Railways_and_the_happy_Danes]" />
-    <script src="libs/header-attrs-2.25/header-attrs.js"></script>
+    <meta name="author" content="Tom Görges^1, Paul Sharp^2, Christian Vedel^2, Magnus Ørberg^2 .small123[  TU Dortmund University^1, University of Southern Denmark^2, University of Copenhagen^3]   Email: christian-vs@sam.sdu.dk  Twitter: @ChristianVedel&lt;br&gt;   .small123[github.com/christianvedels/Railways_and_the_happy_Danes]" />
+    <script src="libs/header-attrs-2.21/header-attrs.js"></script>
     <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
     <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
     <link href="libs/panelset-0.2.6/panelset.css" rel="stylesheet" />
@@ -21,10 +21,10 @@ class: center, middle, inverse, title-slide
 # Railroads and the happy Danes
 ]
 .author[
-### Tom Görges, Christian Vedel,<br> Department of Economics<br><br> Email: <a href="mailto:christian-vs@sam.sdu.dk" class="email">christian-vs@sam.sdu.dk</a><br> Twitter: <span class="citation">@ChristianVedel&lt;br</span>&gt;<br><br> .small123[<em><a href="https://github.com/christianvedels/Railways_and_the_happy_Danes">github.com/christianvedels/Railways_and_the_happy_Danes</a></em>]
+### Tom Görges<span class="math inline"><sup>1</sup></span>, Paul Sharp<span class="math inline"><sup>2</sup></span>, Christian Vedel<span class="math inline"><sup>2</sup></span>, Magnus Ørberg<span class="math inline"><sup>2</sup></span> .small123[<br><br>TU Dortmund University<span class="math inline"><sup>1</sup></span>, University of Southern Denmark<span class="math inline"><sup>2</sup></span>, University of Copenhagen<span class="math inline"><sup>3</sup></span>]<br><br> Email: <a href="mailto:christian-vs@sam.sdu.dk" class="email">christian-vs@sam.sdu.dk</a><br> Twitter: <span class="citation">@ChristianVedel&lt;br</span>&gt;<br><br> .small123[<em><a href="https://github.com/christianvedels/Railways_and_the_happy_Danes">github.com/christianvedels/Railways_and_the_happy_Danes</a></em>]
 ]
 .date[
-### Updated 2023-11-28
+### Updated 2023-11-29
 ]
 
 ---
@@ -85,11 +85,11 @@ class: center, middle, inverse, title-slide
 
 .pull-left-narrow {
   float: left;
-  width: 30%;
+  width: 33%;
 }
 .pull-right-narrow {
   float: right;
-  width: 30%;
+  width: 33%;
 }
 
 .small123 {
@@ -110,7 +110,6 @@ class: center, middle, inverse, title-slide
 .pull-left[
 ### Motivaiton
 - It is reasonable to suppose that there is interplay between institutions, human capital, culture and geography (market access)
-- To understand long-run economic development, we need to appreciate and untangle complexity 
 - **Hypothesis:** Danish railways brought Grudtvigianism - socalled 'happy' Danes
 
 ### This talk 
@@ -123,15 +122,117 @@ class: center, middle, inverse, title-slide
 ![Trees](Figures/Trees.jpg)
 ]
 
+---
+# Origin
+
+- Paul supervised Magnus masters Thesis, which replicated .red[Berger, 2019] in Denmark 
+- Tom started studying the influence of railways on human capital and social mobility 
+- I've been interested in railways ever since I wrote my Bachelor thesis on it 
+- Rough draft of the synergy of all these ideas: **Railways and the Happy Danes**
+- Seemingly the first ever EH paper on Danish railways 
 
 ---
 https://blogs.loc.gov/international-collections/2020/10/the-happy-danes-vs-the-sad-danes-assimilation-and-religious-divide-amongst-danish-american-immigrants/
 
 ---
+# Litterature
+
+Vast litterature
+
+Fogel, 1964
+
+Margo &amp; Atack
+
+Donaldson &amp; Hornbeck 2016 
+
+Berger and Enflo 20xx
+
+Berger 20xx
+
+---
+# Railways in Denmark 
+
+The first railways build in XXXX
+
+Something which was an issue was the selection of which places to connect
+
+---
+# History of Grundvianism and the happy Danes
+
+- The origin of the liberal Danish spirit - also in contrast to other nordic countries 
+
+
+---
+# Data
+
+.pull-left[
+- Census data 1787-1901 (Link lives)
+- HISCO codes for census descriptions (Dahl &amp; Vedel, 2023)
+- Linking with parish borders and consistency (Vedel, 2023)
+- Railroads shape files (Fertner 2013)
+- Location of assembly houses (Trap 3/4; Bentzen, Boberg-Fazlic, Sharp, Skovsgaard, Vedel, 2023)
+- For identification: Elevation data from .red[AWS] 
+]
+
+.pull-right[
+.small123[
+.panelset[
+.panel[.panel-name[1850]
+![1850](Figures/actual_railwaysN_Y1850.png)
+]
+.panel[.panel-name[1860]
+![1860](Figures/actual_railwaysN_Y1860.png)
+]
+.panel[.panel-name[1880]
+![1880](Figures/actual_railwaysN_Y1880.png)
+]
+.panel[.panel-name[1901]
+![1901](Figures/actual_railwaysN_Y1901.png)
+]
+]
+]
+]
+
+---
+# Some ocular regression: Tommerup Stationsby
+
+---
+# Empricial strategy
+
+.pull-left[
+- Difference in difference
+- **Identifying assumption:**
+  + Places with railways would have had a paralel developmental path given the absence of railways
+- **Threats:**
+  + Selection: Places on a prosperous path might be selected into connection. Or the opposite - deliberate investments targeted at growth. 
+  
+]
+
+--
+.pull-right[
+
+]
+
+---
+### Instrument
+- The task of the first stage is to predict well (Mullainathan &amp; Spiess, 2017)
+- Classical approach: Linear trunk-lines
+- But we can do much better
+- Turns out that the terrain mattered even in one of Europe's flattes countries
+- 
+
+I think I have figured out how to set up the cost function for the LCP's. According to Herzog (2013) an appropriate cost function for wheeled vehicles is: cost(s) = 1 + (s/S)^2 where s is the percent slope and S is a critical slope parameter (also % slope) which "typically" is in the range of 8-16.
+
+---
+# Early results
+
+
+
+---
 ## References
 
 .small123[
-Sharp, P., Henriques, S., McLaughlin, E., Tsoukli, X., &amp; Vedel, C. (2023). A Microlevel Analysis of Danish Dairy Cooperatives: Opportunities for Large Data in Business History. Enterprise &amp; Society, 1-29. https://doi.org/10.1017/eso.2023.13 
+Mullainathan, S., Spiess, J. (2017) Machine Learning: An Applied Econometric Approach Journal of Economic Perspectives Vol. 31 (2). DOI: 10.1257/jep.31.2.87
 ]
 
 
