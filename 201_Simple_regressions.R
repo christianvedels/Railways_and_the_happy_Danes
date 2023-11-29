@@ -50,6 +50,9 @@ mod5 = feols(
   cluster = ~ GIS_ID
 )
 
+etable(mod1, mod2, mod3, mod4, mod5) %>% 
+  knitr::kable()
+
 etable(mod1, mod2, mod3, mod4, mod5)
 
 # ==== TWFE regressions (Grundtvigianisme) ====
@@ -78,10 +81,10 @@ mod4 = feols(
 )
 
 
-etable(mod1, mod2, mod3, mod4)
+etable(mod1, mod2, mod3, mod4) %>% 
+  knitr::kable()
 
-# ==== Doubly Robust DID ====
-# This is included because of doubly robust estimator
+# ==== Doubly Robust DID: Pop ====
 library(did)
 
 set.seed(20)
@@ -124,7 +127,12 @@ out2 = att_gt(
   xformla = ~ lManu + lAgri + Child_women_ratio
 )
 
-ggdid(out2)
+p1_did = ggdid(out2) + 
+  geom_vline(xintercept = -0.5) + 
+  geom_hline(yintercept = 0)
+p1_did = p1_did + labs(title = "Outcome: log(Pop)")
+
+ggsave("Plots/DID_pop.png", plot = p1_did, width = 4, height = 6)
 
 # Pretreatment outcome also as covariate
 out3 = att_gt(
@@ -142,3 +150,69 @@ es3 = aggte(out3, "dynamic")
 ggdid(es3)
 
 summary(out1); summary(out2); summary(out3)
+
+# ==== Doubly Robust DID: Gr. ====
+library(did)
+
+set.seed(20)
+grundtvig0 = grundtvig %>% 
+  mutate(
+    Year_num = as.numeric(as.character(Year)),
+    GIS_ID_num = as.numeric(factor(GIS_ID))
+  ) %>% 
+  group_by(GIS_ID) %>% 
+  mutate( # Treat year
+    Treat_year = ifelse(first_occurence(Connected_rail)==1, Year, 0)
+  ) %>% 
+  mutate( # Treat year
+    Treat_year = ifelse(any(Year!=0), max(Treat_year), 0)
+  )
+
+# No covariates
+out1 = att_gt(
+  yname = "Assembly_house",
+  tname = "Year_num",
+  gname = "Treat_year",
+  idname = "GIS_ID_num",
+  data = grundtvig0,
+)
+
+ggdid(out1)
+
+out2 = att_gt(
+  yname = "HighSchool",
+  tname = "Year_num",
+  gname = "Treat_year",
+  idname = "GIS_ID_num",
+  data = grundtvig0,
+)
+
+# Event studies
+es1 = aggte(out1, "dynamic", na.rm = TRUE)
+p1_did = ggdid(es1)
+
+p1_did = p1_did + 
+  labs(title = "Outcome: Assembly house") + 
+  xlim(c(-20, 35)) + 
+  ylim(c(-0.135, 0.2)) + 
+  geom_vline(xintercept = -0.5) + 
+  geom_hline(yintercept = 0)
+
+p1_did
+ggsave("Plots/DID_assembly.png", plot = p1_did, width = 6, height = 4)
+
+es2 = aggte(out2, "dynamic", na.rm = TRUE)
+p2_did = ggdid(es2)
+
+p2_did = p2_did + 
+  labs(title = "Outcome: High School") + 
+  xlim(c(-20, 35)) + 
+  ylim(c(-0.025, 0.05)) +
+  geom_vline(xintercept = -0.5) + 
+  geom_hline(yintercept = 0)
+
+p2_did
+ggsave("Plots/DID_HighSchool.png", plot = p2_did, width = 6, height = 4)
+
+
+
