@@ -1,12 +1,17 @@
+# Least Cost Path
+#
+# Date updated:   2023-11-29
+# Author:         Tom Görges 
+# Purpose:        Creation of Hypothetical Railway Networks based on Slope (%)
+
+
 # Clear workspace
 rm(list=ls())
 
-# Hi
 
-# Install and load the required libraries
+# ==== Libraries ====
 library(sf)
 library(ggplot2)
-library(terra)
 library(elevatr)
 library(viridis)
 library(raster)
@@ -14,461 +19,560 @@ library(gdistance)
 library(sp)
 library(ggrepel)
 library(rgdal)
+library(tidygeocoder)
+library(readr)
+library(dplyr)
+
+# ==== Load data (Railway shape data and Outline of Denmark) ===
+shape_data <- st_read("../Data not redistributable/Railways Fertner/") %>% st_transform(4326)
+outline_dk <- st_read("C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Data/Raw/Outline DK/DNK_adm0.shp") %>% st_transform(4326)
 
 
-# Read railway shape data and the outline of Denmark
-shape_data <- st_read("C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Data/Raw/Railroads/Fertner 2012/jernbane_historisk.shp")
-
-# Transforming to WGS 84
-shape_data <- st_transform(shape_data, 4326)
-
-# Read outline of Denmark
-outline_dk <- st_read("C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Data/Raw/Outline DK/DNK_adm0.shp")
-
-####################
-### East Jutland ###############################################################
-####################
-my_extent <- extent(9, 10.3, 55.9, 57.2)
-
-
-outline_dk_sp <- as(outline_dk, "Spatial")
-
-
-outline_dk_cropped <- crop(outline_dk_sp, my_extent)
-
-outline_dk_cropped_sf <- st_as_sf(outline_dk_cropped)
-
-### Obtain elevation data
-denmark_elev <- get_elev_raster(outline_dk_cropped_sf, z = 9, source = "aws", clip = "locations") # (z)oom = resolution
-
-# Create slope raster
-slope_raster <- terrain(denmark_elev, opt='slope', unit='degrees')
-
-# Extract resolution for plotting later
-raster_res <- res(denmark_elev)
-raster_res_slop <- res(slope_raster)
-
-
-# Convert the raster to a dataframe for ggplot
-denmark_elev_df <- as.data.frame(rasterToPoints(denmark_elev))
-colnames(denmark_elev_df) <- c("lng", "lat", "elevation")
-
-slope_raster_df <- as.data.frame(rasterToPoints(slope_raster))
-colnames(slope_raster_df) <- c("lng", "lat", "degrees")
-
-
+# Obtain elevation raster
+denmark_elev <- get_elev_raster(outline_dk, z = 9, source = "osm", clip = "locations") # z(oom) = 9 also used by package "movecost"
 plot(denmark_elev)
-plot(slope_raster)
 
-###################
-### Transitions ###
-###################
+# Create slope raster: %
+slope_raster <- terrain(denmark_elev, opt='slope', unit='tangent')*100
 
-altDiff <- function(x) 0 + abs( x[2] - x[1] )
-
-
-# use elevation raster
-transitions <- transition(denmark_elev, transitionFunction = altDiff, directions = 8)  # directions = 8 = NSWO + diagonals
-
-
-# base cost + slope of cell 2
-transitions <- transition(slope_raster, transitionFunction = function(x) 0 + x[2], directions = 8)
-
-# exponential function: the steeper the slope, the higher the cost
-# when x[2] = 0, cost = 1
-# when x[x2] > 0 & < 1 => 1 < x < 2
-# when x[2] = 1, cost = 2
-# when x[2] = 2, cost = 4
-# when x[2] = 3, cost = 2^3 = 8
-# no negative values when using slope
-
-transitions <- transition(slope_raster, transitionFunction = function(x) 2^x[2], directions = 8)
-
-
-
-# Transition function penalizing both uphill and downhill movements, emphazising the penalty of going uphill
-base_cost <- 5
-
-transitions <- transition(slope_raster, 
-                          transitionFunction = function(x) {
-                            elev_diff = diff(x) # diff(x): subtracts the second from the first input
-                            if(elev_diff > 0) {  # going uphill, default = 0
-                              return(base_cost + 15 * elev_diff)  
-                            } else if(elev_diff < 0) {  # going downhill, default = 0
-                              return(base_cost + 1 * abs(elev_diff)) # abs: to ensure positive costs  
-                            } else {
-                              return(base_cost)  # flat terrain
-                            }
-                          }, 
-                          directions = 16) # 4, 8, 16
-
-
-### GeoCorrection: The function transition calculates transition values based on the values of adjacent cells in the input raster.
-# However, diagonal neighbours are more remote from each other than orthogonal neighbours. Also, on equirectangular (longitude-latitude) grids,
-# West-East connections are longer at the equator and become shorter towards the poles, as the meridians approach each other.
-# Therefore, the values in the matrix need to be corrected for these two types of distance distortion. Both types of distortion can be corrected
-# by dividing each conductance matrix value by the distance between cell centres. This is what function geoCorrection does when type is set to “c”.
-transitions <- geoCorrection(transitions, type="c")
-
-
-
-### SAVE & LOAD ################################################################
-
-#save(transitions, file = "/Users/tom/Dropbox/Railways and Mobility in Denmark/Results/R files/transitions.RData")
-#load("/Users/tom/Dropbox/Railways and Mobility in Denmark/Results/R files/transitions.RData")
-
-################################################################################
-
-
-### Define Nodes
-cities <- list(
-  Aarhus = c(10.21070, 56.1572),
-  Aalborg = c(9.9187, 57.048),
-  Silkeborg = c(9.54508, 56.1697),
-  Randers = c(10.038519290275211, 56.46018184602793),
-  Hobro = c(9.797268145620746, 56.63920545456215),
-  Skive = c(9.02607611629542, 56.56175785341591),
-  Skanderborg = c(9.9272, 56.03991),
-  Viborg = c(9.399389325657026, 56.45292573295401)
-)
-
-
-# Convert list to data frame
-cities_df <- data.frame(
-  city_name = names(cities),
-  lat = sapply(cities, '[', 2),
-  lng = sapply(cities, '[', 1)
-)
-
-# Extracting coordinates
-get_coords <- function(city_name) {
-  return(cities[[city_name]])
-}
-
-# Function to create spatial points
-lcp <- function(start_city, end_city) {
-  start_coords <- get_coords(start_city)
-  end_coords <- get_coords(end_city)
-  
-  start_sp <- SpatialPoints(coords = matrix(start_coords, ncol = 2), proj4string = CRS(projection(denmark_elev)))
-  end_sp <- SpatialPoints(coords = matrix(end_coords, ncol = 2), proj4string = CRS(projection(denmark_elev)))
-  
-  path <- shortestPath(transitions, start_sp, end_sp, output="SpatialLines")
-  path_sf <- st_as_sf(path)
-  
-  st_crs(path_sf) <- st_crs(4326)
-  
-  list(path=path, path_sf=path_sf)
-}
-
-
-# Initialize an empty list to store the paths
-paths <- list()
-
-# Now calculate each LCP and store it
-paths$Aarhus_Randers <- lcp("Aarhus", "Randers")
-paths$Aalborg_Randers <- lcp("Randers", "Aalborg")
-paths$Randers_Skive <- lcp("Aarhus", "Skive")
-paths$Aarhus_Viborg <- lcp("Aarhus", "Viborg")
-
-
-
-#####################
-### VISUALIZATION ###
-#####################
-
-# Plot elevation raster
-plot_gg <- ggplot() + geom_tile(data = denmark_elev_df, aes(x = lng, y = lat, fill = elevation), width = raster_res[1],  height = raster_res[2]) + scale_fill_gradientn(name = "Elevation (m)", colors = terrain.colors(100), limits = c(0, 200))
-
-################################################################################
-# plot slope raster
-#plot_gg <- ggplot() + geom_tile(data = slope_raster_df, aes(x = lng, y = lat, fill = degrees), width = raster_res[1],  height = raster_res[2])
-################################################################################
-
-# Adding paths
-for (path in names(paths)) {
-  plot_gg <- plot_gg + geom_sf(data = paths[[path]]$path_sf, color = "red", size = 3, alpha = 0.75, inherit.aes = FALSE)
-}
-
-# Adding cities (names)
-plot_gg <- plot_gg + geom_point(data = cities_df, aes(x = lng, y = lat), color = "black", size = 2, shape = 4) + geom_text_repel(data = cities_df, aes(x = lng, y = lat, label = city_name), size = 2)
-
-
-# Plot
-plot_gg
-
-################################################################################
-# Save plot
-
-#ggsave(filename = "/Users/tom/Dropbox/Railways and Mobility in Denmark/Results/Figures/LCP_4_abs_diff_sqrd.png", plot = plot_gg, width = 8, dpi = 600)
-################################################################################
-
-
-
-#####################
-### Whole Denmark ##############################################################
-#####################
-
-
-# Obtain elevation data for whole denmark and prepare for plotting
-denmark_elev <- get_elev_raster(outline_dk, z = 8, source = "aws", clip = "locations") # z(oom) = 8 is quite good, 9 better but slows down
-
-# Create slope raster
-slope_raster <- terrain(denmark_elev, opt='slope', unit='degrees')
-
-# Extract resolution for plotting later
-raster_res <- res(denmark_elev)
-
-# Convert the raster to a dataframe for ggplot
-denmark_elev_df <- as.data.frame(rasterToPoints(denmark_elev))
-colnames(denmark_elev_df) <- c("lng", "lat", "elevation")
-
-##########################################################
-# Extract resolution for plotting later (slope raster)
-raster_res <- res(slope_raster)
-
-# Convert the raster to a dataframe for ggplot
-slope_raster_df <- as.data.frame(rasterToPoints(slope_raster))
-colnames(slope_raster_df) <- c("lng", "lat", "elevation")
-###############################################################
-
-plot(denmark_elev)
 plot(slope_raster)
 
 
-###########################################################
-### Transition matrix: Convert elevation / slope raster ###
-###########################################################
+# ==== Create and save transitions ===
 
-# use elevation raster
-transitions <- transition(denmark_elev, transitionFunction = function(x) 4 + abs(diff(x)), directions = 16) # directtions = 8 = NSWO + diagonals
+# critical slope value
+median_slope <- median(values(slope_raster), na.rm = T)
 
-# use slope raster
-transitions <- transition(slope_raster, transitionFunction = function(x) 2 + abs(diff(x)), directions = 16)
+s_crit <- median_slope
 
-# max
-transitions <- transition(slope_raster, transitionFunction = function(x) max(x), directions = 8)
+# base cost + slope (Herzog and Costaz-Fernandez) + geocorrection
+# Maybe increase directions = 16 if computational power permits
 
-# a + b^x
-transitions <- transition(slope_raster, transitionFunction = function(x) 2 + 2^x, directions = 8)
-
-
-# Transition function penalizing both uphill and downhill movements, emphazising the penalty of going uphill
-base_cost <- 5
-
-transitions <- transition(slope_raster, 
-                          transitionFunction = function(x) {
-                            elev_diff = diff(x) # diff(x): subtracts the second from the first input
-                            if(elev_diff > 0) {  # going uphill, default = 0
-                              return(base_cost + 15 * elev_diff)  
-                            } else if(elev_diff < 0) {  # going downhill, default = 0
-                              return(base_cost + 1 * abs(elev_diff)) # abs: to ensure positive costs  
-                            } else {
-                              return(base_cost)  # flat terrain
-                            }
-                          }, 
-                          directions = 16) # 4, 8, 16
-
-
-### GeoCorrection
-transitions <- geoCorrection(transitions, type="c")
-
+### changing critical slope value
+#transitions <- transition(slope_raster, transitionFunction = function(x) (1 + (x / s_crit)^2) , directions = 8) %>% geoCorrection(type="c")
+#transitions_scrit2 <- transition(slope_raster, transitionFunction = function(x) (1 + (x / 2)^2) , directions = 8) %>% geoCorrection(type="c")
+#transitions_scrit3 <- transition(slope_raster, transitionFunction = function(x) (1 + (x / 3)^2) , directions = 8) %>% geoCorrection(type="c")
+#transitions_scrit4 <- transition(slope_raster, transitionFunction = function(x) (1 + (x / 4)^2) , directions = 8) %>% geoCorrection(type="c")
+#transitions_scrit5 <- transition(slope_raster, transitionFunction = function(x) (1 + (x / 5)^2) , directions = 8) %>% geoCorrection(type="c")
+#transitions_scrit6 <- transition(slope_raster, transitionFunction = function(x) (1 + (x / 6)^2) , directions = 8) %>% geoCorrection(type="c")
+#transitions_scrit7 <- transition(slope_raster, transitionFunction = function(x) (1 + (x / 7)^2) , directions = 8) %>% geoCorrection(type="c")
+#transitions_scrit8 <- transition(slope_raster, transitionFunction = function(x) (1 + (x / 8)^2) , directions = 8) %>% geoCorrection(type="c")
 
 ### SAVE & LOAD ################################################################
-
-#save(transitions, file = "/Users/tom/Dropbox/Railways and Mobility in Denmark/Results/R files/transitions.RData")
-#load("/Users/tom/Dropbox/Railways and Mobility in Denmark/Results/R files/transitions.RData")
-
-################################################################################
-
-# Definitions
-cities <- list(
-  Struer = c(8.58376, 56.49122),
-  Aarhus = c(10.21070, 56.1572),
-  Aalborg = c(9.9187, 57.048),
-  Skanderborg = c(9.9272, 56.03991),
-  Silkeborg = c(9.54508, 56.1697),
-  Horsens = c(9.85034, 55.86066),
-  Vejle = c(9.5357, 55.70927),
-  Fredericia = c(9.748514221400482, 55.56928697129558),
-  Viborg = c(9.399389325657026, 56.45292573295401), 
-  Copenhagen = c(12.56553, 55.67594),
-  Roskilde = c(12.088964469788431, 55.63933283775055),
-  Hjørring = c(9.98229, 57.46417),
-  Frederikshavn = c(10.53661, 57.44073),
-  #Skjern = c(8.492294797211757, 55.94769381784658),
-  Nyborg = c(10.797332755756909, 55.3243791504007),
-  Varde = c(8.482493665983045, 55.62278987366815),
-  Skive = c(9.02607611629542, 56.56175785341591), 
-  Holstebro = c(8.619182085061286, 56.362059101212786),
-  Middelfart = c(9.746446080170111 ,55.497457375103274),
-  Esbjerg = c(8.457946775154161, 55.47696197437741),
-  Kalundborg = c(11.089167060412331, 55.67862282816924),
-  Helsingor = c(12.61443186838208, 56.03360418164652),
-  #Langa = c(9.895358685046986, 56.384879325215266),
-  Randers = c(10.038519290275211, 56.46018184602793),
-  Hillerod = c(12.311142973922511, 55.92703146790992),
-  #Ringsted = c(11.786698802724363, 55.4384609414422), 
-  Koge = c(12.186525014917956, 55.458128525855805),
-  Naestved = c(11.757972793749381, 55.22454999571345),
-  Vordingborg = c(11.908859304623697, 55.00901790449799),
-  Ringkobing = c(8.250210858502607, 56.088214936350724),
-  Odense = c(10.401948191309815, 55.40379059587304),
-  Ribe = c(8.77283022076043, 55.32698316570357),
-  Hobro = c(9.797268145620746, 56.63920545456215),
-  Norresundby = c(9.922685263770477, 57.05740005806976),
-  Kolding = c(9.472776105158626, 55.49598859646194),
-  Korsor = c(11.1499994, 55.333332)
-)
+#save(transitions, file = "C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/R files/transitions.RData")
+#save(transitions_scrit2, file = "C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/R files/transitions_scrit2.RData")
+#save(transitions_scrit3, file = "C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/R files/transitions_scrit3.RData")
+#save(transitions_scrit4, file = "C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/R files/transitions_scrit4.RData")
+#save(transitions_scrit5, file = "C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/R files/transitions_scrit5.RData")
+#save(transitions_scrit6, file = "C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/R files/transitions_scrit6.RData")
+#save(transitions_scrit7, file = "C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/R files/transitions_scrit7.RData")
+#save(transitions_scrit8, file = "C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/R files/transitions_scrit8.RData")
 
 
-################################################################################
-
-# Convert list to data frame
-cities_df <- data.frame(
-  city_name = names(cities),
-  lat = sapply(cities, '[', 2),
-  lng = sapply(cities, '[', 1)
-)
-
-# Extracting coordinates
-get_coords <- function(city_name) {
-  return(cities[[city_name]])
-}
-
-# Function to create spatial points
-lcp <- function(start_city, end_city) {
-  start_coords <- get_coords(start_city)
-  end_coords <- get_coords(end_city)
-  
-  start_sp <- SpatialPoints(coords = matrix(start_coords, ncol = 2), proj4string = CRS(projection(denmark_elev)))
-  end_sp <- SpatialPoints(coords = matrix(end_coords, ncol = 2), proj4string = CRS(projection(denmark_elev)))
-  
-  path <- shortestPath(transitions, start_sp, end_sp, output="SpatialLines")
-  path_sf <- st_as_sf(path)
-  
-  st_crs(path_sf) <- st_crs(4326)
-  
-  list(path=path, path_sf=path_sf)
-}
+# === Load Transitions ===
+load("C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/R files/transitions.RData") #  # 1 + (s/median)^2 Costaz-Fernandet et al. 2020
+load("C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/R files/transitions_scrit2.RData") # 1 + (s/2)^2
+load("C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/R files/transitions_scrit3.RData") # 1 + (s/3)^2
+load("C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/R files/transitions_scrit4.RData") # 1 + (s/4)^2
+load("C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/R files/transitions_scrit5.RData") # 1 + (s/5)^2
+load("C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/R files/transitions_scrit6.RData") # 1 + (s/6)^2
+load("C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/R files/transitions_scrit7.RData") # 1 + (s/7)^2
+load("C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/R files/transitions_scrit8.RData") # 1 + (s/8)^2: Herzog (2016)
 
 
-# Initialize an empty list to store the paths
+# === Nodes / Market towns ===
+
+
+# Reading in market towns
+market_towns <- read_delim("C:/Users/Win7ADM/Desktop/Market_towns.csv", delim = ";", escape_double = FALSE, trim_ws = TRUE)
+
+
+# Calculate the median of the Pop1801 column
+median_pop1801 <- median(market_towns$Pop1801, na.rm = TRUE)
+
+# Subset the data frame, sort and select
+subset_market_towns <- subset(market_towns, Pop1801 > median_pop1801 & Coastal == 1) %>%
+  arrange(desc(Pop1801)) %>%
+  select(Market_town, Pop1801)
+
+
+### Add nodes
+esbjerg <- data.frame(Market_town = "Esbjerg", Pop1801 = NA)
+struer <- data.frame(Market_town = "Struer", Pop1801 = NA)
+skive <- data.frame(Market_town = "Skive", Pop1801 = NA)
+ringkobing <- data.frame(Market_town = "Ringkobing", Pop1801 = NA)
+middelfart <- data.frame(Market_town = "Middelfart", Pop1801 = NA)
+frederikshavn <- data.frame(Market_town = "Frederikshavn", Pop1801 = NA)
+vordingborg <- data.frame(Market_town = "Masnedsund", Pop1801 = NA)
+norresundby <- data.frame(Market_town = "Norresundby", Pop1801 = NA)
+
+subset_market_towns <- rbind(subset_market_towns, esbjerg, skive, struer, ringkobing, middelfart, frederikshavn, vordingborg, norresundby)
+
+
+### Get coordinates
+
+### Change names for OpenStreetMap
+subset_market_towns$Market_town[subset_market_towns$Market_town == "Koebenhavn"] <- "Copenhagen"
+subset_market_towns$Market_town[subset_market_towns$Market_town == "Soenderborg"] <- "Sonderborg" 
+subset_market_towns$Market_town[subset_market_towns$Market_town == "Aeroeskoebing"] <- "Ærøskøbing"
+subset_market_towns$Market_town[subset_market_towns$Market_town == "Neksoe"] <- "Nexø"
+subset_market_towns$Market_town[subset_market_towns$Market_town == "Rudkoebing"] <- "Rudkøbing"
+subset_market_towns$Market_town[subset_market_towns$Market_town == "Roenne"] <- "Rønne"
+
+# Geocode
+subset_market_towns <- subset_market_towns %>% geocode(Market_town, method = 'osm')
+
+# correct coordinates
+subset_market_towns$lat[subset_market_towns$Market_town == "Skive"] <- 56.56171662979727
+subset_market_towns$long[subset_market_towns$Market_town == "Skive"] <- 9.026041387513118
+
+subset_market_towns$lat[subset_market_towns$Market_town == "Middelfart"] <- 55.49697028894646
+subset_market_towns$long[subset_market_towns$Market_town == "Middelfart"] <- 9.746609766176393
+
+# keep df
+subset_market_towns_df <- subset_market_towns
+
+# Convert the data frame to an sf object
+subset_market_towns_sf <- st_as_sf(subset_market_towns, coords = c("long", "lat"), crs = 4326)
+
+### roughly check
+plot(outline_dk$geometry)
+plot(subset_market_towns_sf$geometry, add = T, col = "blue")
+
+
+### Make data frame a Spatial points df
+coordinates(subset_market_towns) <- ~long+lat
+proj4string(subset_market_towns) <- CRS("+proj=longlat +datum=WGS84")
+
+
+
+# Define market town pairs
+town_pairs <- matrix(c("Copenhagen", "Roskilde",
+                       "Roskilde", "Korsoer", 
+                       "Roskilde", "Koege", 
+                       "Roskilde", "Holbaek", 
+                       "Holbaek", "Kalundborg", 
+                       "Copenhagen", "Helsingoer", 
+                       "Koege", "Naestved", 
+                       "Nyborg", "Odense", 
+                       "Aarhus", "Randers", 
+                       "Randers", "Aalborg",
+                       "Aarhus", "Horsens",
+                       "Horsens", "Vejle",
+                       "Vejle", "Fredericia",
+                       "Esbjerg", "Kolding",
+                       "Fredericia", "Kolding",
+                       "Odense", "Middelfart",
+                       "Naestved", "Masnedsund",
+                       "Norresundby", "Frederikshavn",
+                       "Aarhus", "Skive",
+                       "Esbjerg", "Ringkobing",
+                       "Struer", "Ringkobing",
+                       "Struer", "Skive"),
+                     ncol = 2, byrow = TRUE)
+
+# === CRITICAL SLOPE VALUE: MEDIAN ===
+
+# Initialize paths list
 paths <- list()
 
-# Now calculate each LCP and store it
-paths$Copenhagen_Roskilde <- lcp("Copenhagen", "Roskilde")
-#paths$Roskilde_Ringsted <- lcp("Roskilde", "Ringsted")
-paths$Korsor_Roskilde <- lcp("Roskilde", "Korsor")
-paths$Nyborg_Odense <- lcp("Nyborg", "Odense")
-paths$Middelfart_Odense <- lcp("Odense", "Middelfart")
-paths$Fredericia_Odense <- lcp("Fredericia", "Vejle")
-paths$Skanderborg_Silkeborg <- lcp("Skanderborg", "Silkeborg")
-paths$Skanderborg_Horsens <- lcp("Skanderborg", "Horsens")
-paths$Skanderborg_Aarhus <- lcp("Skanderborg", "Aarhus")
-paths$Horsens_Vejle <- lcp("Horsens", "Vejle")
-#paths$Horsens_Aarhus <- lcp("Horsens", "Aarhus")
-paths$Randers_Aarhus <- lcp("Aarhus", "Randers")
-paths$Viborg_Aarhus <- lcp("Aarhus", "Viborg") 
-#paths$Langaa_Viborg <- lcp("Viborg", "Langa")
-#paths$Langaa_Randers <- lcp("Randers", "Langa")
-paths$Hobro_Randers <- lcp("Randers", "Hobro") 
-paths$Hobro_Aalborg <- lcp("Aalborg", "Hobro")
-paths$Norresundby_Hjørring <- lcp("Norresundby", "Hjørring")
-paths$Hjorring_Frederikshaven <- lcp("Frederikshavn", "Hjørring")
-#paths$Norresundby_Frederikshavn <- lcp("Norresundby", "Frederikshavn")
-paths$Viborg_Skive <- lcp("Viborg", "Skive")
-paths$Struer_Skive <- lcp("Struer", "Skive")
-paths$Struer_Holstebro <- lcp("Struer", "Holstebro")
-paths$Holstebro_Ringkobing <- lcp("Holstebro", "Ringkobing")
-#paths$Skjern_Ringkobing <- lcp("Skjern", "Ringkobing")
-#paths$Skjern_Varde <- lcp("Skjern", "Varde")
-paths$Ringkobing_Varde <- lcp("Ringkobing", "Varde")
-paths$Esbjerg_Varde <- lcp("Esbjerg", "Varde")
-paths$Roskilde_Kalundborg <- lcp("Roskilde", "Kalundborg")
-paths$Roskilde_Koge <- lcp("Roskilde", "Koge")
-paths$Naestved_Koge <- lcp("Naestved", "Koge")
-paths$Naestved_Vordingborg <- lcp("Naestved", "Vordingborg")
-paths$Copenhagen_Hillerod <- lcp("Copenhagen", "Hillerod")
-paths$Helsingor_Hillerod <- lcp("Helsingor", "Hillerod")
-paths$Esbjerg_Ribe <- lcp("Esbjerg", "Ribe")
-paths$Esbjerg_Kolding <- lcp("Esbjerg", "Kolding")
-paths$Fredericia_Kolding <- lcp("Fredericia", "Kolding")
-
-
-#####################
-### VISUALIZATION ###
-#####################
-
-# Plot elevation raster
-plot_gg <- ggplot() + geom_tile(data = denmark_elev_df, aes(x = lng, y = lat, fill = elevation), width = raster_res[1],  height = raster_res[2]) + scale_fill_gradientn(name = "Elevation (m)", colors = terrain.colors(100), limits = c(0, 200))
-
-################################################################################
-# plot slope raster
-#plot_gg <- ggplot() + geom_tile(data = slope_raster_df, aes(x = lng, y = lat, fill = elevation), width = raster_res[1],  height = raster_res[2])
-################################################################################
-
-# Adding paths
-for (path in names(paths)) {
-  plot_gg <- plot_gg + geom_sf(data = paths[[path]]$path_sf, color = "red", size = 3, alpha = 1, inherit.aes = FALSE)
+# Loop through each town pair to calculate paths
+for (i in 1:nrow(town_pairs)) {
+  start_town <- town_pairs[i, 1]
+  end_town <- town_pairs[i, 2]
+  
+  # Create dynamic name for each path
+  path_name <- paste(start_town, end_town, sep = "_")
+  
+  # Calculate shortest path
+  paths[[path_name]] <- st_as_sf(shortestPath(
+    transitions, 
+    coordinates(subset_market_towns[subset_market_towns$Market_town == start_town, ]), 
+    coordinates(subset_market_towns[subset_market_towns$Market_town == end_town, ]), 
+    output = "SpatialLines"
+  ))
 }
 
+# Add an identifier to each sf object in the list
+names(paths) <- gsub("paths\\$", "", names(paths))
+
+for (name in names(paths)) {
+  paths[[name]]$route <- name
+}
+
+all_paths <- bind_rows(paths)
+all_paths <- st_set_crs(all_paths, 4326)
+
+# Save the sf object as a shapefile
+#st_write(all_paths, "C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/Shape files/IV/LCP_median.shp", driver = "ESRI Shapefile")
+
+# === CRITICAL SLOPE VALUE: 2 ===
+
+# Initialize empty paths list
+paths <- list()
+
+# Loop through each town pair and calculate paths
+for (i in 1:nrow(town_pairs)) {
+  start_town <- town_pairs[i, 1]
+  end_town <- town_pairs[i, 2]
+  
+  # Create dynamic name for each path
+  path_name <- paste(start_town, end_town, sep = "_")
+  
+  # Calculate shortest path
+  paths[[path_name]] <- st_as_sf(shortestPath(
+    transitions_scrit2, ### Changed transitions
+    coordinates(subset_market_towns[subset_market_towns$Market_town == start_town, ]), 
+    coordinates(subset_market_towns[subset_market_towns$Market_town == end_town, ]), 
+    output = "SpatialLines"
+  ))
+}
+
+# Add an identifier to each sf object in the list
+names(paths) <- gsub("paths\\$", "", names(paths))
+
+for (name in names(paths)) {
+  paths[[name]]$route <- name
+}
+
+all_paths <- bind_rows(paths)
+all_paths <- st_set_crs(all_paths, 4326)
+
+# Save the sf object as a shapefile
+#st_write(all_paths, "C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/Shape files/IV/LCP_scrit2.shp", driver = "ESRI Shapefile")
+
+# === CRITICAL SLOPE VALUE: 3 ===
+
+# Initialize empty paths list
+paths <- list()
+
+# Loop through each town pair and calculate paths
+for (i in 1:nrow(town_pairs)) {
+  start_town <- town_pairs[i, 1]
+  end_town <- town_pairs[i, 2]
+  
+  # Create dynamic name for each path
+  path_name <- paste(start_town, end_town, sep = "_")
+  
+  # Calculate shortest path
+  paths[[path_name]] <- st_as_sf(shortestPath(
+    transitions_scrit3, ### Changed transitions
+    coordinates(subset_market_towns[subset_market_towns$Market_town == start_town, ]), 
+    coordinates(subset_market_towns[subset_market_towns$Market_town == end_town, ]), 
+    output = "SpatialLines"
+  ))
+}
+
+# Add an identifier to each sf object in the list
+names(paths) <- gsub("paths\\$", "", names(paths))
+
+for (name in names(paths)) {
+  paths[[name]]$route <- name
+}
+
+all_paths <- bind_rows(paths)
+all_paths <- st_set_crs(all_paths, 4326)
+
+# Save the sf object as a shapefile
+#st_write(all_paths, "C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/Shape files/IV/LCP_scrit3.shp", driver = "ESRI Shapefile")
+
+# === CRITICAL SLOPE VALUE: 4 ===
+
+# Initialize empty paths list
+paths <- list()
+
+# Loop through each town pair and calculate paths
+for (i in 1:nrow(town_pairs)) {
+  start_town <- town_pairs[i, 1]
+  end_town <- town_pairs[i, 2]
+  
+  # Create dynamic name for each path
+  path_name <- paste(start_town, end_town, sep = "_")
+  
+  # Calculate shortest path
+  paths[[path_name]] <- st_as_sf(shortestPath(
+    transitions_scrit4, ### Changed transitions
+    coordinates(subset_market_towns[subset_market_towns$Market_town == start_town, ]), 
+    coordinates(subset_market_towns[subset_market_towns$Market_town == end_town, ]), 
+    output = "SpatialLines"
+  ))
+}
+
+# Add an identifier to each sf object in the list
+names(paths) <- gsub("paths\\$", "", names(paths))
+
+for (name in names(paths)) {
+  paths[[name]]$route <- name
+}
+
+all_paths <- bind_rows(paths)
+all_paths <- st_set_crs(all_paths, 4326)
+
+# Save the sf object as a shapefile
+#st_write(all_paths, "C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/Shape files/IV/LCP_scrit4.shp", driver = "ESRI Shapefile")
+
+# === CRITICAL SLOPE VALUE: 5 ===
+
+# Initialize empty paths list
+paths <- list()
+
+# Loop through each town pair and calculate paths
+for (i in 1:nrow(town_pairs)) {
+  start_town <- town_pairs[i, 1]
+  end_town <- town_pairs[i, 2]
+  
+  # Create dynamic name for each path
+  path_name <- paste(start_town, end_town, sep = "_")
+  
+  # Calculate shortest path
+  paths[[path_name]] <- st_as_sf(shortestPath(
+    transitions_scrit5, ### Changed transitions
+    coordinates(subset_market_towns[subset_market_towns$Market_town == start_town, ]), 
+    coordinates(subset_market_towns[subset_market_towns$Market_town == end_town, ]), 
+    output = "SpatialLines"
+  ))
+}
+
+# Add an identifier to each sf object in the list
+names(paths) <- gsub("paths\\$", "", names(paths))
+
+for (name in names(paths)) {
+  paths[[name]]$route <- name
+}
+
+all_paths <- bind_rows(paths)
+all_paths <- st_set_crs(all_paths, 4326)
+
+# Save the sf object as a shapefile
+#st_write(all_paths, "C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/Shape files/IV/LCP_scrit5.shp", driver = "ESRI Shapefile")
+
+
+# === CRITICAL SLOPE VALUE: 6 ===
+
+# Initialize empty paths list
+paths <- list()
+
+# Loop through each town pair and calculate paths
+for (i in 1:nrow(town_pairs)) {
+  start_town <- town_pairs[i, 1]
+  end_town <- town_pairs[i, 2]
+  
+  # Create dynamic name for each path
+  path_name <- paste(start_town, end_town, sep = "_")
+  
+  # Calculate shortest path
+  paths[[path_name]] <- st_as_sf(shortestPath(
+    transitions_scrit6, ### Changed transitions
+    coordinates(subset_market_towns[subset_market_towns$Market_town == start_town, ]), 
+    coordinates(subset_market_towns[subset_market_towns$Market_town == end_town, ]), 
+    output = "SpatialLines"
+  ))
+}
+
+# Add an identifier to each sf object in the list
+names(paths) <- gsub("paths\\$", "", names(paths))
+
+for (name in names(paths)) {
+  paths[[name]]$route <- name
+}
+
+all_paths <- bind_rows(paths)
+all_paths <- st_set_crs(all_paths, 4326)
+
+# Save the sf object as a shapefile
+#st_write(all_paths, "C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/Shape files/IV/LCP_scrit6.shp", driver = "ESRI Shapefile")
+
+# === CRITICAL SLOPE VALUE: 7 ===
+
+# Initialize empty paths list
+paths <- list()
+
+# Loop through each town pair and calculate paths
+for (i in 1:nrow(town_pairs)) {
+  start_town <- town_pairs[i, 1]
+  end_town <- town_pairs[i, 2]
+  
+  # Create dynamic name for each path
+  path_name <- paste(start_town, end_town, sep = "_")
+  
+  # Calculate shortest path
+  paths[[path_name]] <- st_as_sf(shortestPath(
+    transitions_scrit7, ### Changed transitions
+    coordinates(subset_market_towns[subset_market_towns$Market_town == start_town, ]), 
+    coordinates(subset_market_towns[subset_market_towns$Market_town == end_town, ]), 
+    output = "SpatialLines"
+  ))
+}
+
+# Add an identifier to each sf object in the list
+names(paths) <- gsub("paths\\$", "", names(paths))
+
+for (name in names(paths)) {
+  paths[[name]]$route <- name
+}
+
+all_paths <- bind_rows(paths)
+all_paths <- st_set_crs(all_paths, 4326)
+
+# Save the sf object as a shapefile
+#st_write(all_paths, "C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/Shape files/IV/LCP_scrit7.shp", driver = "ESRI Shapefile")
+
+# === CRITICAL SLOPE VALUE: 8 ===
+
+# Initialize empty paths list
+paths <- list()
+
+# Loop through each town pair and calculate paths
+for (i in 1:nrow(town_pairs)) {
+  start_town <- town_pairs[i, 1]
+  end_town <- town_pairs[i, 2]
+  
+  # Create dynamic name for each path
+  path_name <- paste(start_town, end_town, sep = "_")
+  
+  # Calculate shortest path
+  paths[[path_name]] <- st_as_sf(shortestPath(
+    transitions_scrit8, ### Changed transitions
+    coordinates(subset_market_towns[subset_market_towns$Market_town == start_town, ]), 
+    coordinates(subset_market_towns[subset_market_towns$Market_town == end_town, ]), 
+    output = "SpatialLines"
+  ))
+}
+
+# Add an identifier to each sf object in the list
+names(paths) <- gsub("paths\\$", "", names(paths))
+
+for (name in names(paths)) {
+  paths[[name]]$route <- name
+}
+
+all_paths <- bind_rows(paths)
+all_paths <- st_set_crs(all_paths, 4326)
+
+# Save the sf object as a shapefile
+#st_write(all_paths, "C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/Shape files/IV/LCP_scrit8.shp", driver = "ESRI Shapefile")
+
+
+
+
+# === RMSE: Find shape file with the best fit ===
+
+
+### Load shape files (Actual railway and hypothetical networks)
+real <- st_read("C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Data/Raw/Railroads/Fertner 2012/jernbane_historisk.shp") %>% st_transform(crs = 32632)
+hypo1 <- st_read("C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/Shape files/IV/LCP_median.shp") %>% st_transform(crs = 32632)
+hypo2 <- st_read("C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/Shape files/IV/LCP_scrit2.shp") %>% st_transform(crs = 32632)
+hypo3 <- st_read("C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/Shape files/IV/LCP_scrit3.shp") %>% st_transform(crs = 32632)
+hypo4 <- st_read("C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/Shape files/IV/LCP_scrit4.shp") %>% st_transform(crs = 32632)
+hypo5 <- st_read("C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/Shape files/IV/LCP_scrit5.shp") %>% st_transform(crs = 32632)
+hypo6 <- st_read("C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/Shape files/IV/LCP_scrit6.shp") %>% st_transform(crs = 32632)
+hypo7 <- st_read("C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/Shape files/IV/LCP_scrit7.shp") %>% st_transform(crs = 32632)
+hypo8 <- st_read("C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/Shape files/IV/LCP_scrit8.shp") %>% st_transform(crs = 32632)
+
+
+### Subset
+real <- real[real$opened <= 1875, ]
+
+calculate_rmse <- function(hypo_network, real_network, spacing) {
+  # Transform to sf object
+  hypo_network <- st_as_sf(hypo_network)
+  # Calculate line length and number of points
+  line_length <- as.numeric(st_length(hypo_network))
+  num_points <- ceiling(line_length / spacing)
+  # Sample points
+  hypo_points <- st_sample(hypo_network, num_points, type = "regular")
+  # Calculate distances
+  distances <- st_distance(hypo_points, real_network)
+  min_distances <- apply(distances, 1, min)
+  # Calculate and return RMSE
+  sqrt(mean(min_distances^2))
+}
+
+rmse1 <- calculate_rmse(hypo1, real, 100)
+rmse2 <- calculate_rmse(hypo2, real, 100)
+rmse3 <- calculate_rmse(hypo3, real, 100)
+rmse4 <- calculate_rmse(hypo4, real, 100)
+rmse5 <- calculate_rmse(hypo5, real, 100)
+rmse6 <- calculate_rmse(hypo6, real, 100)
+rmse7 <- calculate_rmse(hypo7, real, 100)
+rmse8 <- calculate_rmse(hypo8, real, 100)
+
+
+rmse_values <- c(rmse1, rmse2, rmse3, rmse4, rmse5, rmse6, rmse7, rmse8)
+names(rmse_values) <- c("hypo1", "hypo2", "hypo3", "hypo4", "hypo5", "hypo6", "hypo7", "hypo8")
+
+# Find the hypothetical network with the smallest RMSE
+best_fit <- which.min(rmse_values)
+print(paste("Best fit is:", names(rmse_values)[best_fit]))
+
+
+plot(real$geometry)
+plot(hypo2, add = T, col = "blue")
+
+
+
+# === Plot preparations ===
+
+# Convert the raster to a data frame
+slope_df <- as.data.frame(rasterToPoints(slope_raster), stringsAsFactors = FALSE)
+
+# Rename columns for clarity
+colnames(slope_df) <- c("long", "lat", "slope")
+
+# Applying a log transformation (for illustration purposes only)
+slope_df$slope_log <- log1p(slope_df$slope)  # log1p to avoid log(0)
+
+# === Plot ===
+
+# Plot slope raster with log-transformed slope values
+plot_gg <- ggplot() +
+  geom_tile(data = slope_df, aes(x = long, y = lat, fill = slope_log)) +
+  scale_fill_gradient(low = "grey95", high = "black") +
+  theme_minimal() +
+  theme(axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        panel.background = element_rect(fill = "white", colour = "white"),
+        plot.background = element_rect(fill = "white", colour = "white")) +
+  guides(fill = "none")  # This line removes the legend for slope values
+
+
 # Adding cities (names)
-plot_gg <- plot_gg + geom_point(data = cities_df, aes(x = lng, y = lat), color = "black", size = 2, shape = 4) + geom_text_repel(data = cities_df, aes(x = lng, y = lat, label = city_name), size = 2)
+plot_gg <- plot_gg + geom_point(data = subset_market_towns_df, aes(x = long, y = lat), color = "black", size = 2, shape = 4) + geom_text_repel(data = subset_market_towns_df, aes(x = long, y = lat, label = Market_town), size = 2.5)
 
 # Adding railway lines opened <= 1875
-plot_gg <- plot_gg + geom_sf(data = subset(shape_data, opened <= 1875), color = "black", size = 0.5, inherit.aes = FALSE, alpha = 1)
+plot_gg <- plot_gg + geom_sf(data = subset(shape_data, opened <= 1875), size = 0.5, inherit.aes = FALSE, alpha = 1)
 
+# Adding LCP('s)
+plot_gg <- plot_gg + geom_sf(data = hypo2, size = 1, inherit.aes = FALSE, col = "firebrick1")
+
+# Adding LCP('s)
+#plot_gg <- plot_gg + geom_sf(data = hypo5, size = 1, inherit.aes = FALSE, col = "dodgerblue")
 
 # Change legend position
-plot_gg <- plot_gg + theme(legend.position = c(0.9, 0.75), legend.text = element_text(size = 12), legend.title = element_text(size = 14), legend.key.size = unit(4, "mm"))
+#plot_gg <- plot_gg + theme(legend.position = c(0.75, 0.7), legend.text = element_text(size = 12), legend.title = element_text(size = 14), legend.key.size = unit(4, "mm"))
+
 
 # Plot
 plot_gg
 
+
+#####
 ################################################################################
 # Save plot
-
-#ggsave(filename = "/Users/tom/Dropbox/Railways and Mobility in Denmark/Results/Figures/LCP_4_abs_diff_sqrd.png", plot = plot_gg, width = 8, dpi = 600)
+#ggsave(filename = "C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/Figures/LCP_IV.png", plot = plot_gg, width = 8, dpi = 600)
 ################################################################################
 
-##################################
-### Create and Store Shapefile #################################################
-##################################
 
 
-# Extract all 'path_sf' objects from paths list, add 'id' column, and bind them together
-lcp_sf <- do.call(rbind, lapply(names(paths), function(id) {
-  path_sf <- paths[[id]]$path_sf
-  path_sf$id <- id
-  return(path_sf)
-}))
-
-### Change CRS
-lcp_sf <- st_transform(lcp_sf, 25832)
 
 
-# Buffer 2.5km
-lcp_sf_buff <- st_buffer(lcp_sf, dist = 2000)
-
-############
-### PLOT ###
-############
-outline_dk <- st_transform(outline_dk, 25832)
 
 
-# Plot
-plot_gg <- ggplot() +
-  geom_sf(data = outline_dk, fill = "grey90", color = "grey90") +   # Plot the outline of Denmark
-  geom_sf(data = lcp_sf, size = 1.5, color = "blue") +
-  geom_sf(data = lcp_sf_buff, color = "blue", size = 1.5, alpha = 0.5) +
-  geom_sf(data = subset(shape_data, opened <= 1875), color = "black", size = 0.5, alpha = 1) +
-  theme_void()
 
-plot_gg
 
-# To save the plot, uncomment the line below:
-#ggsave(filename = "/Users/tom/Dropbox/Railways and Mobility in Denmark/Results/Figures/IV_buff.png", plot = plot_gg, width = 10, dpi = 600)
+
+
+
 
 
 
