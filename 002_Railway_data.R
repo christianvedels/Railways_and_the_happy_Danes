@@ -20,7 +20,7 @@ shape_parishes = read_sf("Data/sogne_shape/sogne.shp")
 # test function
 test = calc_rail( # Comes from functions
   shape,
-  shape_parishes,
+  shape_parishes[1:10,],
   verbose = TRUE,
   plots = TRUE,
   id = "test",
