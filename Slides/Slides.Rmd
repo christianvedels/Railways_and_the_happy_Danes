@@ -160,7 +160,7 @@ Petro, Brassey, Betts company ([Wikimedia commons](https://commons.wikimedia.org
 
 
 ---
-# Grundvianism and the happy Danes
+# Grundvianism 
 .pull-left[
 - The origin of the liberal Danish spirit
 - NFS Grundtvig (1783-1872):
@@ -169,7 +169,8 @@ Petro, Brassey, Betts company ([Wikimedia commons](https://commons.wikimedia.org
   + Revitalised the study of vikings 
   + Wrote more than 30000 works 
   + His influence touches everything
-  + Community houses, 'high schools', etc. 
+  + Community houses: Local democracy
+  + Høj skoler: Education of farmers
 
 
 ]
@@ -186,12 +187,14 @@ Petro, Brassey, Betts company ([Wikimedia commons](https://commons.wikimedia.org
 # Grundtvig's alleged impact on prosperity
 
 .pull-left[
-- **As paraphrased from a standard Danish school curiulum** 
-- Holistic Education
-- Community Building: Social capital and trust
-- Grundtvig's principles influence the development of trustworthy institutions in Denmark.
-- Cultural identity: E.g. revitalizing Viking history
+- Community Building: Social capital and trust, trustworthy institutions
+- Human capital 
+- Cultural identity
 - Local democracy and societies
+- *"Leave two Danes in a room and they will at least three societies"*
+
+![Ansager](Figures/Generalforsamling_i_Ansager_Andelsmejeri.jpg)
+.small123[*Agersnap, H. (1885) Generalforsamling i Ansager Andelsmejeri [wikimedia](https://commons.wikimedia.org/wiki/File:Generalforsamling_i_Ansager_Andelsmejeri.jpg)*]
 ]
 
 .pull-right[
@@ -200,6 +203,31 @@ Petro, Brassey, Betts company ([Wikimedia commons](https://commons.wikimedia.org
 C.A. Jensen (1843) 'Nikolaj Frederik Severin Grundtvig'. [Wikimedia commons](https://commons.wikimedia.org/wiki/File:N-f-s-grundtvig-portr%C3%A6t.jpg)
 ]
 ]
+
+---
+.pull-left[
+### Sad Danes - Inner Mission
+(Holy Danes)
+![Sad](Figures/Sad_Dane.png)
+- Emphasis on assimilation 
+- Focus on America
+- Strict religious view
+]
+
+.pull-right[
+### Happy Danes - Grundtvigianism
+![Happy](Figures/HappyDane.png)
+- Danish language and traditon (folkliness) 
+- Connection between belief and nationality
+- Liberal values
+]
+
+---
+# The hypothesis in summary
+
+1. The 'happy Danes' promoted the foundation for the modern success of the Danish state
+2. This was done via forsamlingshuse and 'højskoler' ('high schools'). 
+3. .red[The 'Happy Danes' are a product of market access]
 
 
 ---
@@ -211,7 +239,8 @@ C.A. Jensen (1843) 'Nikolaj Frederik Severin Grundtvig'. [Wikimedia commons](htt
 - Linking with parish borders and consistency (Vedel, 2023)
 - Railroads shape files (Fertner 2013)
 - Location of assembly houses (Trap 3/4; Bentzen, Boberg-Fazlic, Sharp, Skovsgaard, Vedel, 2023)
-- For identification: Elevation data from .red[AWS] 
+- For identification: Elevation data from Open Street Map
+- **Missing:** Regional quantification of happyness
 ]
 
 .pull-right[
@@ -246,7 +275,7 @@ C.A. Jensen (1843) 'Nikolaj Frederik Severin Grundtvig'. [Wikimedia commons](htt
 ]
 
 ---
-# IM benefitted from the railways 
+# Anecdotal evidence for the Holy Danes 
 .pull-left[
 ### Carl Moe
 - Harboører from 1877
