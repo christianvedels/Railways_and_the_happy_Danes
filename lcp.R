@@ -24,11 +24,11 @@ library(readr)
 library(dplyr)
 
 # ==== Load data (Railway shape data and Outline of Denmark) ===
-shape_data <- st_read("../Data not redistributable/Railways Fertner/") %>% st_transform(4326)
-outline_dk <- st_read("C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Data/Raw/Outline DK/DNK_adm0.shp") %>% st_transform(4326)
+shape_data <- st_read("../Data not redistributable/Railways Fertner/jernbane_historisk_v050413/jernbane_historisk.shp") %>% st_transform(4326)
+outline_dk <- st_read("../Data not redistributable/Outline DK/DNK_adm0.shp")  %>% st_transform(4326)
 
 
-# Obtain elevation raster
+# Obtain elevation raster (from OpenStreetMap)
 denmark_elev <- get_elev_raster(outline_dk, z = 9, source = "osm", clip = "locations") # z(oom) = 9 also used by package "movecost"
 plot(denmark_elev)
 
@@ -41,14 +41,14 @@ plot(slope_raster)
 # ==== Create and save transitions ===
 
 # critical slope value
-median_slope <- median(values(slope_raster), na.rm = T)
+#median_slope <- median(values(slope_raster), na.rm = T)
 
-s_crit <- median_slope
+#s_crit <- median_slope
 
 # base cost + slope (Herzog and Costaz-Fernandez) + geocorrection
 # Maybe increase directions = 16 if computational power permits
 
-### changing critical slope value
+### Create cost surface / transition matrix (changing critical slope value)
 #transitions <- transition(slope_raster, transitionFunction = function(x) (1 + (x / s_crit)^2) , directions = 8) %>% geoCorrection(type="c")
 #transitions_scrit2 <- transition(slope_raster, transitionFunction = function(x) (1 + (x / 2)^2) , directions = 8) %>% geoCorrection(type="c")
 #transitions_scrit3 <- transition(slope_raster, transitionFunction = function(x) (1 + (x / 3)^2) , directions = 8) %>% geoCorrection(type="c")
@@ -58,40 +58,40 @@ s_crit <- median_slope
 #transitions_scrit7 <- transition(slope_raster, transitionFunction = function(x) (1 + (x / 7)^2) , directions = 8) %>% geoCorrection(type="c")
 #transitions_scrit8 <- transition(slope_raster, transitionFunction = function(x) (1 + (x / 8)^2) , directions = 8) %>% geoCorrection(type="c")
 
-### SAVE & LOAD ################################################################
-#save(transitions, file = "C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/R files/transitions.RData")
-#save(transitions_scrit2, file = "C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/R files/transitions_scrit2.RData")
-#save(transitions_scrit3, file = "C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/R files/transitions_scrit3.RData")
-#save(transitions_scrit4, file = "C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/R files/transitions_scrit4.RData")
-#save(transitions_scrit5, file = "C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/R files/transitions_scrit5.RData")
-#save(transitions_scrit6, file = "C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/R files/transitions_scrit6.RData")
-#save(transitions_scrit7, file = "C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/R files/transitions_scrit7.RData")
-#save(transitions_scrit8, file = "C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/R files/transitions_scrit8.RData")
+### Save different cost surfaces
+#save(transitions, file = "../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_median.RData")
+#save(transitions_scrit2, file = "../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_scrit2.RData")
+#save(transitions_scrit3, file = "../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_scrit3.RData")
+#save(transitions_scrit4, file = "../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_scrit4.RData")
+#save(transitions_scrit5, file = "../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_scrit5.RData")
+#save(transitions_scrit6, file = "../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_scrit6.RData")
+#save(transitions_scrit7, file = "../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_scrit7.RData")
+#save(transitions_scrit8, file = "../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_scrit8.RData")
 
 
 # === Load Transitions ===
-load("C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/R files/transitions.RData") #  # 1 + (s/median)^2 Costaz-Fernandet et al. 2020
-load("C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/R files/transitions_scrit2.RData") # 1 + (s/2)^2
-load("C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/R files/transitions_scrit3.RData") # 1 + (s/3)^2
-load("C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/R files/transitions_scrit4.RData") # 1 + (s/4)^2
-load("C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/R files/transitions_scrit5.RData") # 1 + (s/5)^2
-load("C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/R files/transitions_scrit6.RData") # 1 + (s/6)^2
-load("C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/R files/transitions_scrit7.RData") # 1 + (s/7)^2
-load("C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/R files/transitions_scrit8.RData") # 1 + (s/8)^2: Herzog (2016)
+load("../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_median.RData") # 1 + (s/median)^2 Costaz-Fernandet et al. 2020
+load("../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_scrit2.RData") # 1 + (s/2)^2
+load("../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_scrit3.RData") # 1 + (s/3)^2
+load("../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_scrit4.RData") # 1 + (s/4)^2
+load("../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_scrit5.RData") # 1 + (s/5)^2
+load("../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_scrit6.RData") # 1 + (s/6)^2
+load("../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_scrit7.RData") # 1 + (s/7)^2
+load("../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_scrit8.RData") # 1 + (s/8)^2: Herzog (2016)
 
 
 # === Nodes / Market towns ===
 
 
 # Reading in market towns
-market_towns <- read_delim("C:/Users/Win7ADM/Desktop/Market_towns.csv", delim = ";", escape_double = FALSE, trim_ws = TRUE)
+market_towns <- read_delim("../Railways_and_the_happy_Danes/Data/Market_towns.csv", delim = ";", escape_double = FALSE, trim_ws = TRUE)
 
 
 # Calculate the median of the Pop1801 column
 median_pop1801 <- median(market_towns$Pop1801, na.rm = TRUE)
 
 # Subset the data frame, sort and select
-subset_market_towns <- subset(market_towns, Pop1801 > median_pop1801 & Coastal == 1) %>%
+subset_market_towns <- subset(market_towns, Pop1801 > median_pop1801) %>%
   arrange(desc(Pop1801)) %>%
   select(Market_town, Pop1801)
 
@@ -105,8 +105,24 @@ middelfart <- data.frame(Market_town = "Middelfart", Pop1801 = NA)
 frederikshavn <- data.frame(Market_town = "Frederikshavn", Pop1801 = NA)
 vordingborg <- data.frame(Market_town = "Masnedsund", Pop1801 = NA)
 norresundby <- data.frame(Market_town = "Norresundby", Pop1801 = NA)
+padborg <- data.frame(Market_town = "Padborg", Pop1801 = NA)
+vojens <- data.frame(Market_town = "Vojens", Pop1801 = NA)
+holstebro <- data.frame(Market_town = "Holstebro", Pop1801 = NA)
+tinglev <- data.frame(Market_town = "Tinglev", Pop1801 = NA)
+rodekro <- data.frame(Market_town = "Rodekro", Pop1801 = NA)
+skanderborg <- data.frame(Market_town = "Skanderborg", Pop1801 = NA)
+silkeborg <- data.frame(Market_town = "Silkeborg", Pop1801 = NA)
+maribo <- data.frame(Market_town = "Maribo", Pop1801 = NA)
+bandholm <- data.frame(Market_town = "Bandholm", Pop1801 = NA)
+orehoved <- data.frame(Market_town = "Orehoved", Pop1801 = NA)
+varde <- data.frame(Market_town = "Varde", Pop1801 = NA)
+rodbyhavn <- data.frame(Market_town = "Rodbyhavn", Pop1801 = NA)
+grenaa <- data.frame(Market_town = "Grenaa", Pop1801 = NA)
+herning <- data.frame(Market_town = "Herning", Pop1801 = NA)
+oster_toreby <- data.frame(Market_town = "Oster Toreby", Pop1801 = NA)
 
-subset_market_towns <- rbind(subset_market_towns, esbjerg, skive, struer, ringkobing, middelfart, frederikshavn, vordingborg, norresundby)
+subset_market_towns <- rbind(subset_market_towns, esbjerg, skive, struer, ringkobing, middelfart, frederikshavn, vordingborg, norresundby,
+                             padborg, vojens, holstebro, tinglev, rodekro, skanderborg, silkeborg, maribo, bandholm, orehoved, varde, rodbyhavn, grenaa, herning, oster_toreby)
 
 
 ### Get coordinates
@@ -129,6 +145,13 @@ subset_market_towns$long[subset_market_towns$Market_town == "Skive"] <- 9.026041
 subset_market_towns$lat[subset_market_towns$Market_town == "Middelfart"] <- 55.49697028894646
 subset_market_towns$long[subset_market_towns$Market_town == "Middelfart"] <- 9.746609766176393
 
+subset_market_towns$lat[subset_market_towns$Market_town == "Toender"] <- 54.93333684818414
+subset_market_towns$long[subset_market_towns$Market_town == "Toender"] <- 8.860980954906205
+
+subset_market_towns$lat[subset_market_towns$Market_town == "Holstebro"] <- 56.3590324
+subset_market_towns$long[subset_market_towns$Market_town == "Holstebro"] <- 8.6159188
+
+
 # keep df
 subset_market_towns_df <- subset_market_towns
 
@@ -146,29 +169,48 @@ proj4string(subset_market_towns) <- CRS("+proj=longlat +datum=WGS84")
 
 
 
-# Define market town pairs
+# Define market town pairs (routes) node to node
 town_pairs <- matrix(c("Copenhagen", "Roskilde",
-                       "Roskilde", "Korsoer", 
-                       "Roskilde", "Koege", 
-                       "Roskilde", "Holbaek", 
-                       "Holbaek", "Kalundborg", 
-                       "Copenhagen", "Helsingoer", 
-                       "Koege", "Naestved", 
+                       "Roskilde", "Korsoer",
+                       "Aarhus", "Randers",
+                       "Aarhus", "Viborg",
+                       "Copenhagen", "Helsingoer",
+                       "Padborg", "Vojens",
                        "Nyborg", "Odense", 
-                       "Aarhus", "Randers", 
-                       "Randers", "Aalborg",
-                       "Aarhus", "Horsens",
-                       "Horsens", "Vejle",
-                       "Vejle", "Fredericia",
-                       "Esbjerg", "Kolding",
-                       "Fredericia", "Kolding",
                        "Odense", "Middelfart",
+                       "Viborg", "Skive",
+                       "Struer", "Skive",
+                       "Vojens", "Haderslev",
+                       "Vojens", "Kolding",
+                       "Fredericia", "Kolding",
+                       "Struer", "Holstebro",
+                       "Toender", "Tinglev",
+                       "Aabenraa", "Rodekro",
+                       "Vejle", "Fredericia",
+                       "Horsens", "Vejle",
+                       "Horsens", "Skanderborg",
+                       "Skanderborg", "Aarhus",
+                       "Randers", "Aalborg",
+                       "Maribo", "Bandholm", # oldest private line
+                       "Roskilde", "Koege", 
+                       "Koege", "Naestved", 
                        "Naestved", "Masnedsund",
                        "Norresundby", "Frederikshavn",
-                       "Aarhus", "Skive",
-                       "Esbjerg", "Ringkobing",
-                       "Struer", "Ringkobing",
-                       "Struer", "Skive"),
+                       "Skanderborg", "Silkeborg",
+                       "Orehoved", "Nykoebing Falster",
+                       "Roskilde", "Holbaek", 
+                       "Holbaek", "Kalundborg",
+                       "Esbjerg", "Kolding",
+                       "Esbjerg", "Varde",
+                       "Oster Toreby", "Nakskov",
+                       "Maribo", "Rodbyhavn",
+                       "Varde", "Ringkobing",
+                       "Ringkobing", "Struer",
+                       "Ribe", "Esbjerg",
+                       "Randers", "Grenaa",
+                       "Odense", "Svendborg",
+                       "Grenaa", "Aarhus",
+                       "Silkeborg", "Herning"),
                      ncol = 2, byrow = TRUE)
 
 # === CRITICAL SLOPE VALUE: MEDIAN ===
@@ -180,6 +222,7 @@ paths <- list()
 for (i in 1:nrow(town_pairs)) {
   start_town <- town_pairs[i, 1]
   end_town <- town_pairs[i, 2]
+  cat("Processing:", start_town, "to", end_town, "\n")
   
   # Create dynamic name for each path
   path_name <- paste(start_town, end_town, sep = "_")
@@ -202,9 +245,19 @@ for (name in names(paths)) {
 
 all_paths <- bind_rows(paths)
 all_paths <- st_set_crs(all_paths, 4326)
+# Add year when section opened
+all_paths$opened <- c(1847, 1856, 1862, 1863, 1864, 1864, 1865, 1865, 1865, 1865, 1866, 1866, 1866, 1866, 1867, 1868, 1868, 1868, 1868, 1868, 1869, 1869, 1870, 1870, 1870, 1871, 1871, 1872,
+                      1874, 1874, 1874, 1874, 1874, 1874, 1875, 1875, 1875, 1876, 1876, 1877, 1877)
+
+
+
+
+
+
+
 
 # Save the sf object as a shapefile
-#st_write(all_paths, "C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/Shape files/IV/LCP_median.shp", driver = "ESRI Shapefile")
+#st_write(all_paths, "../Railways_and_the_happy_Danes/Data/lcp_shape_files/LCP_median.shp", driver = "ESRI Shapefile")
 
 # === CRITICAL SLOPE VALUE: 2 ===
 
@@ -215,6 +268,7 @@ paths <- list()
 for (i in 1:nrow(town_pairs)) {
   start_town <- town_pairs[i, 1]
   end_town <- town_pairs[i, 2]
+  cat("Processing:", start_town, "to", end_town, "\n")
   
   # Create dynamic name for each path
   path_name <- paste(start_town, end_town, sep = "_")
@@ -237,9 +291,12 @@ for (name in names(paths)) {
 
 all_paths <- bind_rows(paths)
 all_paths <- st_set_crs(all_paths, 4326)
+# Add year when section opened
+all_paths$opened <- c(1847, 1856, 1862, 1863, 1864, 1864, 1865, 1865, 1865, 1865, 1866, 1866, 1866, 1866, 1867, 1868, 1868, 1868, 1868, 1868, 1869, 1869, 1870, 1870, 1870, 1871, 1871, 1872,
+                      1874, 1874, 1874, 1874, 1874, 1874, 1875, 1875, 1875, 1876, 1876, 1877, 1877)
 
 # Save the sf object as a shapefile
-#st_write(all_paths, "C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/Shape files/IV/LCP_scrit2.shp", driver = "ESRI Shapefile")
+#st_write(all_paths, "../Railways_and_the_happy_Danes/Data/lcp_shape_files/LCP_scrit2.shp", driver = "ESRI Shapefile")
 
 # === CRITICAL SLOPE VALUE: 3 ===
 
@@ -250,6 +307,7 @@ paths <- list()
 for (i in 1:nrow(town_pairs)) {
   start_town <- town_pairs[i, 1]
   end_town <- town_pairs[i, 2]
+  cat("Processing:", start_town, "to", end_town, "\n")
   
   # Create dynamic name for each path
   path_name <- paste(start_town, end_town, sep = "_")
@@ -272,9 +330,12 @@ for (name in names(paths)) {
 
 all_paths <- bind_rows(paths)
 all_paths <- st_set_crs(all_paths, 4326)
+# Add year when section opened
+all_paths$opened <- c(1847, 1856, 1862, 1863, 1864, 1864, 1865, 1865, 1865, 1865, 1866, 1866, 1866, 1866, 1867, 1868, 1868, 1868, 1868, 1868, 1869, 1869, 1870, 1870, 1870, 1871, 1871, 1872,
+                      1874, 1874, 1874, 1874, 1874, 1874, 1875, 1875, 1875, 1876, 1876, 1877, 1877)
 
 # Save the sf object as a shapefile
-#st_write(all_paths, "C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/Shape files/IV/LCP_scrit3.shp", driver = "ESRI Shapefile")
+#st_write(all_paths, "../Railways_and_the_happy_Danes/Data/lcp_shape_files/LCP_scrit3.shp", driver = "ESRI Shapefile")
 
 # === CRITICAL SLOPE VALUE: 4 ===
 
@@ -285,6 +346,7 @@ paths <- list()
 for (i in 1:nrow(town_pairs)) {
   start_town <- town_pairs[i, 1]
   end_town <- town_pairs[i, 2]
+  cat("Processing:", start_town, "to", end_town, "\n")
   
   # Create dynamic name for each path
   path_name <- paste(start_town, end_town, sep = "_")
@@ -307,9 +369,12 @@ for (name in names(paths)) {
 
 all_paths <- bind_rows(paths)
 all_paths <- st_set_crs(all_paths, 4326)
+# Add year when section opened
+all_paths$opened <- c(1847, 1856, 1862, 1863, 1864, 1864, 1865, 1865, 1865, 1865, 1866, 1866, 1866, 1866, 1867, 1868, 1868, 1868, 1868, 1868, 1869, 1869, 1870, 1870, 1870, 1871, 1871, 1872,
+                      1874, 1874, 1874, 1874, 1874, 1874, 1875, 1875, 1875, 1876, 1876, 1877, 1877)
 
 # Save the sf object as a shapefile
-#st_write(all_paths, "C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/Shape files/IV/LCP_scrit4.shp", driver = "ESRI Shapefile")
+#st_write(all_paths, "../Railways_and_the_happy_Danes/Data/lcp_shape_files/LCP_scrit4.shp", driver = "ESRI Shapefile")
 
 # === CRITICAL SLOPE VALUE: 5 ===
 
@@ -320,6 +385,7 @@ paths <- list()
 for (i in 1:nrow(town_pairs)) {
   start_town <- town_pairs[i, 1]
   end_town <- town_pairs[i, 2]
+  cat("Processing:", start_town, "to", end_town, "\n")
   
   # Create dynamic name for each path
   path_name <- paste(start_town, end_town, sep = "_")
@@ -342,9 +408,12 @@ for (name in names(paths)) {
 
 all_paths <- bind_rows(paths)
 all_paths <- st_set_crs(all_paths, 4326)
+# Add year when section opened
+all_paths$opened <- c(1847, 1856, 1862, 1863, 1864, 1864, 1865, 1865, 1865, 1865, 1866, 1866, 1866, 1866, 1867, 1868, 1868, 1868, 1868, 1868, 1869, 1869, 1870, 1870, 1870, 1871, 1871, 1872,
+                      1874, 1874, 1874, 1874, 1874, 1874, 1875, 1875, 1875, 1876, 1876, 1877, 1877)
 
 # Save the sf object as a shapefile
-#st_write(all_paths, "C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/Shape files/IV/LCP_scrit5.shp", driver = "ESRI Shapefile")
+#st_write(all_paths, "../Railways_and_the_happy_Danes/Data/lcp_shape_files/LCP_scrit5.shp", driver = "ESRI Shapefile")
 
 
 # === CRITICAL SLOPE VALUE: 6 ===
@@ -356,6 +425,7 @@ paths <- list()
 for (i in 1:nrow(town_pairs)) {
   start_town <- town_pairs[i, 1]
   end_town <- town_pairs[i, 2]
+  cat("Processing:", start_town, "to", end_town, "\n")
   
   # Create dynamic name for each path
   path_name <- paste(start_town, end_town, sep = "_")
@@ -378,9 +448,12 @@ for (name in names(paths)) {
 
 all_paths <- bind_rows(paths)
 all_paths <- st_set_crs(all_paths, 4326)
+# Add year when section opened
+all_paths$opened <- c(1847, 1856, 1862, 1863, 1864, 1864, 1865, 1865, 1865, 1865, 1866, 1866, 1866, 1866, 1867, 1868, 1868, 1868, 1868, 1868, 1869, 1869, 1870, 1870, 1870, 1871, 1871, 1872,
+                      1874, 1874, 1874, 1874, 1874, 1874, 1875, 1875, 1875, 1876, 1876, 1877, 1877)
 
 # Save the sf object as a shapefile
-#st_write(all_paths, "C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/Shape files/IV/LCP_scrit6.shp", driver = "ESRI Shapefile")
+#st_write(all_paths, "../Railways_and_the_happy_Danes/Data/lcp_shape_files/LCP_scrit6.shp", driver = "ESRI Shapefile")
 
 # === CRITICAL SLOPE VALUE: 7 ===
 
@@ -391,6 +464,7 @@ paths <- list()
 for (i in 1:nrow(town_pairs)) {
   start_town <- town_pairs[i, 1]
   end_town <- town_pairs[i, 2]
+  cat("Processing:", start_town, "to", end_town, "\n")
   
   # Create dynamic name for each path
   path_name <- paste(start_town, end_town, sep = "_")
@@ -413,9 +487,12 @@ for (name in names(paths)) {
 
 all_paths <- bind_rows(paths)
 all_paths <- st_set_crs(all_paths, 4326)
+# Add year when section opened
+all_paths$opened <- c(1847, 1856, 1862, 1863, 1864, 1864, 1865, 1865, 1865, 1865, 1866, 1866, 1866, 1866, 1867, 1868, 1868, 1868, 1868, 1868, 1869, 1869, 1870, 1870, 1870, 1871, 1871, 1872,
+                      1874, 1874, 1874, 1874, 1874, 1874, 1875, 1875, 1875, 1876, 1876, 1877, 1877)
 
 # Save the sf object as a shapefile
-#st_write(all_paths, "C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/Shape files/IV/LCP_scrit7.shp", driver = "ESRI Shapefile")
+#st_write(all_paths, "../Railways_and_the_happy_Danes/Data/lcp_shape_files/LCP_scrit7.shp", driver = "ESRI Shapefile")
 
 # === CRITICAL SLOPE VALUE: 8 ===
 
@@ -426,6 +503,7 @@ paths <- list()
 for (i in 1:nrow(town_pairs)) {
   start_town <- town_pairs[i, 1]
   end_town <- town_pairs[i, 2]
+  cat("Processing:", start_town, "to", end_town, "\n")
   
   # Create dynamic name for each path
   path_name <- paste(start_town, end_town, sep = "_")
@@ -448,9 +526,14 @@ for (name in names(paths)) {
 
 all_paths <- bind_rows(paths)
 all_paths <- st_set_crs(all_paths, 4326)
+# Add year when section opened
+all_paths$opened <- c(1847, 1856, 1862, 1863, 1864, 1864, 1865, 1865, 1865, 1865, 1866, 1866, 1866, 1866, 1867, 1868, 1868, 1868, 1868, 1868, 1869, 1869, 1870, 1870, 1870, 1871, 1871, 1872,
+                      1874, 1874, 1874, 1874, 1874, 1874, 1875, 1875, 1875, 1876, 1876, 1877, 1877)
 
 # Save the sf object as a shapefile
-#st_write(all_paths, "C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/Shape files/IV/LCP_scrit8.shp", driver = "ESRI Shapefile")
+#st_write(all_paths, "../Railways_and_the_happy_Danes/Data/lcp_shape_files/LCP_scrit8.shp", driver = "ESRI Shapefile")
+
+
 
 
 
@@ -459,19 +542,19 @@ all_paths <- st_set_crs(all_paths, 4326)
 
 
 ### Load shape files (Actual railway and hypothetical networks)
-real <- st_read("C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Data/Raw/Railroads/Fertner 2012/jernbane_historisk.shp") %>% st_transform(crs = 32632)
-hypo1 <- st_read("C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/Shape files/IV/LCP_median.shp") %>% st_transform(crs = 32632)
-hypo2 <- st_read("C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/Shape files/IV/LCP_scrit2.shp") %>% st_transform(crs = 32632)
-hypo3 <- st_read("C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/Shape files/IV/LCP_scrit3.shp") %>% st_transform(crs = 32632)
-hypo4 <- st_read("C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/Shape files/IV/LCP_scrit4.shp") %>% st_transform(crs = 32632)
-hypo5 <- st_read("C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/Shape files/IV/LCP_scrit5.shp") %>% st_transform(crs = 32632)
-hypo6 <- st_read("C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/Shape files/IV/LCP_scrit6.shp") %>% st_transform(crs = 32632)
-hypo7 <- st_read("C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/Shape files/IV/LCP_scrit7.shp") %>% st_transform(crs = 32632)
-hypo8 <- st_read("C:/Users/Win7ADM/Dropbox/Railways and Mobility in Denmark/Results/Shape files/IV/LCP_scrit8.shp") %>% st_transform(crs = 32632)
+real <- st_read("../Data not redistributable/Railways Fertner/jernbane_historisk_v050413/jernbane_historisk.shp") %>% st_transform(crs = 32632)
+hypo1 <- st_read("../Railways_and_the_happy_Danes/Data/lcp_shape_files/LCP_median.shp") %>% st_transform(crs = 32632)
+hypo2 <- st_read("../Railways_and_the_happy_Danes/Data/lcp_shape_files/LCP_scrit2.shp") %>% st_transform(crs = 32632)
+hypo3 <- st_read("../Railways_and_the_happy_Danes/Data/lcp_shape_files/LCP_scrit3.shp") %>% st_transform(crs = 32632)
+hypo4 <- st_read("../Railways_and_the_happy_Danes/Data/lcp_shape_files/LCP_scrit4.shp") %>% st_transform(crs = 32632)
+hypo5 <- st_read("../Railways_and_the_happy_Danes/Data/lcp_shape_files/LCP_scrit5.shp") %>% st_transform(crs = 32632)
+hypo6 <- st_read("../Railways_and_the_happy_Danes/Data/lcp_shape_files/LCP_scrit6.shp") %>% st_transform(crs = 32632)
+hypo7 <- st_read("../Railways_and_the_happy_Danes/Data/lcp_shape_files/LCP_scrit7.shp") %>% st_transform(crs = 32632)
+hypo8 <- st_read("../Railways_and_the_happy_Danes/Data/lcp_shape_files/LCP_scrit8.shp") %>% st_transform(crs = 32632)
 
 
 ### Subset
-real <- real[real$opened <= 1875, ]
+real <- real[real$opened <= 1877, ]
 
 calculate_rmse <- function(hypo_network, real_network, spacing) {
   # Transform to sf object
@@ -507,7 +590,7 @@ print(paste("Best fit is:", names(rmse_values)[best_fit]))
 
 
 plot(real$geometry)
-plot(hypo2, add = T, col = "blue")
+plot(hypo1, add = T, col = "blue")
 
 
 
