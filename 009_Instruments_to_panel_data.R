@@ -71,35 +71,35 @@ z_scrit2 <- read_delim("../Railways_and_the_happy_Danes/Data/Instruments/paramS2
   rename(Connected_rail_scrit2 = Connected_rail) %>% 
   rename(Distance_to_nearest_railway_scrit2 = Distance_to_nearest_railway)
 
-z_scrit3 <- read_delim("../Railways_and_the_happy_Danes/Data/Instruments/paramS2.csv", delim = ";", escape_double = FALSE, trim_ws = TRUE) %>% 
+z_scrit3 <- read_delim("../Railways_and_the_happy_Danes/Data/Instruments/paramS3.csv", delim = ";", escape_double = FALSE, trim_ws = TRUE) %>% 
   rename(Connected_rail_scrit3 = Connected_rail) %>% 
   rename(Distance_to_nearest_railway_scrit3 = Distance_to_nearest_railway)
 
-z_scrit4 <- read_delim("../Railways_and_the_happy_Danes/Data/Instruments/paramS2.csv", delim = ";", escape_double = FALSE, trim_ws = TRUE) %>% 
+z_scrit4 <- read_delim("../Railways_and_the_happy_Danes/Data/Instruments/paramS4.csv", delim = ";", escape_double = FALSE, trim_ws = TRUE) %>% 
   rename(Connected_rail_scrit4 = Connected_rail) %>% 
   rename(Distance_to_nearest_railway_scrit4 = Distance_to_nearest_railway)
 
-z_scrit5 <- read_delim("../Railways_and_the_happy_Danes/Data/Instruments/paramS2.csv", delim = ";", escape_double = FALSE, trim_ws = TRUE) %>% 
+z_scrit5 <- read_delim("../Railways_and_the_happy_Danes/Data/Instruments/paramS5.csv", delim = ";", escape_double = FALSE, trim_ws = TRUE) %>% 
   rename(Connected_rail_scrit5 = Connected_rail) %>% 
   rename(Distance_to_nearest_railway_scrit5 = Distance_to_nearest_railway)
 
-z_scrit6 <- read_delim("../Railways_and_the_happy_Danes/Data/Instruments/paramS2.csv", delim = ";", escape_double = FALSE, trim_ws = TRUE) %>% 
+z_scrit6 <- read_delim("../Railways_and_the_happy_Danes/Data/Instruments/paramS6.csv", delim = ";", escape_double = FALSE, trim_ws = TRUE) %>% 
   rename(Connected_rail_scrit6 = Connected_rail) %>% 
   rename(Distance_to_nearest_railway_scrit6 = Distance_to_nearest_railway)
 
-z_scrit7 <- read_delim("../Railways_and_the_happy_Danes/Data/Instruments/paramS2.csv", delim = ";", escape_double = FALSE, trim_ws = TRUE) %>% 
+z_scrit7 <- read_delim("../Railways_and_the_happy_Danes/Data/Instruments/paramS7.csv", delim = ";", escape_double = FALSE, trim_ws = TRUE) %>% 
   rename(Connected_rail_scrit7 = Connected_rail) %>% 
   rename(Distance_to_nearest_railway_scrit7 = Distance_to_nearest_railway)
 
-z_scrit8 <- read_delim("../Railways_and_the_happy_Danes/Data/Instruments/paramS2.csv", delim = ";", escape_double = FALSE, trim_ws = TRUE) %>% 
+z_scrit8 <- read_delim("../Railways_and_the_happy_Danes/Data/Instruments/paramS8.csv", delim = ";", escape_double = FALSE, trim_ws = TRUE) %>% 
   rename(Connected_rail_scrit8 = Connected_rail) %>% 
   rename(Distance_to_nearest_railway_scrit8 = Distance_to_nearest_railway)
 
-z_scrit12 <- read_delim("../Railways_and_the_happy_Danes/Data/Instruments/paramS2.csv", delim = ";", escape_double = FALSE, trim_ws = TRUE) %>% 
+z_scrit12 <- read_delim("../Railways_and_the_happy_Danes/Data/Instruments/paramS9.csv", delim = ";", escape_double = FALSE, trim_ws = TRUE) %>% 
   rename(Connected_rail_scrit12 = Connected_rail) %>% 
   rename(Distance_to_nearest_railway_scrit12 = Distance_to_nearest_railway)
 
-z_scrit16 <- read_delim("../Railways_and_the_happy_Danes/Data/Instruments/paramS2.csv", delim = ";", escape_double = FALSE, trim_ws = TRUE) %>% 
+z_scrit16 <- read_delim("../Railways_and_the_happy_Danes/Data/Instruments/paramS10.csv", delim = ";", escape_double = FALSE, trim_ws = TRUE) %>% 
   rename(Connected_rail_scrit16 = Connected_rail) %>% 
   rename(Distance_to_nearest_railway_scrit16 = Distance_to_nearest_railway)
 
@@ -128,10 +128,69 @@ rmse8 <- sqrt(sum(z_all$Connected_rail - z_all$Connected_rail_scrit8)^2 / nobs(z
 rmse12 <- sqrt(sum(z_all$Connected_rail - z_all$Connected_rail_scrit12)^2 / nobs(z_all))
 rmse16 <- sqrt(sum(z_all$Connected_rail - z_all$Connected_rail_scrit16)^2 / nobs(z_all))
 
+smallest_rmse <- min(rmse1, rmse2, rmse3, rmse4, rmse5, rmse6, rmse7, rmse8, rmse12, rmse16)
 
+smallest_rmse
 # ...
 
 # Plot
+# === Plot preparations ===
+
+hypo4 <- st_read("../Railways_and_the_happy_Danes/Data/lcp_shape_files/LCP_scrit4.shp") %>% st_transform(crs = 32632)
+hypo16 <- st_read("../Railways_and_the_happy_Danes/Data/lcp_shape_files/LCP_scrit16.shp") %>% st_transform(crs = 32632)
+
+
+# Convert the raster to a data frame
+slope_df <- as.data.frame(rasterToPoints(slope_raster), stringsAsFactors = FALSE)
+
+# Rename columns for clarity
+colnames(slope_df) <- c("long", "lat", "slope")
+
+# Applying a log transformation (for illustration purposes only)
+slope_df$slope_log <- log1p(slope_df$slope)  # log1p to avoid log(0)
+
+# === Plot ===
+
+# Plot slope raster with log-transformed slope values
+plot_gg <- ggplot() +
+  geom_tile(data = slope_df, aes(x = long, y = lat, fill = slope_log)) +
+  scale_fill_gradient(low = "grey95", high = "black") +
+  theme_minimal() +
+  theme(axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        panel.background = element_rect(fill = "white", colour = "white"),
+        plot.background = element_rect(fill = "white", colour = "white")) +
+  guides(fill = "none")  # This line removes the legend for slope values
+
+
+# Adding cities (names)
+plot_gg <- plot_gg + geom_point(data = subset_market_towns_df, aes(x = long, y = lat), color = "black", size = 2, shape = 4) + geom_text_repel(data = subset_market_towns_df, aes(x = long, y = lat, label = Market_town), size = 2.5)
+
+# Adding railway lines opened <= 1877
+plot_gg <- plot_gg + geom_sf(data = subset(shape_data, opened <= 1877), size = 0.5, inherit.aes = FALSE, alpha = 1)
+
+# Adding LCP('s)
+plot_gg <- plot_gg + geom_sf(data = hypo4, size = 1, inherit.aes = FALSE, col = "firebrick1")
+
+# Adding LCP('s)
+plot_gg <- plot_gg + geom_sf(data = hypo16, size = 1, inherit.aes = FALSE, col = "dodgerblue")
+
+# Change legend position
+#plot_gg <- plot_gg + theme(legend.position = c(0.75, 0.7), legend.text = element_text(size = 12), legend.title = element_text(size = 14), legend.key.size = unit(4, "mm"))
+
+
+# Plot
+plot_gg
+
+
+#####
+################################################################################
+# Save plot
+#ggsave(filename = "../Railways_and_the_happy_Danes/Plots/hypo_rail_scrit_4_16.png", plot = plot_gg, width = 8, dpi = 600)
+################################################################################
+
+
+
 
 
 
