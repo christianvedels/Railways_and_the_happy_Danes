@@ -19,6 +19,7 @@ library(tidygeocoder)
 library(readr)
 library(dplyr)
 
+
 # ==== Load data (Railway shape data and Outline of Denmark) ===
 shape_data <- st_read("../Data not redistributable/Railways Fertner/jernbane_historisk_v050413/jernbane_historisk.shp") %>% st_transform(4326)
 outline_dk <- st_read("../Data not redistributable/Outline DK/DNK_adm0.shp")  %>% st_transform(4326)
@@ -53,8 +54,11 @@ plot(slope_raster)
 #transitions_scrit6 <- transition(slope_raster, transitionFunction = function(x) (1 + (x / 6)^2) , directions = 8) %>% geoCorrection(type="c")
 #transitions_scrit7 <- transition(slope_raster, transitionFunction = function(x) (1 + (x / 7)^2) , directions = 8) %>% geoCorrection(type="c")
 #transitions_scrit8 <- transition(slope_raster, transitionFunction = function(x) (1 + (x / 8)^2) , directions = 8) %>% geoCorrection(type="c")
+#transitions_scrit12 <- transition(slope_raster, transitionFunction = function(x) (1 + (x / 12)^2) , directions = 8) %>% geoCorrection(type="c")
+#transitions_scrit16 <- transition(slope_raster, transitionFunction = function(x) (1 + (x / 16)^2) , directions = 8) %>% geoCorrection(type="c")
 
-### Save different cost surfaces
+
+### Save cost surfaces
 #save(transitions, file = "../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_median.RData")
 #save(transitions_scrit2, file = "../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_scrit2.RData")
 #save(transitions_scrit3, file = "../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_scrit3.RData")
@@ -63,6 +67,9 @@ plot(slope_raster)
 #save(transitions_scrit6, file = "../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_scrit6.RData")
 #save(transitions_scrit7, file = "../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_scrit7.RData")
 #save(transitions_scrit8, file = "../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_scrit8.RData")
+#save(transitions_scrit12, file = "../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_scrit12.RData")
+#save(transitions_scrit16, file = "../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_scrit16.RData")
+
 
 
 # === Load Transitions ===
@@ -73,7 +80,10 @@ load("../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_scrit4.RD
 load("../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_scrit5.RData") # 1 + (s/5)^2
 load("../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_scrit6.RData") # 1 + (s/6)^2
 load("../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_scrit7.RData") # 1 + (s/7)^2
-load("../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_scrit8.RData") # 1 + (s/8)^2: Herzog (2016)
+load("../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_scrit8.RData") # 1 + (s/8)^2: Herzog (2016), lower bound
+load("../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_scrit12.RData") # 1 + (s/12)^2: Herzog (2016)
+load("../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_scrit16.RData") # 1 + (s/16)^2: Herzog (2016), upper bound
+
 
 
 # === Nodes / Market towns ===
@@ -131,7 +141,7 @@ subset_market_towns$Market_town[subset_market_towns$Market_town == "Neksoe"] <- 
 subset_market_towns$Market_town[subset_market_towns$Market_town == "Rudkoebing"] <- "Rudkøbing"
 subset_market_towns$Market_town[subset_market_towns$Market_town == "Roenne"] <- "Rønne"
 
-# Geocode
+# Geocode (Open Street Map)
 subset_market_towns <- subset_market_towns %>% geocode(Market_town, method = 'osm')
 
 # correct coordinates
@@ -201,7 +211,7 @@ town_pairs <- matrix(c("Copenhagen", "Roskilde",
                        "Oster Toreby", "Nakskov",
                        "Maribo", "Rodbyhavn",
                        "Varde", "Ringkobing",
-                       "Ringkobing", "Struer",
+                       "Ringkobing", "Holstebro",
                        "Ribe", "Esbjerg",
                        "Randers", "Grenaa",
                        "Odense", "Svendborg",
@@ -244,12 +254,6 @@ all_paths <- st_set_crs(all_paths, 4326)
 # Add year when section opened
 all_paths$opened <- c(1847, 1856, 1862, 1863, 1864, 1864, 1865, 1865, 1865, 1865, 1866, 1866, 1866, 1866, 1867, 1868, 1868, 1868, 1868, 1868, 1869, 1869, 1870, 1870, 1870, 1871, 1871, 1872,
                       1874, 1874, 1874, 1874, 1874, 1874, 1875, 1875, 1875, 1876, 1876, 1877, 1877)
-
-
-
-
-
-
 
 
 # Save the sf object as a shapefile
@@ -528,3 +532,88 @@ all_paths$opened <- c(1847, 1856, 1862, 1863, 1864, 1864, 1865, 1865, 1865, 1865
 
 # Save the sf object as a shapefile
 #st_write(all_paths, "../Railways_and_the_happy_Danes/Data/lcp_shape_files/LCP_scrit8.shp", driver = "ESRI Shapefile")
+
+# === CRITICAL SLOPE VALUE: 12 ===
+
+# Initialize empty paths list
+paths <- list()
+
+# Loop through each town pair and calculate LCP
+for (i in 1:nrow(town_pairs)) {
+  start_town <- town_pairs[i, 1]
+  end_town <- town_pairs[i, 2]
+  cat("Processing:", start_town, "to", end_town, "\n")
+  
+  # Create dynamic name for each path
+  path_name <- paste(start_town, end_town, sep = "_")
+  
+  # Calculate shortest path
+  paths[[path_name]] <- st_as_sf(shortestPath(
+    transitions_scrit12, ### Changed transitions
+    coordinates(subset_market_towns[subset_market_towns$Market_town == start_town, ]), 
+    coordinates(subset_market_towns[subset_market_towns$Market_town == end_town, ]), 
+    output = "SpatialLines"
+  ))
+}
+
+# Add an identifier to each sf object in the list
+names(paths) <- gsub("paths\\$", "", names(paths))
+
+for (name in names(paths)) {
+  paths[[name]]$route <- name
+}
+
+all_paths <- bind_rows(paths)
+all_paths <- st_set_crs(all_paths, 4326)
+
+# Add year when section opened
+all_paths$opened <- c(1847, 1856, 1862, 1863, 1864, 1864, 1865, 1865, 1865, 1865, 1866, 1866, 1866, 1866, 1867, 1868, 1868, 1868, 1868, 1868, 1869, 1869, 1870, 1870, 1870, 1871, 1871, 1872,
+                      1874, 1874, 1874, 1874, 1874, 1874, 1875, 1875, 1875, 1876, 1876, 1877, 1877)
+
+# Save the sf object as a shapefile
+#st_write(all_paths, "../Railways_and_the_happy_Danes/Data/lcp_shape_files/LCP_scrit12.shp", driver = "ESRI Shapefile")
+
+
+
+# === CRITICAL SLOPE VALUE: 16 ===
+
+# Initialize empty paths list
+paths <- list()
+
+# Loop through each town pair and calculate paths
+for (i in 1:nrow(town_pairs)) {
+  start_town <- town_pairs[i, 1]
+  end_town <- town_pairs[i, 2]
+  cat("Processing:", start_town, "to", end_town, "\n")
+  
+  # Create dynamic name for each path
+  path_name <- paste(start_town, end_town, sep = "_")
+  
+  # Calculate shortest path
+  paths[[path_name]] <- st_as_sf(shortestPath(
+    transitions_scrit16, ### Changed transitions
+    coordinates(subset_market_towns[subset_market_towns$Market_town == start_town, ]), 
+    coordinates(subset_market_towns[subset_market_towns$Market_town == end_town, ]), 
+    output = "SpatialLines"
+  ))
+}
+
+# Add an identifier to each sf object in the list
+names(paths) <- gsub("paths\\$", "", names(paths))
+
+for (name in names(paths)) {
+  paths[[name]]$route <- name
+}
+
+all_paths <- bind_rows(paths)
+all_paths <- st_set_crs(all_paths, 4326)
+# Add year when section opened
+all_paths$opened <- c(1847, 1856, 1862, 1863, 1864, 1864, 1865, 1865, 1865, 1865, 1866, 1866, 1866, 1866, 1867, 1868, 1868, 1868, 1868, 1868, 1869, 1869, 1870, 1870, 1870, 1871, 1871, 1872,
+                      1874, 1874, 1874, 1874, 1874, 1874, 1875, 1875, 1875, 1876, 1876, 1877, 1877)
+
+# Save the sf object as a shapefile
+#st_write(all_paths, "../Railways_and_the_happy_Danes/Data/lcp_shape_files/LCP_scrit16.shp", driver = "ESRI Shapefile")
+
+
+
+
