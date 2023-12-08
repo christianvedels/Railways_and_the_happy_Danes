@@ -14,13 +14,13 @@ library(raster)
 library(gdistance)
 library(sp)
 library(ggrepel)
-library(rgdal)
+# library(rgdal) Unvailable
 library(tidygeocoder)
 library(readr)
 library(dplyr)
 
 
-# ==== Load data (Railway shape data and Outline of Denmark) ===
+# ==== Load data (Railway shape data and Outline of Denmark) ====
 shape_data <- st_read("../Data not redistributable/Railways Fertner/jernbane_historisk_v050413/jernbane_historisk.shp") %>% st_transform(4326)
 outline_dk <- st_read("../Data not redistributable/Outline DK/DNK_adm0.shp")  %>% st_transform(4326)
 
@@ -35,44 +35,44 @@ slope_raster <- terrain(denmark_elev, opt='slope', unit='tangent')*100
 plot(slope_raster)
 
 
-# ==== Create and save transitions ===
+# ==== Create and save transitions ====
 
 # critical slope value
-#median_slope <- median(values(slope_raster), na.rm = T)
+# median_slope <- median(values(slope_raster), na.rm = T)
 
-#s_crit <- median_slope
+# s_crit <- median_slope
 
 # base cost + slope (Herzog and Costaz-Fernandez) + geocorrection
 # Maybe increase directions = 16 if computational power permits
 
 ### Create cost surface / transition matrix (changing critical slope value)
-#transitions <- transition(slope_raster, transitionFunction = function(x) (1 + (x / s_crit)^2) , directions = 8) %>% geoCorrection(type="c")
-#transitions_scrit2 <- transition(slope_raster, transitionFunction = function(x) (1 + (x / 2)^2) , directions = 8) %>% geoCorrection(type="c")
-#transitions_scrit3 <- transition(slope_raster, transitionFunction = function(x) (1 + (x / 3)^2) , directions = 8) %>% geoCorrection(type="c")
-#transitions_scrit4 <- transition(slope_raster, transitionFunction = function(x) (1 + (x / 4)^2) , directions = 8) %>% geoCorrection(type="c")
-#transitions_scrit5 <- transition(slope_raster, transitionFunction = function(x) (1 + (x / 5)^2) , directions = 8) %>% geoCorrection(type="c")
-#transitions_scrit6 <- transition(slope_raster, transitionFunction = function(x) (1 + (x / 6)^2) , directions = 8) %>% geoCorrection(type="c")
-#transitions_scrit7 <- transition(slope_raster, transitionFunction = function(x) (1 + (x / 7)^2) , directions = 8) %>% geoCorrection(type="c")
-#transitions_scrit8 <- transition(slope_raster, transitionFunction = function(x) (1 + (x / 8)^2) , directions = 8) %>% geoCorrection(type="c")
-#transitions_scrit12 <- transition(slope_raster, transitionFunction = function(x) (1 + (x / 12)^2) , directions = 8) %>% geoCorrection(type="c")
-#transitions_scrit16 <- transition(slope_raster, transitionFunction = function(x) (1 + (x / 16)^2) , directions = 8) %>% geoCorrection(type="c")
+# transitions <- transition(slope_raster, transitionFunction = function(x) (1 + (x / s_crit)^2) , directions = 8) %>% geoCorrection(type="c")
+# transitions_scrit2 <- transition(slope_raster, transitionFunction = function(x) (1 + (x / 2)^2) , directions = 8) %>% geoCorrection(type="c")
+# transitions_scrit3 <- transition(slope_raster, transitionFunction = function(x) (1 + (x / 3)^2) , directions = 8) %>% geoCorrection(type="c")
+# transitions_scrit4 <- transition(slope_raster, transitionFunction = function(x) (1 + (x / 4)^2) , directions = 8) %>% geoCorrection(type="c")
+# transitions_scrit5 <- transition(slope_raster, transitionFunction = function(x) (1 + (x / 5)^2) , directions = 8) %>% geoCorrection(type="c")
+# transitions_scrit6 <- transition(slope_raster, transitionFunction = function(x) (1 + (x / 6)^2) , directions = 8) %>% geoCorrection(type="c")
+# transitions_scrit7 <- transition(slope_raster, transitionFunction = function(x) (1 + (x / 7)^2) , directions = 8) %>% geoCorrection(type="c")
+# transitions_scrit8 <- transition(slope_raster, transitionFunction = function(x) (1 + (x / 8)^2) , directions = 8) %>% geoCorrection(type="c")
+# transitions_scrit12 <- transition(slope_raster, transitionFunction = function(x) (1 + (x / 12)^2) , directions = 8) %>% geoCorrection(type="c")
+# transitions_scrit16 <- transition(slope_raster, transitionFunction = function(x) (1 + (x / 16)^2) , directions = 8) %>% geoCorrection(type="c")
 
 
 ### Save cost surfaces
-#save(transitions, file = "../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_median.RData")
-#save(transitions_scrit2, file = "../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_scrit2.RData")
-#save(transitions_scrit3, file = "../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_scrit3.RData")
-#save(transitions_scrit4, file = "../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_scrit4.RData")
-#save(transitions_scrit5, file = "../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_scrit5.RData")
-#save(transitions_scrit6, file = "../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_scrit6.RData")
-#save(transitions_scrit7, file = "../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_scrit7.RData")
-#save(transitions_scrit8, file = "../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_scrit8.RData")
-#save(transitions_scrit12, file = "../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_scrit12.RData")
-#save(transitions_scrit16, file = "../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_scrit16.RData")
+# save(transitions, file = "../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_median.RData")
+# save(transitions_scrit2, file = "../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_scrit2.RData")
+# save(transitions_scrit3, file = "../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_scrit3.RData")
+# save(transitions_scrit4, file = "../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_scrit4.RData")
+# save(transitions_scrit5, file = "../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_scrit5.RData")
+# save(transitions_scrit6, file = "../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_scrit6.RData")
+# save(transitions_scrit7, file = "../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_scrit7.RData")
+# save(transitions_scrit8, file = "../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_scrit8.RData")
+# save(transitions_scrit12, file = "../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_scrit12.RData")
+# save(transitions_scrit16, file = "../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_scrit16.RData")
 
 
 
-# === Load Transitions ===
+# === Load Transitions ====
 load("../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_median.RData") # 1 + (s/median)^2 Costaz-Fernandet et al. 2020
 load("../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_scrit2.RData") # 1 + (s/2)^2
 load("../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_scrit3.RData") # 1 + (s/3)^2
@@ -86,7 +86,7 @@ load("../Railways_and_the_happy_Danes/Data/lcp_transitions/transitions_scrit16.R
 
 
 
-# === Nodes / Market towns ===
+# === Nodes / Market towns ====
 
 
 # Reading in market towns
@@ -219,7 +219,7 @@ town_pairs <- matrix(c("Copenhagen", "Roskilde",
                        "Silkeborg", "Herning"),
                      ncol = 2, byrow = TRUE)
 
-# === CRITICAL SLOPE VALUE: MEDIAN ===
+# === CRITICAL SLOPE VALUE: MEDIAN ====
 
 # Initialize paths list
 paths <- list()
@@ -259,7 +259,7 @@ all_paths$opened <- c(1847, 1856, 1862, 1863, 1864, 1864, 1865, 1865, 1865, 1865
 # Save the sf object as a shapefile
 #st_write(all_paths, "../Railways_and_the_happy_Danes/Data/lcp_shape_files/LCP_median.shp", driver = "ESRI Shapefile")
 
-# === CRITICAL SLOPE VALUE: 2 ===
+# === CRITICAL SLOPE VALUE: 2 ====
 
 # Initialize empty paths list
 paths <- list()
@@ -298,7 +298,7 @@ all_paths$opened <- c(1847, 1856, 1862, 1863, 1864, 1864, 1865, 1865, 1865, 1865
 # Save the sf object as a shapefile
 #st_write(all_paths, "../Railways_and_the_happy_Danes/Data/lcp_shape_files/LCP_scrit2.shp", driver = "ESRI Shapefile")
 
-# === CRITICAL SLOPE VALUE: 3 ===
+# === CRITICAL SLOPE VALUE: 3 ====
 
 # Initialize empty paths list
 paths <- list()
@@ -337,7 +337,7 @@ all_paths$opened <- c(1847, 1856, 1862, 1863, 1864, 1864, 1865, 1865, 1865, 1865
 # Save the sf object as a shapefile
 #st_write(all_paths, "../Railways_and_the_happy_Danes/Data/lcp_shape_files/LCP_scrit3.shp", driver = "ESRI Shapefile")
 
-# === CRITICAL SLOPE VALUE: 4 ===
+# === CRITICAL SLOPE VALUE: 4 ====
 
 # Initialize empty paths list
 paths <- list()
@@ -376,7 +376,7 @@ all_paths$opened <- c(1847, 1856, 1862, 1863, 1864, 1864, 1865, 1865, 1865, 1865
 # Save the sf object as a shapefile
 #st_write(all_paths, "../Railways_and_the_happy_Danes/Data/lcp_shape_files/LCP_scrit4.shp", driver = "ESRI Shapefile")
 
-# === CRITICAL SLOPE VALUE: 5 ===
+# === CRITICAL SLOPE VALUE: 5 ====
 
 # Initialize empty paths list
 paths <- list()
@@ -416,7 +416,7 @@ all_paths$opened <- c(1847, 1856, 1862, 1863, 1864, 1864, 1865, 1865, 1865, 1865
 #st_write(all_paths, "../Railways_and_the_happy_Danes/Data/lcp_shape_files/LCP_scrit5.shp", driver = "ESRI Shapefile")
 
 
-# === CRITICAL SLOPE VALUE: 6 ===
+# === CRITICAL SLOPE VALUE: 6 ====
 
 # Initialize empty paths list
 paths <- list()
@@ -455,7 +455,7 @@ all_paths$opened <- c(1847, 1856, 1862, 1863, 1864, 1864, 1865, 1865, 1865, 1865
 # Save the sf object as a shapefile
 #st_write(all_paths, "../Railways_and_the_happy_Danes/Data/lcp_shape_files/LCP_scrit6.shp", driver = "ESRI Shapefile")
 
-# === CRITICAL SLOPE VALUE: 7 ===
+# === CRITICAL SLOPE VALUE: 7 ====
 
 # Initialize empty paths list
 paths <- list()
@@ -494,7 +494,7 @@ all_paths$opened <- c(1847, 1856, 1862, 1863, 1864, 1864, 1865, 1865, 1865, 1865
 # Save the sf object as a shapefile
 #st_write(all_paths, "../Railways_and_the_happy_Danes/Data/lcp_shape_files/LCP_scrit7.shp", driver = "ESRI Shapefile")
 
-# === CRITICAL SLOPE VALUE: 8 ===
+# === CRITICAL SLOPE VALUE: 8 ====
 
 # Initialize empty paths list
 paths <- list()
@@ -533,7 +533,7 @@ all_paths$opened <- c(1847, 1856, 1862, 1863, 1864, 1864, 1865, 1865, 1865, 1865
 # Save the sf object as a shapefile
 #st_write(all_paths, "../Railways_and_the_happy_Danes/Data/lcp_shape_files/LCP_scrit8.shp", driver = "ESRI Shapefile")
 
-# === CRITICAL SLOPE VALUE: 12 ===
+# === CRITICAL SLOPE VALUE: 12 ====
 
 # Initialize empty paths list
 paths <- list()
@@ -575,7 +575,7 @@ all_paths$opened <- c(1847, 1856, 1862, 1863, 1864, 1864, 1865, 1865, 1865, 1865
 
 
 
-# === CRITICAL SLOPE VALUE: 16 ===
+# === CRITICAL SLOPE VALUE: 16 ====
 
 # Initialize empty paths list
 paths <- list()
