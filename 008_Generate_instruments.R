@@ -14,7 +14,6 @@ library(raster)
 library(gdistance)
 library(sp)
 library(ggrepel)
-# library(rgdal) Unvailable
 library(tidygeocoder)
 library(readr)
 library(dplyr)
