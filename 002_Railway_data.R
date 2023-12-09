@@ -53,7 +53,6 @@ railways_panel %>%
 # ==== Run it sepperately for line types ====
 shape$type %>% unique()
 shape$type2 %>% unique()
-stop("IMPLEMENT THIS BIT")
 ggplot() +
   layer_spatial(data = shape, aes(col = type)) +
   theme_minimal()
