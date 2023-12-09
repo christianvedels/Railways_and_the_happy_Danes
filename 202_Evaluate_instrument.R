@@ -45,6 +45,7 @@ foreach(data_f = instruments, .combine = "bind_rows") %do% {
     summarise(
       Accuracy = mean(Connected_rail_pred == Connected_rail, na.rm = TRUE),
       RMSE = sqrt(mean(Distance_to_nearest_railway_pred - Distance_to_nearest_railway, na.rm = TRUE)^2),
+      RMSLE = sqrt(mean(log(Distance_to_nearest_railway_pred) - log(Distance_to_nearest_railway), na.rm = TRUE)^2),
       parameter = parameter[1]
     )
 }
@@ -128,7 +129,7 @@ foreach(i = seq(length(instruments))) %do% {
   data_f = instruments[[i]]
   param_f = data_f$parameter %>% unique()
   
-  # Create basice plot
+  # Create basic plot
   p1 = data_f %>% 
     ggplot(
       aes(Distance_to_nearest_railway_pred, Distance_to_nearest_railway)
