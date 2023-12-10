@@ -22,30 +22,16 @@ census = read_csv2("Data/Census_data.csv", guess_max = 10000)
 geo = read_csv2("Data/Geo_info.csv", guess_max = 2000)
 
 # ==== Load instrument ====
-generated_rails = list.files("Data/Instruments")
-instruments = foreach(f = generated_rails) %do% {
-  data_f = read_csv2(paste0("Data/Instruments/", f))
-  
-  param_string = data_f$parameter %>% unique()
-  if(length(param_string)>1){
-    stop("Non unique param string")
-  }
-  
-  # Rename appropiate variables
-  names(data_f)[which(names(data_f)=="Connected_rail")] = paste0("Connected_rail_", param_string)
-  names(data_f)[which(names(data_f)=="Distance_to_nearest_railway")] = paste0("Distance_to_nearest_railway_", param_string)
-  data_f = data_f %>% select(-parameter)
-  
-  return(data_f)
-}
+instrument = read_csv2("Data/Instruments/paramS_median.csv")
 
-# Join everything
-instruments = foreach(i = instruments, .combine = "left_join") %do% {
-  i
-}
+instrument = instrument %>% 
+  rename(
+    Connected_rail_instr = Connected_rail,
+    Distance_to_nearest_railway_instr = Distance_to_nearest_railway
+  )
 
 railways = railways %>% 
-  left_join(instruments, by = c("GIS_ID", "Year"))
+  left_join(instrument, by = c("GIS_ID", "Year"))
 
 # ==== Misc small data juggling ====
 pop1801 = census %>% 
