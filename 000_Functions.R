@@ -291,3 +291,61 @@ calc_rail = function(shape,
 }
 
 
+# ==== Confusion matrix =====
+# Computes confusion matrix for data_f in 009_Instruments_to_panel_data.R
+
+confusion_matrix = function(data_f){
+  param_f = data_f$parameter %>% unique()
+  
+  conf_mat = data_f %>% 
+    summarise(
+      Support_positive = sum(Connected_rail, na.rm = TRUE),
+      Support_negative = sum(1-Connected_rail, na.rm = TRUE),
+      True_negative = sum(Connected_rail_pred == 0 & Connected_rail == 0, na.rm = TRUE),
+      True_positive = sum(Connected_rail_pred == 1 & Connected_rail == 1, na.rm = TRUE),
+      False_negative = sum(Connected_rail_pred == 0 & Connected_rail == 1, na.rm = TRUE),
+      False_positive = sum(Connected_rail_pred == 1 & Connected_rail == 0, na.rm = TRUE)
+    )  %>%
+    pivot_longer(cols = True_negative:False_positive, names_to = "Category", values_to = "Count") %>% 
+    rowwise() %>% 
+    mutate(
+      Truth = strsplit(Category, "_")[[1]][1],
+      Predicted = strsplit(Category, "_")[[1]][2]
+    ) %>% 
+    mutate(
+      support = case_when(
+        Predicted == "negative" ~ Support_negative,
+        Predicted == "positive" ~ Support_positive
+      )
+    ) %>% 
+    group_by(Predicted) %>% 
+    mutate(
+      Pct = Count/support
+    ) %>% 
+    mutate(
+      label = paste0(
+        Count,"\n",
+        "(", signif(Pct, 5)*100, "%)"
+      )
+    ) %>% 
+    mutate(
+      Predicted = case_when(
+        Category == "False_negative" ~ FALSE,
+        Category == "True_negative" ~ FALSE,
+        Category == "False_positive" ~ TRUE,
+        Category == "True_positive" ~ TRUE,
+      ),
+      Truth = case_when(
+        Category == "False_negative" ~ TRUE,
+        Category == "True_negative" ~ FALSE,
+        Category == "False_positive" ~ FALSE,
+        Category == "True_positive" ~ TRUE,
+      )
+    ) %>% 
+    mutate(
+      parameter = param_f
+    )
+  
+  return(conf_mat)
+}
+

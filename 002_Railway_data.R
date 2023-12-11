@@ -14,17 +14,18 @@ library(ggspatial)
 library(foreach)
 
 # ==== Read data ====
-shape = read_sf("../Data not redistributable/Railways Fertner/jernbane_historisk_v050413/jernbane_historisk.shp")
+shape = read_sf("../Data not redistributable/Railways Fertner enriched/")
 shape_parishes = read_sf("Data/sogne_shape/sogne.shp")
 
+debug(calc_rail)
 # test function
 test = calc_rail( # Comes from functions
   shape,
-  shape_parishes,
+  shape_parishes[1:10,],
   verbose = TRUE,
   plots = TRUE,
   id = "test",
-  years = 1854:1856
+  years = 1870:1871
 )
 
 # ==== Run it ====
@@ -36,6 +37,11 @@ railways_panel = calc_rail(
   id = "actual_railways",
   years = 1846:2020
 )
+
+# ==== Run it sepperately for line types ====
+shape$type %>% unique()
+shape$type2 %>% unique()
+stop("IMPLEMENT THIS BIT")
 
 # ==== Simple summary stats ====
 railways_panel %>% 
