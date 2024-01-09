@@ -10,6 +10,9 @@ library(foreach)
 
 # ==== Load data ====
 railways = read_csv2("Data/Panel_of_railways_in_parishes.csv", guess_max = 10000)
+railways_StateTrunk = read_csv2("Data/Panels_by_type/type2_StateTrunk.csv")
+railways_StateNonTrunk = read_csv2("Data/Panels_by_type/type2_StateNonTrunk.csv")
+railways_Private = read_csv2("Data/Panels_by_type/type2_Private.csv")
 
 Assembly_houses = read_csv2("Data/Panel_of_assembly_houses.csv", guess_max = 10000)
 Assembly_houses_MA = read_csv2("Data/Panel_of_MA_assembly_houses.csv", guess_max = 10000)
@@ -20,6 +23,22 @@ Folk_high_schools_MA = read_csv2("Data/Panel_of_MA_folk_high_schools.csv", guess
 census = read_csv2("Data/Census_data.csv", guess_max = 10000)  
 
 geo = read_csv2("Data/Geo_info.csv", guess_max = 2000)
+
+# ==== Join different raildata ====
+railways_StateTrunk = railways_StateTrunk %>% select(-type2)
+railways_StateNonTrunk = railways_StateNonTrunk %>% select(-type2)
+railways_Private = railways_Private %>% select(-type2)
+
+railways = railways %>% 
+  left_join(
+    railways_StateTrunk, by = c("Year", "GIS_ID"), suffix = c("","_StateTrunk")
+  ) %>% 
+  left_join(
+    railways_StateNonTrunk, by = c("Year", "GIS_ID"), suffix = c("","_StateNonTrunk")
+  ) %>% 
+  left_join(
+    railways_Private, by = c("Year", "GIS_ID"), suffix = c("","_Private")
+  )
 
 # ==== Load instrument ====
 instrument = read_csv2("Data/Instruments/paramS_median.csv")

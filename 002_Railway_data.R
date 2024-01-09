@@ -77,6 +77,7 @@ subset2 = foreach(i = unique(shape$type2)) %do% {
 
 foreach(shape_sub = subset1) %do% {
   type1 = unique(shape_sub$type)
+  cat("\n:::::::: TYPE:", type1)
   if(length(type1)>1){
     stop("Number of types in subset should be no more than 1")
   }
@@ -99,12 +100,13 @@ foreach(shape_sub = subset1) %do% {
 
 foreach(shape_sub = subset2) %do% {
   type2 = unique(shape_sub$type2)
+  cat("\n:::::::: TYPE:", type1)
   if(length(type2)>1){
     stop("Number of types in subset should be no more than 1")
   }
   railways_panel_sub = calc_rail(
     shape_sub,
-    shape_parishes[1:10,],
+    shape_parishes,
     verbose = TRUE,
     plots = TRUE,
     id = paste0("By_type_type2_", type2),
