@@ -1,0 +1,21 @@
+{
+\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+\begin{tabular}{l*{3}{c}}
+\toprule
+                &\multicolumn{3}{c}{$\Delta$ (log)Population 1850-1901}  \\\cmidrule(lr){2-4}
+                &\multicolumn{1}{c}{(1)}         &\multicolumn{1}{c}{(2)}         &\multicolumn{1}{c}{(3)}         \\
+\midrule
+log\_dist\_rail\_1875&   -0.017         &   -0.023         &   -0.031\sym{*}  \\
+                &  (0.010)         &  (0.012)         &  (0.011)         \\
+Rail 1876-1901 ($<2$km)&                  &                  &    0.102\sym{***}\\
+                &                  &                  &  (0.018)         \\
+County FE       &      Yes         &      Yes         &      Yes         \\
+Additional controls &       No         &      Yes         &      Yes         \\
+\midrule
+\(R^{2}\)       &    0.280         &    0.312         &    0.328         \\
+Observations    &     1569         &     1569         &     1569         \\
+\bottomrule
+\multicolumn{4}{l}{\footnotesize Standard errors in parentheses}\\
+\multicolumn{4}{l}{\footnotesize \sym{*} \(p<0.05\), \sym{**} \(p<0.01\), \sym{***} \(p<0.001\)}\\
+\end{tabular}
+}

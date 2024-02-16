@@ -1,0 +1,23 @@
+{
+\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+\begin{tabular}{l*{3}{rrrrr}}
+\toprule
+                    &\multicolumn{2}{c}{No trunk line access}&\multicolumn{2}{c}{Trunk line access}&\multicolumn{2}{c}{Total}\\\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}
+                    &\multicolumn{2}{c}{}     &\multicolumn{2}{c}{}     &\multicolumn{2}{c}{}     \\
+                    &        Mean&    Std.dev.&        Mean&    Std.dev.&        Mean&    Std.dev.\\
+\midrule
+pop\_1850            &      672.03&      468.21&      666.66&      478.04&      671.30&      469.41\\
+pop\_1901            &      881.76&      628.51&      968.29&      734.71&      893.56&      644.46\\
+d\_log\_pop           &        0.27&        0.28&        0.35&        0.37&        0.28&        0.30\\
+log\_area\_parish     &        9.81&        0.69&        9.70&        0.61&        9.80&        0.68\\
+Boulder\_clay\_pct    &        0.47&        0.32&        0.49&        0.33&        0.48&        0.32\\
+log\_dist\_coast      &        8.59&        1.03&        8.78&        0.82&        8.62&        1.01\\
+log\_distance\_market\_town&        2.31&        0.55&        1.98&        0.64&        2.27&        0.57\\
+log\_distoxroad      &        3.66&        1.40&        3.80&        1.20&        3.68&        1.38\\
+log\_dist\_hmb        &        5.63&        0.25&        5.57&        0.24&        5.62&        0.25\\
+log\_dist\_cph        &        4.94&        0.66&        4.87&        0.67&        4.93&        0.66\\
+\midrule
+Observations        &        1355&            &         214&            &        1569&            \\
+\bottomrule
+\end{tabular}
+}

@@ -1,0 +1,23 @@
+{
+\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+\begin{tabular}{l*{3}{c}}
+\toprule
+                &\multicolumn{3}{c}{$\Delta$ (log)Population 1850-1901}  \\\cmidrule(lr){2-4}
+                &\multicolumn{1}{c}{(1)}&\multicolumn{1}{c}{(2)}&\multicolumn{1}{c}{(3)}\\
+                &\multicolumn{1}{c}{d\_log\_pop}&\multicolumn{1}{c}{d\_log\_pop}&\multicolumn{1}{c}{d\_log\_pop}\\
+\midrule
+Rail pre-1876 ($<1$km)&    0.104         &    0.163         &    0.182         \\
+                &  (0.183)         &  (0.206)         &  (0.202)         \\
+Rail 1876-1901 ($<1$km)&                  &                  &    0.103\sym{***}\\
+                &                  &                  &  (0.026)         \\
+County FE       &      Yes         &      Yes         &      Yes         \\
+Additional controls &       No         &      Yes         &      Yes         \\
+\midrule
+Kleibergeren-Paap F-statistic&                  &                  &                  \\
+Observations    &     1569         &     1569         &     1569         \\
+\bottomrule
+\multicolumn{4}{l}{\footnotesize Standard errors in parentheses}\\
+\multicolumn{4}{l}{\footnotesize Instrument: dist\_rail\_1875\_inst\_i\_1}\\
+\multicolumn{4}{l}{\footnotesize \sym{*} \(p<0.05\), \sym{**} \(p<0.01\), \sym{***} \(p<0.001\)}\\
+\end{tabular}
+}

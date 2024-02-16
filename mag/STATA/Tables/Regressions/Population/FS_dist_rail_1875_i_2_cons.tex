@@ -1,0 +1,21 @@
+{
+\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+\begin{tabular}{l*{3}{c}}
+\toprule
+                &\multicolumn{3}{c}{Rail pre-1876 ( $<2$ km)}            \\\cmidrule(lr){2-4}
+                &\multicolumn{1}{c}{(1)}         &\multicolumn{1}{c}{(2)}         &\multicolumn{1}{c}{(3)}         \\
+\midrule
+dist\_rail\_1875\_inst\_i\_2&    0.286\sym{***}&    0.244\sym{***}&    0.229\sym{***}\\
+                &  (0.043)         &  (0.046)         &  (0.045)         \\
+Rail 1876-1901 ($<2$km)&                  &                  &   -0.127\sym{***}\\
+                &                  &                  &  (0.017)         \\
+County FE       &      Yes         &      Yes         &      Yes         \\
+Additional controls &       No         &      Yes         &      Yes         \\
+\midrule
+Kleibergeren-Paap F-statistic&    44.41         &    28.46         &    26.40         \\
+Observations    &     1569         &     1569         &     1569         \\
+\bottomrule
+\multicolumn{4}{l}{\footnotesize Standard errors in parentheses}\\
+\multicolumn{4}{l}{\footnotesize \sym{*} \(p<0.05\), \sym{**} \(p<0.01\), \sym{***} \(p<0.001\)}\\
+\end{tabular}
+}

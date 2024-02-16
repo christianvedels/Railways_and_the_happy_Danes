@@ -1,0 +1,1026 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\begin_preamble
+\usepackage{fancyhdr}
+\usepackage[english,danish]{babel}
+\usepackage{csquotes}
+\usepackage{dcolumn}
+\usepackage{booktabs}
+
+
+ 
+\end_preamble
+\use_default_options false
+\maintain_unincluded_children false
+\language danish
+\language_package default
+\inputencoding utf8
+\fontencoding default
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\float_placement H
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize a4paper
+\use_geometry true
+\use_package amsmath 2
+\use_package amssymb 2
+\use_package cancel 0
+\use_package esint 1
+\use_package mathdots 0
+\use_package mathtools 2
+\use_package mhchem 0
+\use_package stackrel 0
+\use_package stmaryrd 0
+\use_package undertilde 0
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 0
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2cm
+\topmargin 2cm
+\rightmargin 2cm
+\bottommargin 2cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style danish
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+pagestyle
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+fancy
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+fancyhead[L]{
+\backslash
+slshape{Titel}}
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+fancyhead[C]{
+\backslash
+slshape Magnus Ørberg}
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+fancyhead[R]{
+\backslash
+slshape 
+\backslash
+today}
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset Newpage cleardoublepage
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+setcounter{page}{1}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Title
+Regression output – Railways and happy danes
+\end_layout
+
+\begin_layout Date
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+today
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+renewcommand*
+\backslash
+contentsname{Content}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+tableofcontents
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+pagebreak
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Questions
+\end_layout
+
+\begin_layout Section
+Method
+\end_layout
+
+\begin_layout Subsection
+Models
+\end_layout
+
+\begin_layout Standard
+Estimating the DiD-equation:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\Delta Y_{p}=\theta_{0}+\alpha_{c}+R_{p}+\mathbf{X}_{p}+\epsilon_{p}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\Delta Y_{p}:$
+\end_inset
+
+ Changes in outcome variable from 1850-1901 (population etc.)
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\theta_{0}:$
+\end_inset
+
+ Constant term (not 100% if it should be there)
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\alpha_{c}:$
+\end_inset
+
+ County fixed effects
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $R_{p}:$
+\end_inset
+
+ Rail variable based on distance to rail or connectivity in 1875
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\mathbf{X}_{p}$
+\end_inset
+
+: Controls including: log_area_parish, boulder_clay_pct log_dist_coast,
+ log_distance_market_town, log_distoxroad, log_dist_hmb, log_dist_cph 
+\end_layout
+
+\begin_layout Paragraph
+Constant or no constant? 
+\end_layout
+
+\begin_layout Standard
+Looks like no constant in Berger 2019 eq 1, however does this make sence?
+ In my understanding including a constant in the simple regression: 
+\begin_inset Formula $\Delta Y_{p}=\theta_{0}+\alpha_{c}$
+\end_inset
+
+, the interpretation of the constant would be the average change in the
+ outcome variable of the ommited county (ie.
+ 
+\begin_inset Formula $E(\Delta Y_{p}\vert\alpha_{c}=0)$
+\end_inset
+
+).
+ 
+\end_layout
+
+\begin_layout Subsection
+Restrictions:
+\end_layout
+
+\begin_layout Standard
+Restricting on less than 1 km to market town.
+ 
+\end_layout
+
+\begin_layout Section
+Descriptives
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+centering
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset include
+LatexCommand input
+filename "../STATA/Tables/Descriptives/by_1km.tex"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Descriptives 1km ind
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+centering
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset include
+LatexCommand input
+filename "../STATA/Tables/Descriptives/by_2km.tex"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Descriptives 2km ind
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Population 
+\end_layout
+
+\begin_layout Subsection
+Bin regressions
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+centering
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /Users/MagnusOrberg/Documents/GitHub/Railways_and_the_happy_Danes/mag/STATA/Figures/Population/bin_reg_cons_1_1_12_fe.png
+	lyxscale 10
+	width 45col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /Users/MagnusOrberg/Documents/GitHub/Railways_and_the_happy_Danes/mag/STATA/Figures/Population/bin_reg_cons_1_1_12_feexp.png
+	lyxscale 10
+	width 45col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Rail distance indicators (1km bins) on ln population
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+OLS
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+centering
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset include
+LatexCommand input
+filename "/Users/MagnusOrberg/Documents/GitHub/Railways_and_the_happy_Danes/mag/STATA/Tables/Regressions/Population/OLS_connected_1875_cons.tex"
+
+\end_inset
+
+
+\begin_inset CommandInset include
+LatexCommand input
+filename "/Users/MagnusOrberg/Documents/GitHub/Railways_and_the_happy_Danes/mag/STATA/Tables/Regressions/Population/OLS_dist_rail_1875_i_1_cons.tex"
+
+\end_inset
+
+
+\begin_inset CommandInset include
+LatexCommand input
+filename "/Users/MagnusOrberg/Documents/GitHub/Railways_and_the_happy_Danes/mag/STATA/Tables/Regressions/Population/OLS_dist_rail_1875_i_2_cons.tex"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset include
+LatexCommand input
+filename "/Users/MagnusOrberg/Documents/GitHub/Railways_and_the_happy_Danes/mag/STATA/Tables/Regressions/Population/OLS_log_dist_rail_1875_cons.tex"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+OLS
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+IV
+\end_layout
+
+\begin_layout Subsubsection
+First stage
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+centering
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset include
+LatexCommand input
+filename "/Users/MagnusOrberg/Documents/GitHub/Railways_and_the_happy_Danes/mag/STATA/Tables/Regressions/Population/FS_dist_rail_1875_i_1_cons.tex"
+
+\end_inset
+
+
+\begin_inset CommandInset include
+LatexCommand input
+filename "/Users/MagnusOrberg/Documents/GitHub/Railways_and_the_happy_Danes/mag/STATA/Tables/Regressions/Population/FS_dist_rail_1875_i_2_cons.tex"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+First stage
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+IV results
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+centering
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset include
+LatexCommand input
+filename "/Users/MagnusOrberg/Documents/GitHub/Railways_and_the_happy_Danes/mag/STATA/Tables/Regressions/Population/IV_dist_rail_1875_i_1_cons.tex"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset include
+LatexCommand input
+filename "/Users/MagnusOrberg/Documents/GitHub/Railways_and_the_happy_Danes/mag/STATA/Tables/Regressions/Population/IV_dist_rail_1875_i_2_cons.tex"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+IV results
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Appendix
+\end_layout
+
+\begin_layout Subsection
+Population without constant
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+centering
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /Users/MagnusOrberg/Documents/GitHub/Railways_and_the_happy_Danes/mag/STATA/Figures/Population/bin_reg_nocons_1_1_12_fe.png
+	lyxscale 10
+	width 45col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /Users/MagnusOrberg/Documents/GitHub/Railways_and_the_happy_Danes/mag/STATA/Figures/Population/bin_reg_nocons_1_1_12_feexp.png
+	lyxscale 10
+	width 45col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Rail distance indicators (1km bins) on ln population (nocons)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+centering
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+OLS 2km (with constant)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Rail indicators
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Float table
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset CommandInset include
+LatexCommand input
+filename "../STATA/Tables/Descriptives/Rail_indicator/county_2km.tex"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Data from project
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset Float table
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset CommandInset include
+LatexCommand input
+filename "../STATA/Thesis/Tables/county_2km.tex"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Data used in thesis
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Rail <2km in 1875 by county 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+State only for thesis which differ in Lolland/Falster 
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

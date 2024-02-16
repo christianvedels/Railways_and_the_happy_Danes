@@ -259,8 +259,6 @@ include "STATA/Do_files/Regressions/IV_and_FS_std.do"
 restore
 ******************
 
-
-
 * Variables:
 local dep_var d_log_pop
 local rail_var dist_rail_1875_i_2
@@ -320,6 +318,31 @@ keep if non_prox_mt_sample == 1
 include "STATA/Do_files/Regressions/ols_main.do"
 restore
 *******************
+
+********************* 1km indicator with 2km instrument
+* Variables:
+local dep_var d_log_pop
+local rail_var dist_rail_1875_i_1
+local other_rail dist_rail_1875_1901_i_1
+local instrument dist_rail_1875_inst_i_2
+
+* Constant
+local constant 
+local constant_path cons
+
+* Names and path 
+local dep_var_name "$\Delta$ (log)Population 1850-1901"
+local rail_var_name "Rail pre-1876 ( $<1$ km)"
+local ols_path "STATA/Tables/Regressions/Population/OLS_`rail_var'_`constant_path'_2kminst"
+local fs_path  "STATA/Tables/Regressions/Population/FS_`rail_var'_`constant_path_2kminst'"
+local iv_path  "STATA/Tables/Regressions/Population/IV_`rail_var'_`constant_path'_2kminst"
+
+
+preserve
+keep if non_prox_mt_sample == 1 
+include "STATA/Do_files/Regressions/ols_main.do"
+include "STATA/Do_files/Regressions/IV_and_FS_std.do"
+restore
 
 
 
