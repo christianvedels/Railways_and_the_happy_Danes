@@ -15,7 +15,8 @@ from PIL import Image
 script_dir = os.path.dirname(__file__)
 
 # Path to the folder containing the images, relative to the script's directory
-folder_path = os.path.join(script_dir, "Example images")
+folder_path = os.path.join(script_dir, "..", "Example images")
+
 
 # Load the image processor and model
 processor = DetrImageProcessor.from_pretrained("facebook/detr-resnet-50", revision="no_timm")

@@ -14,7 +14,7 @@ from transformers import AutoImageProcessor, AutoModelForImageClassification
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
 # Load the CSV file using the relative path
-csv_path = os.path.join(script_dir, 'detection_results.csv')
+csv_path = os.path.join(script_dir, "detection_results.csv")
 df = pd.read_csv(csv_path)
 
 # Initialize the model and processor
@@ -38,7 +38,7 @@ df['Emotion'] = None  # Initialize the column with None
 for index, row in df.iterrows():
     if row['Detected'] == 'person':
         # Use the relative path for the image
-        image_path = os.path.join(script_dir, 'Example images', row["Image"])
+        image_path = os.path.join(script_dir, "..", 'Example images', row["Image"])
         emotion = predict_emotion(image_path, row['Location'])
         df.at[index, 'Emotion'] = emotion
 
