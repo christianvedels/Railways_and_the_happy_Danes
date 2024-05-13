@@ -12,8 +12,14 @@ conda activate happy_danes
 conda install pillow
 ```
 
+### CPU install
 ```
-conda install pytorch torchvision torchaudio -c pytorch
+conda install pytorch torchvision torchaudio cpuonly -c pytorch
+```
+
+### GPU install 
+```
+conda install pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia
 ```
 
 ```
