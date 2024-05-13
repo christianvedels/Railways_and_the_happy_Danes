@@ -1,22 +1,42 @@
 # How to set up the environment
 
-```conda create -name happy_danes python=3.8```
+```
+conda create -name happy_danes python=3.8
+```
 
-```conda activate happy_danes```
+```
+conda activate happy_danes
+```
 
-```conda install pillow```
+```
+conda install pillow
+```
 
-```conda install pytorch torchvision torchaudio cpuonly -c pytorch```
+```
+conda install pytorch torchvision torchaudio -c pytorch
+```
 
-```conda install -c huggingface transformers```
+```
+conda install -c huggingface transformers
+```
 
-```pip install hsemotion```
+```
+pip install hsemotion
+```
 
-```conda config --add channels conda-forge```
+```
+conda config --add channels conda-forge
+```
 
-```conda config --set channel_priority strict```
+```
+conda config --set channel_priority strict
+```
 
-```conda install dlib```
+```
+conda install dlib
+```
 
-```pip install face-recognition```
+```
+pip install face-recognition
+```
 
