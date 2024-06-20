@@ -62,6 +62,7 @@ mod1 = feols(
   cluster = ~ GIS_ID
 )
 
+
 mod2 = feols(
   log(MA_assembly) ~ Connected_rail | GIS_ID + Year,
   data = grundtvig,
@@ -83,6 +84,10 @@ mod4 = feols(
 
 etable(mod1, mod2, mod3, mod4) %>% 
   knitr::kable()
+
+# Latex
+etable(mod1, mod3) %>%
+  knitr::kable(format = "latex", booktabs = TRUE)
 
 # ==== Doubly Robust DID: Pop ====
 library(did)
