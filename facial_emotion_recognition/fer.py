@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
 """
+Created on Wed Jun 19 13:46:47 2024
+
+@author: Win7ADM
+"""
+
+# -*- coding: utf-8 -*-
+"""
 Created on Mon May 11 2024
 Facial Emotion Recognition (FER) Script
 Author: Tom Görges
@@ -24,12 +31,22 @@ except IOError:
 
 # Setup directories
 script_dir = os.path.dirname(os.path.abspath(__file__))
-folder_path = os.path.join(script_dir, "Example images")
-annotated_images_dir = os.path.join(script_dir, "Annotated Images")
+folder_path = os.path.join(script_dir, os.pardir, os.pardir, "Data not redistributable", "Arkiv.dk", "Images")
+
+# Move up two levels and navigate to the specified folder
+annotated_images_dir = os.path.join(script_dir, os.pardir, os.pardir, "Data not redistributable", "Arkiv.dk", "Annotated Images")
 
 # Ensure the annotated images directory exists
 if not os.path.exists(annotated_images_dir):
     os.makedirs(annotated_images_dir)
+
+# Load exclusion list from placeholder.csv
+placeholder_csv = os.path.join(script_dir, os.pardir, os.pardir, "Data not redistributable", "Arkiv.dk", "placeholder.csv")
+exclusion_list = []
+with open(placeholder_csv, mode='r', newline='', encoding='utf-8') as file:
+    reader = csv.DictReader(file)
+    for row in reader:
+        exclusion_list.append(row['id'])
 
 # Initialize models and processors for object detection
 processor_det = DetrImageProcessor.from_pretrained("facebook/detr-resnet-50")
@@ -49,11 +66,11 @@ with open(csv_file, mode='w', newline='') as file:
     writer = csv.DictWriter(file, fieldnames=fieldnames)
     writer.writeheader()
 
-    # Process each image in the folder
+    # Process each image which is not a placeholder in the folder
     for filename in os.listdir(folder_path):
-        if filename.lower().endswith(('.png', '.jpg', '.jpeg')):
+        if filename.lower().endswith(('.png', '.jpg', '.jpeg')) and filename not in exclusion_list: # exclusion of placeholder images
             image_path = os.path.join(folder_path, filename)
-            image = Image.open(image_path)
+            image = Image.open(image_path).convert("RGB")  # Convert image to RGB
             draw = ImageDraw.Draw(image)
 
             # Process image through object detection model
@@ -86,13 +103,18 @@ with open(csv_file, mode='w', newline='') as file:
                         draw.rectangle(face_box, outline='blue', width=2)
                         face_image = Image.fromarray(cropped_image_array[top:bottom, left:right])
 
+                        # Predict emotions using the facial emotion recognition model
                         emotion, scores = fer.predict_emotions(np.array(face_image), logits=False)
                         emotion_scores = dict(zip(emotions, scores))
-                        max_emotion = max(emotion_scores, key=emotion_scores.get)
-                        draw.text((face_box[0], face_box[1]-10), f"{max_emotion}: {round(emotion_scores[max_emotion], 2)}", fill='blue', font=font)
+                        max_emotion = max(emotion_scores, key=emotion_scores.get)  # Identifying the most probable emotion
 
+                        # For displaying on the image, use the happiness score
+                        happiness_score = emotion_scores['Happiness']
+                        draw.text((face_box[0], face_box[1]-10), f"Happiness: {round(happiness_score, 2)}", fill='blue', font=font)
+
+                        # Log the most probable emotion in the CSV as originally designed
                         face_location = face_box
-                        emotion = max_emotion
+                        emotion = max_emotion  # This retains the most probable emotion for logging
 
                 writer.writerow({
                     'Image': filename,
@@ -110,3 +132,8 @@ with open(csv_file, mode='w', newline='') as file:
             image.save(annotated_image_path)
 
 print("Processing complete. Results are saved in the CSV file and annotated images are saved in the Annotated Images folder.")
+
+
+
+
+                        
