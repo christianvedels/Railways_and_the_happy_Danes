@@ -11,12 +11,6 @@ library(dplyr)
 library(tidyr)
 library(stringr)
 
-# ==== Setup ====
-# Set the path to the folder containing your .rds files
-
-
-
-
 # ==== read_and_modify_rds() + load_all_tables() ====
 # Define a function to read each RDS file, add a custom row, and return the modified table
 read_and_modify_rds = function(file_path) {
