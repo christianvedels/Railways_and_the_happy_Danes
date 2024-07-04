@@ -13,7 +13,6 @@ import csv
 import torch
 import numpy as np
 from transformers import DetrImageProcessor, DetrForObjectDetection
-# from hsemotion.facial_emotions import HSEmotionRecognizer
 import face_recognition
 import matplotlib.pyplot as plt
 from fer import FER # Importing the FER library
@@ -42,8 +41,7 @@ class ImageDetector:
     Class to handle image detection.
     """
     
-    def __init__(self, image_path, annotated_image_path, batch_size=16, results_file_name='fer_results.csv',
-                 emotions=['Anger', 'Contempt', 'Disgust', 'Fear', 'Happiness', 'Neutral', 'Sadness', 'Surprise'],
+    def __init__(self, image_path, annotated_image_path = None, batch_size=16, results_file_name='fer_results.csv',
                  verbose=True,
                  object_detection_thr = 0.9
                  ):
@@ -52,10 +50,9 @@ class ImageDetector:
         
         Args:
             image_path (str): Path to the directory containing images to process.
-            annotated_image_path (str): Path to the directory where annotated images will be saved.
+            annotated_image_path (str): Path to the directory where annotated images will be saved. (Defaults to None)
             batch_size (int): Number of images to process in parallel. Default is 16.
             results_file_name (str): Filename for the results. Default is 'fer_results.csv'
-            emotions (list of str): Emotions to detect. Default is ['Anger', 'Contempt', 'Disgust', 'Fear', 'Happiness', 'Neutral', 'Sadness', 'Surprise']
             verbose (bool): Should updates be printed?
             object_detection_thr (float): Threshold to use for object detection
         """
@@ -63,7 +60,6 @@ class ImageDetector:
         self.annotated_image_path = annotated_image_path
         self.batch_size = batch_size
         self.csv_file = results_file_name
-        self.emotions = emotions
         self.verbose = verbose
         self.object_detection_thr = object_detection_thr
         
@@ -73,13 +69,12 @@ class ImageDetector:
         self.model_det = DetrForObjectDetection.from_pretrained("facebook/detr-resnet-50").to(self.device)
         
         self.fer = FER(mtcnn=True)  # Initialize the FER library
-        self.fieldnames = ['Image', 'Detected', 'Object Location', 'Confidence', 'Face Detected', 'Face Location', 'Emotion'] + self.emotions
+        # self.fieldnames = ['Image', 'Detected', 'Object Location', 'Confidence', 'Face Detected', 'Face Location', 'Emotion']
         
         # self.fer = HSEmotionRecognizer(model_name='enet_b0_8_best_afew', device=self.device)
         # self.fieldnames = ['Image', 'Detected', 'Object Location', 'Confidence', 'Face Detected', 'Face Location', 'Emotion'] + self.emotions
         
         self._ensure_directory_exists(self.annotated_image_path)
-        self._setup_csv()
         
     def _ensure_directory_exists(self, path):
         """
@@ -91,14 +86,7 @@ class ImageDetector:
         if not os.path.exists(path):
             os.makedirs(path)
             
-    def _setup_csv(self):
-        """
-        Set up the CSV file for logging results.
-        """
-        with open(self.csv_file, mode='w', newline='') as file:
-            writer = csv.DictWriter(file, fieldnames=self.fieldnames)
-            writer.writeheader()
-    
+        
     def _load_images_batch(self, image_files):
         """
         Load a batch of images from the specified files.
@@ -157,7 +145,8 @@ class ImageDetector:
         
         
         return objects_detected
-                
+    
+            
     def _process_object_detection(self, image, filename, result):
         """
         Cleans the results for a single image
@@ -165,7 +154,6 @@ class ImageDetector:
         Args:
             image (PIL.Image): The image to process.
             filename (str): The filename of the image.
-            writer (csv.DictWriter): The CSV writer to log results.
             result (dict): The result from the object detection model.
         """
         
@@ -186,9 +174,9 @@ class ImageDetector:
         
         return clean_results
     
-    def _detect_faces_and_emotions(self, image, object_box, detected_item):
+    def _detect_faces(self, image, object_box, detected_item):
         """
-        Detect faces and recognize emotions in the given object box if the detected item is a person.
+        Prepare face images for emotion detection if the detected item is a person.
         
         Args:
             image (PIL.Image): The original image.
@@ -196,86 +184,36 @@ class ImageDetector:
             detected_item (str): The detected item label.
         
         Returns:
-            dict: A dictionary containing face detection and emotion recognition results.
+            dict: A dictionary containing face detection and the cropped face image.
         """
-        face_detected = "No"
-        face_location = "NA"
-        emotion = "NA"
-        emotion_scores = {em: "NA" for em in self.emotions}
-
-        if detected_item == 'person':
-            cropped_image = image.crop(object_box)
-            face_locations = face_recognition.face_locations(np.array(cropped_image), model = "cnn")
-            if face_locations:
-                face_detected = "Yes"
-                top, right, bottom, left = face_locations[0]
-                face_box = [left + object_box[0], top + object_box[1], right + object_box[0], bottom + object_box[1]]
-                face_image = cropped_image.crop((left, top, right, bottom))
-                emotion_analysis = self.fer.detect_emotions(face_image)
-                if emotion_analysis:
-                    emotion = max(emotion_analysis[0]["emotions"], key=emotion_analysis[0]["emotions"].get)
-                    emotion_scores.update(emotion_analysis[0]["emotions"])
-                
-                return {
-                    'Face Detected': face_detected,
-                    'Face Location': face_box,
-                    'Emotion': emotion,
-                    **emotion_scores
-                }
-        
+        if detected_item != 'person':
+            return {
+                'Face Detected': "No",
+                'Face Location': "NA",
+                'Face Image': None
+            }
+    
+        cropped_image = image.crop(object_box)
+        face_locations = face_recognition.face_locations(np.array(cropped_image), model="cnn")
+    
+        if not face_locations:
+            return {
+                'Face Detected': "No",
+                'Face Location': "NA",
+                'Face Image': None
+            }
+    
+        top, right, bottom, left = face_locations[0]
+        face_box = [left + object_box[0], top + object_box[1], right + object_box[0], bottom + object_box[1]]
+        face_image = cropped_image.crop((left, top, right, bottom))
+    
         return {
-            'Face Detected': face_detected,
-            'Face Location': face_location,
-            'Emotion': emotion,
-            **emotion_scores
+            'Face Detected': "Yes",
+            'Face Location': face_box,
+            'Face Image': np.array(face_image)
         }
     
-    # def _detect_faces_and_emotions(self, image, object_box, detected_item):
-    #     """
-    #     Detect faces and recognize emotions in the given object box if the detected item is a person.
-        
-    #     Args:
-    #         image (PIL.Image): The original image.
-    #         object_box (list): The bounding box of the detected object.
-    #         detected_item (str): The detected item label.
-        
-    #     Returns:
-    #         dict: A dictionary containing face detection and emotion recognition results.
-    #     """
-    #     face_detected = "No"
-    #     face_location = "NA"
-    #     emotion = "NA"
-    #     emotion_scores = {em: "NA" for em in self.emotions}
-
-    #     if detected_item == 'person':
-    #         cropped_image = image.crop(object_box)
-    #         cropped_image_array = np.array(cropped_image)
-    #         face_locations = face_recognition.face_locations(cropped_image_array)
-    #         if face_locations:
-    #             face_detected = "Yes"
-    #             top, right, bottom, left = face_locations[0]
-    #             face_box = [left + object_box[0], top + object_box[1], right + object_box[0], bottom + object_box[1]]
-    #             face_image = Image.fromarray(cropped_image_array[top:bottom, left:right])
-
-    #             emotion, scores = self.fer.predict_emotions(np.array(face_image), logits=False)
-    #             emotion_scores = dict(zip(self.emotions, scores))
-    #             max_emotion = max(emotion_scores, key=emotion_scores.get)
-
-    #             return {
-    #                 'Face Detected': face_detected,
-    #                 'Face Location': face_box,
-    #                 'Emotion': max_emotion,
-    #                 **emotion_scores
-    #             }
-        
-    #     return {
-    #         'Face Detected': face_detected,
-    #         'Face Location': face_location,
-    #         'Emotion': emotion,
-    #         **emotion_scores
-    #     }
-
-    def _fer_in_detected_objects(self, objects_detected, images, filenames, draws, writer):
+    def _fer_in_detected_objects(self, objects_detected, images, filenames, draws):
         """
         Process detected objects for facial emotion detection, annotation, and saving results.
         
@@ -284,53 +222,117 @@ class ImageDetector:
             images (list): A list of image objects.
             filenames (list): A list of image filenames.
             draws (list): A list of drawing contexts for the images.
-            writer (csv.DictWriter): The CSV writer to log results.
         """
+        face_images = []
+        face_details = []
+        
+        # Collect face images
         for obj in objects_detected:
             filename = obj['Image']
             detected_item = obj['Detected']
             object_box = eval(obj['Object Location'])  # Convert string back to list
-            image = images[filenames.index(filename)]
-            draw = draws[filenames.index(filename)]
+            index = filenames.index(filename)
+            image, draw = images[index], draws[index]
+    
+            face_details_dict = self._detect_faces(image, object_box, detected_item)
+            obj.update({
+                'Face Detected': face_details_dict['Face Detected'],
+                'Face Location': face_details_dict['Face Location'],
+                'Dominant Emotion': "NA",
+                'Emotion Scores': {}
+            })
             
-            face_emotion_results = self._detect_faces_and_emotions(image, object_box, detected_item)
-            obj.update(face_emotion_results)
+            if face_details_dict['Face Detected'] == "Yes":
+                face_images.append(face_details_dict['Face Image'])
+                face_details.append((obj, image, draw, face_details_dict['Face Location']))
+    
+        # Process all face images in batch
+        if face_images:
+            emotions_batch = [self.fer.detect_emotions(x) for x in face_images]
+            
+            for i, face_emotion_results in enumerate(emotions_batch):
+                if face_emotion_results:
+                    emotion_scores = face_emotion_results[0]["emotions"]
+                    dominant_emotion = max(emotion_scores, key=emotion_scores.get)
+                    
+                    obj, image, draw, face_box = face_details[i]
+                    obj.update({
+                        'Dominant Emotion': dominant_emotion,
+                        'Emotion Scores': emotion_scores
+                    })
+    
+                    # Draw bounding boxes and labels on the image
+                    draw.rectangle(face_box, outline='blue', width=2)
+                    draw.text((face_box[0], face_box[1] - 10), f"{dominant_emotion}: {round(emotion_scores[dominant_emotion], 2)}", fill='blue')
+
+    
+        # Draw object bounding boxes and labels
+        for obj in objects_detected:
+            filename = obj['Image']
+            detected_item = obj['Detected']
+            object_box = eval(obj['Object Location'])  # Convert string back to list
+            index = filenames.index(filename)
+            image, draw = images[index], draws[index]
             
             # Draw bounding boxes and labels on the image
             draw.rectangle(object_box, outline='red', width=2)
             draw.text((object_box[0], object_box[1] - 10), detected_item, fill='red')
             
-            if face_emotion_results['Face Detected'] == "Yes":
-                face_box = face_emotion_results['Face Location']
-                draw.rectangle(face_box, outline='blue', width=2)
-                draw.text((face_box[0], face_box[1] - 10), f"{face_emotion_results['Emotion']}: {round(face_emotion_results[face_emotion_results['Emotion']], 2)}", fill='blue')
-            
-            writer.writerow(obj)
-            
             # Save the annotated image
-            annotated_image_path = os.path.join(self.annotated_image_path, f"annotated_{filename}")
-            image.save(annotated_image_path)
+            if self.annotated_image_path:
+                annotated_image_path = os.path.join(self.annotated_image_path, f"annotated_{filename}")
+                image.save(annotated_image_path)
     
+        return objects_detected
+    
+    def _update_csv(self, results_batch):
+        """
+        Update CSV file with the results of the batch processing.
+        
+        Args:
+            results_batch (list): List of dictionaries containing results to be written to CSV.
+        """
+        if not results_batch:
+            return  # If results_batch is empty, do nothing
+    
+        file_exists = os.path.isfile(self.csv_file)
+        
+        with open(self.csv_file, mode='a', newline='') as file:
+            # Assuming all dictionaries in results_batch have the same keys
+            writer = csv.DictWriter(file, fieldnames=results_batch[0].keys())
+            
+            if not file_exists:
+                writer.writeheader()  # Write header only if the file doesn't exist
+            
+            for result in results_batch:
+                writer.writerow(result)
+    
+       
     def run_fer(self):
         """
         Main method of the class. Runs FER on images in 'image_path'.
         """
         image_files = [f for f in os.listdir(self.image_path) if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
-        
-        with open(self.csv_file, mode='a', newline='') as file:
-            writer = csv.DictWriter(file, fieldnames=self.fieldnames)
+                    
+        for image_batch in self._chunked_iterable(image_files, self.batch_size):
+            # Step 1: Load files in batch
+            images, filenames, draws = self._load_images_batch(image_batch)
             
-            for image_batch in self._chunked_iterable(image_files, self.batch_size):
-                # Step 1: Load files in batch
-                images, filenames, draws = self._load_images_batch(image_batch)
-                
-                # Step 2: Detect objects and process images
-                if self.verbose:
-                    print(f"Processing batch: {filenames}")
-                objects_detected = self._detect_objects_in_batch(images, filenames)
-                
-                # Step 3: Process detected objects
-                self._fer_in_detected_objects(objects_detected, images, filenames, draws, writer)
+            # Step 2: Detect objects and process images
+            if self.verbose:
+                print(f"Processing batch: {filenames}")
+            objects_detected = self._detect_objects_in_batch(images, filenames)
+            
+            # Step 3: Process detected objects
+            if self.verbose:
+                print(f"--> Finished object detecetion")
+                print(f"--> Running facial emotional recognition")
+            results_batch = self._fer_in_detected_objects(objects_detected, images, filenames, draws)
+            
+            # Step 4
+            if self.verbose:
+                print(f"--> Writing results to csv")
+            self._update_csv(results_batch)
 
 
     
