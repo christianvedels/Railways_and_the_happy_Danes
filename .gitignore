@@ -3,3 +3,4 @@
 .Rhistory
 .Rproj.user
 archival_picture_sentiments/__pycache__/
+.RData
