@@ -112,7 +112,8 @@ class ImageDetector:
         
         self.fer = FER(mtcnn=True)  # Initialize the FER library
         
-        self._ensure_directory_exists(self.annotated_image_path)
+        if self.annotated_image_path:
+            self._ensure_directory_exists(self.annotated_image_path)
         
     def _ensure_directory_exists(self, path):
         """
@@ -401,7 +402,7 @@ class ImageDetector:
                 print(eta(i = counter, start_time=start_time, cap_n = len(image_files)))
                 
 
-def run_aps_wrapper(image_path = "Example_images", annotated_image_path = "Annotated Images", batch_size = 64, results_file_name = 'fer_results.csv'):
+def run_aps_wrapper(image_path = "Example_images", annotated_image_path = None, batch_size = 64, results_file_name = 'fer_results.csv'):
     """
     image_path, 
     annotated_image_path
