@@ -103,7 +103,7 @@ load_all_geo = function(folder_path = "../Data not redistributable/Arkiv.dk/Geod
   # Initialize progress bar
   pb = progress_bar$new(
     total = length(rds_files),
-    format = "Loading geodata: :current/:total (:percent) [:bar] :elapsed"
+    format = paste0("Loading geodata: ", progress_bar_format)
   )
   
   read_one = function(f){
@@ -114,11 +114,18 @@ load_all_geo = function(folder_path = "../Data not redistributable/Arkiv.dk/Geod
     if (!is.null(x$polygon) && x$polygon != "") {
       polygon_data = fromJSON(x$polygon)
       coords = polygon_data$features$geometry$coordinates[[1]]
-      polygon_list = lapply(coords, function(polygon) {
-        long = polygon[,,1]
-        lat = polygon[,,2]
-        cbind(long, lat)
-      })
+      
+      
+      if(class(coords) == "list"){
+        polygon_list = lapply(coords, function(polygon) {
+          long = polygon[,,1]
+          lat = polygon[,,2]
+          cbind(long, lat)
+        })
+      } else {
+        polygon_list = list(drop(coords))
+      }
+      
       
       polygon_sf = st_multipolygon(list(polygon_list))
       centroid = st_centroid(polygon_sf)
@@ -130,7 +137,6 @@ load_all_geo = function(folder_path = "../Data not redistributable/Arkiv.dk/Geod
     
     # Create an sf object for the point if it exists
     if (!is.na(x$coords) && x$coords != "") {
-      browser()
       coords_split = strsplit(x$coords, ", ")[[1]]
       point_sf = st_point(c(as.numeric(coords_split[1]), as.numeric(coords_split[2])))
     } else {
@@ -155,16 +161,20 @@ load_all_geo = function(folder_path = "../Data not redistributable/Arkiv.dk/Geod
 
 
 # ==== Main ====
-data0 = load_all_tables()
-metadata0 = load_all_meta()
+# data0 = load_all_tables()
+# metadata0 = load_all_meta()
 geo0 = load_all_geo()
+geo0 %>% ggplot(aes(centroid_long, centroid_lat)) + geom_point()
 
-data1 = data0 %>% 
-  left_join(metadata0, by = "id") %>% 
-  left_join(geo0, by = "id")
+# data1 = data0 %>% 
+#   left_join(metadata0, by = "id") %>% 
+#   left_join(geo0, by = "id")
+# 
+# # Assertion to test join
+# test_join = assertthat::assert_that(NROW(data1) == NROW(data0))
+# 
+# # Save tmp data
+# saveRDS(data1, "../Data not redistributable/Tmp_data/Tmp_picture_data.rds")
 
-# Assertion to test join
-test_join = assertthat::assert_that(NROW(data1) == NROW(data0))
 
-# Save tmp data
-saveRDS(data1, "../Data not redistributable/Tmp_data/Tmp_picture_data.rds")
+
