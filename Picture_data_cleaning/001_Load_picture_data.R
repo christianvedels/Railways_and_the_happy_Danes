@@ -30,6 +30,11 @@ read_and_modify_rds = function(file_path, pb) {
     return(data.frame())
   }
   
+  if("list" %in% class(df)){
+    pb$tick()
+    return(data.frame())
+  }
+  
   df = df %>% 
     mutate(id = file_id) %>% 
     filter(X1 != "") %>% 
