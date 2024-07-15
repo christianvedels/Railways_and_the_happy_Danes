@@ -11,6 +11,8 @@ library(dplyr)
 library(tidyr)
 library(stringr)
 library(progress)
+library(jsonlite)
+library(sf)
 
 # ==== Setup ====
 progress_bar_format = "[:bar] :elapsedfull -- :current of :total -- :percent eta: :eta"
@@ -93,12 +95,73 @@ load_all_meta = function(folder_path = "../Data not redistributable/Arkiv.dk/Met
   return(all_meta)  
 }
 
+# ==== Load geo data ====
+load_all_geo = function(folder_path = "../Data not redistributable/Arkiv.dk/Geodata/") {
+  # List all .rds files in the folder
+  rds_files = list.files(folder_path, pattern = "\\.rds$", full.names = TRUE)
+  
+  # Initialize progress bar
+  pb = progress_bar$new(
+    total = length(rds_files),
+    format = "Loading geodata: :current/:total (:percent) [:bar] :elapsed"
+  )
+  
+  read_one = function(f){
+    pb$tick()
+    x = read_rds(f)
+    
+    # Convert polygon JSON string to an sf object
+    if (!is.null(x$polygon) && x$polygon != "") {
+      polygon_data = fromJSON(x$polygon)
+      coords = polygon_data$features$geometry$coordinates[[1]]
+      polygon_list = lapply(coords, function(polygon) {
+        long = polygon[,,1]
+        lat = polygon[,,2]
+        cbind(long, lat)
+      })
+      
+      polygon_sf = st_multipolygon(list(polygon_list))
+      centroid = st_centroid(polygon_sf)
+      
+    } else {
+      polygon_sf = NA
+      centroid = c(NA, NA)
+    }
+    
+    # Create an sf object for the point if it exists
+    if (!is.na(x$coords) && x$coords != "") {
+      browser()
+      coords_split = strsplit(x$coords, ", ")[[1]]
+      point_sf = st_point(c(as.numeric(coords_split[1]), as.numeric(coords_split[2])))
+    } else {
+      point_sf = NA
+    }
+    
+    # Combine into a single sf object with a geometry column
+    data.frame(
+      centroid_long = centroid[1],
+      centroid_lat = centroid[2],
+      coords_long = point_sf[1],
+      coords_lat = point_sf[2],
+      id = gsub(folder_path, "", f) %>% gsub(".rds", "", .)
+    )
+  }
+  
+  # Load all geo .rds files and combine them into one long dataframe
+  all_geo = map_df(rds_files, function(x) read_one(x))
+  
+  return(all_geo)  
+}
+
+
 # ==== Main ====
 data0 = load_all_tables()
 metadata0 = load_all_meta()
+geo0 = load_all_geo()
 
 data1 = data0 %>% 
-  left_join(metadata0, by = "id")
+  left_join(metadata0, by = "id") %>% 
+  left_join(geo0, by = "id")
 
 # Assertion to test join
 test_join = assertthat::assert_that(NROW(data1) == NROW(data0))
