@@ -9,6 +9,8 @@ library(tidyverse)
 library(tidygeocoder)
 source("Picture_data_cleaning/000_Functions.R")
 
+stop("If there is 'Se på kort' then there is typically a link to a location")
+
 # ==== Read data ====
 data0 = read_rds("../Data not redistributable/Tmp_data/Tmp_picture_data.rds")
 
