@@ -165,6 +165,17 @@ load_all_geo = function(folder_path = "../Data not redistributable/Arkiv.dk/Geod
 # metadata0 = load_all_meta()
 geo0 = load_all_geo()
 geo0 %>% ggplot(aes(centroid_long, centroid_lat)) + geom_point()
+geo0 %>%
+  filter(coords_long > 0) %>% 
+  ggplot(aes(coords_long, coords_lat)) + geom_point()
+
+geo0 %>%
+  drop_na(coords_long) %>% 
+  count()
+
+geo0 %>%
+  drop_na(centroid_long) %>% 
+  count()
 
 # data1 = data0 %>% 
 #   left_join(metadata0, by = "id") %>% 
