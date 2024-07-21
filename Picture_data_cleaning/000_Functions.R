@@ -92,3 +92,8 @@ read_aps_data = function(x){
 round0 = function(x, s){
   return(floor(x/s)*s)
 }
+
+# ==== demean ====
+demean = function(x){
+  return(x - mean(x, na.rm = TRUE))
+}
