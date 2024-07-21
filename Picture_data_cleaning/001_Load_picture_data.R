@@ -38,10 +38,7 @@ read_and_modify_rds = function(file_path, pb) {
   }
   
   df = df %>% 
-    mutate(id = file_id) %>% 
-    filter(X1 != "") %>% 
-    pivot_wider(names_from = X1, values_from = X2, values_fn = ~paste(.x, collapse = ";")) %>% 
-    mutate_all(as.character)
+    mutate(id = file_id)
   
   pb$tick()
   
@@ -68,7 +65,10 @@ load_all_tables = function(folder_path = "../Data not redistributable/Arkiv.dk/T
     format = paste0("Loading tables: ", progress_bar_format)
   )
   
-  all_tables = map_df(rds_files, ~read_and_modify_rds(.x, pb))
+  all_tables = map_df(rds_files, ~read_and_modify_rds(.x, pb)) %>% 
+    filter(X1 != "") %>% 
+    pivot_wider(names_from = X1, values_from = X2, values_fn = ~paste(.x, collapse = ";")) %>% 
+    mutate_all(as.character)
   
   return(all_tables)  
 }
@@ -163,22 +163,10 @@ load_all_geo = function(folder_path = "../Data not redistributable/Arkiv.dk/Geod
 # ==== Main ====
 # data0 = load_all_tables()
 # metadata0 = load_all_meta()
-geo0 = load_all_geo()
-geo0 %>% ggplot(aes(centroid_long, centroid_lat)) + geom_point()
-geo0 %>%
-  filter(coords_long > 0) %>% 
-  ggplot(aes(coords_long, coords_lat)) + geom_point()
-
-geo0 %>%
-  drop_na(coords_long) %>% 
-  count()
-
-geo0 %>%
-  drop_na(centroid_long) %>% 
-  count()
-
-# data1 = data0 %>% 
-#   left_join(metadata0, by = "id") %>% 
+# geo0 = load_all_geo()
+# 
+# data1 = data0 %>%
+#   left_join(metadata0, by = "id") %>%
 #   left_join(geo0, by = "id")
 # 
 # # Assertion to test join
@@ -187,5 +175,23 @@ geo0 %>%
 # # Save tmp data
 # saveRDS(data1, "../Data not redistributable/Tmp_data/Tmp_picture_data.rds")
 
+# ==== Quick summary stats for sanity checks ====
+geo0 = load_all_geo()
+geo0 %>%
+  ggplot(aes(centroid_long, centroid_lat)) + geom_point(alpha = 0.1) +
+  theme_bw()
 
+geo0 %>%
+  filter(coords_long > 7) %>%
+  filter(coords_long < 20) %>%
+  filter(coords_lat > 52) %>%
+  ggplot(aes(coords_long, coords_lat)) + geom_point(alpha = 0.1) +
+  theme_bw()
 
+geo0 %>%
+  drop_na(coords_long) %>%
+  count()
+
+geo0 %>%
+  drop_na(centroid_long) %>%
+  count()
