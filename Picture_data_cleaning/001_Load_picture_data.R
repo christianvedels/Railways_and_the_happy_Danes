@@ -161,37 +161,37 @@ load_all_geo = function(folder_path = "../Data not redistributable/Arkiv.dk/Geod
 
 
 # ==== Main ====
-# data0 = load_all_tables()
-# metadata0 = load_all_meta()
-# geo0 = load_all_geo()
-# 
-# data1 = data0 %>%
-#   left_join(metadata0, by = "id") %>%
-#   left_join(geo0, by = "id")
-# 
-# # Assertion to test join
-# test_join = assertthat::assert_that(NROW(data1) == NROW(data0))
-# 
-# # Save tmp data
-# saveRDS(data1, "../Data not redistributable/Tmp_data/Tmp_picture_data.rds")
+data0 = load_all_tables()
+metadata0 = load_all_meta()
+geo0 = load_all_geo()
+
+data1 = data0 %>%
+  left_join(metadata0, by = "id") %>%
+  left_join(geo0, by = "id")
+
+# Assertion to test join
+test_join = assertthat::assert_that(NROW(data1) == NROW(data0))
+
+# Save tmp data
+saveRDS(data1, "../Data not redistributable/Tmp_data/Tmp_picture_data.rds")
 
 # ==== Quick summary stats for sanity checks ====
-geo0 = load_all_geo()
-geo0 %>%
-  ggplot(aes(centroid_long, centroid_lat)) + geom_point(alpha = 0.1) +
-  theme_bw()
-
-geo0 %>%
-  filter(coords_long > 7) %>%
-  filter(coords_long < 20) %>%
-  filter(coords_lat > 52) %>%
-  ggplot(aes(coords_long, coords_lat)) + geom_point(alpha = 0.1) +
-  theme_bw()
-
-geo0 %>%
-  drop_na(coords_long) %>%
-  count()
-
-geo0 %>%
-  drop_na(centroid_long) %>%
-  count()
+# geo0 = load_all_geo()
+# geo0 %>%
+#   ggplot(aes(centroid_long, centroid_lat)) + geom_point(alpha = 0.1) +
+#   theme_bw()
+# 
+# geo0 %>%
+#   filter(coords_long > 7) %>%
+#   filter(coords_long < 20) %>%
+#   filter(coords_lat > 52) %>%
+#   ggplot(aes(coords_long, coords_lat)) + geom_point(alpha = 0.1) +
+#   theme_bw()
+# 
+# geo0 %>%
+#   drop_na(coords_long) %>%
+#   count()
+# 
+# geo0 %>%
+#   drop_na(centroid_long) %>%
+#   count()
