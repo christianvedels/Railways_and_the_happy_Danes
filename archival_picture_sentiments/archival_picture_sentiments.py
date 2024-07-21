@@ -36,7 +36,16 @@ def draw_image(image):
     plt.imshow(image)
     plt.axis('off')  # Hide axes
     plt.show()
+
+def hms_string(x):
+    # Convert x_seconds to hours, minutes, and seconds
+    x_hours = int(x // 3600)
+    x_minutes = int((x % 3600) // 60)
+    x_seconds = int(x % 60)
+    x_str = f"{x_hours}h {x_minutes}m {x_seconds}s"
     
+    return x_str
+
 # Function to generate ETA string
 def eta(i, start_time: float, cap_n: int) -> str:
     """
@@ -54,16 +63,7 @@ def eta(i, start_time: float, cap_n: int) -> str:
     average_time_per_n = elapsed_time / (i+1)
     remaining_n = cap_n - (i+1)
     eta_seconds = remaining_n * average_time_per_n
-    
-    def hms_string(x):
-        # Convert x_seconds to hours, minutes, and seconds
-        x_hours = int(x // 3600)
-        x_minutes = int((x % 3600) // 60)
-        x_seconds = int(x % 60)
-        x_str = f"{x_hours}h {x_minutes}m {x_seconds}s"
         
-        return x_str
-    
     # Elapsed string
     elapsed_str = hms_string(elapsed_time)
 
@@ -374,27 +374,28 @@ class ImageDetector:
         counter = 0
                     
         for image_batch in self._chunked_iterable(image_files, self.batch_size):
-                
+            
+            start_time_batch = time.time()
             # Step 1: Load files in batch
             images, filenames, draws = self._load_images_batch(image_batch)
             
             if self.verbose:
-                print(f"Processing batch: {filenames}")
+                print(f"Processing batch: {filenames}, {hms_string(time.time() - start_time_batch)}")
             
             # Step 2: Detect objects and process images
             objects_detected = self._detect_objects_in_batch(images, filenames)
             if self.verbose:
-                print(f"--> Finished object detection in batch")
+                print(f"--> Finished object detection in batch, {hms_string(time.time() - start_time_batch)}")
             
             # Step 3: Process detected objects
             results_batch = self._fer_in_detected_objects(objects_detected, images, filenames, draws)
             if self.verbose:
-                print(f"--> Finished facial emotional recognition in batch")
+                print(f"--> Finished facial emotional recognition in batch, {hms_string(time.time() - start_time_batch)}")
             
             # Step 4
             self._update_csv(results_batch)
             if self.verbose:
-                print(f"--> Writing results to csv")
+                print(f"--> Writing results to csv, {hms_string(time.time() - start_time_batch)}")
                 
             # Print ETA string
             if self.verbose:
@@ -402,7 +403,7 @@ class ImageDetector:
                 print(eta(i = counter, start_time=start_time, cap_n = len(image_files)))
                 
 
-def run_aps_wrapper(image_path = "Example_images", annotated_image_path = None, batch_size = 64, results_file_name = 'fer_results.csv'):
+def run_aps_wrapper(image_path = "Example_images", annotated_image_path = None, batch_size = 4, results_file_name = 'fer_results.csv'):
     """
     image_path, 
     annotated_image_path
