@@ -10,7 +10,7 @@ source("Picture_data_cleaning/000_Functions.R")
 
 # ==== Read data ====
 # Read aps data
-df = read_aps_data("archival_picture_sentiments/fer_results_test.csv")
+df = read_aps_data("archival_picture_sentiments/fer_results.csv")
 
 # Metadata
 metadata = read_rds("../Data not redistributable/Tmp_data/Tmp_picture_data.rds")
