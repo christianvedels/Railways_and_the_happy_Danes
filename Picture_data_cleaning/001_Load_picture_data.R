@@ -13,6 +13,7 @@ library(stringr)
 library(progress)
 library(jsonlite)
 library(sf)
+source("Picture_data_cleaning/000_Functions.R")
 
 # ==== Setup ====
 progress_bar_format = "[:bar] :elapsedfull -- :current of :total -- :percent eta: :eta"
@@ -177,21 +178,46 @@ saveRDS(data1, "../Data not redistributable/Tmp_data/Tmp_picture_data.rds")
 
 # ==== Quick summary stats for sanity checks ====
 # geo0 = load_all_geo()
-# geo0 %>%
-#   ggplot(aes(centroid_long, centroid_lat)) + geom_point(alpha = 0.1) +
-#   theme_bw()
-# 
-# geo0 %>%
-#   filter(coords_long > 7) %>%
-#   filter(coords_long < 20) %>%
-#   filter(coords_lat > 52) %>%
-#   ggplot(aes(coords_long, coords_lat)) + geom_point(alpha = 0.1) +
-#   theme_bw()
-# 
-# geo0 %>%
-#   drop_na(coords_long) %>%
-#   count()
-# 
-# geo0 %>%
-#   drop_na(centroid_long) %>%
-#   count()
+geo0 %>%
+  ggplot(aes(centroid_long, centroid_lat)) + geom_point(alpha = 0.1) +
+  theme_bw()
+
+geo0 %>%
+  filter(coords_long > 7) %>%
+  filter(coords_long < 20) %>%
+  filter(coords_lat > 52) %>%
+  ggplot(aes(coords_long, coords_lat)) + geom_point(alpha = 0.1) +
+  theme_bw()
+
+geo0 %>%
+  drop_na(coords_long) %>%
+  count()
+
+geo0 %>%
+  drop_na(centroid_long) %>%
+  count()
+
+data1 %>%
+  drop_na(Årstal) %>% 
+  mutate(
+    decade = round0(as.numeric(Årstal), 10)
+  ) %>% 
+  group_by(decade) %>% 
+  filter(decade>1850) %>% 
+  count() %>% knitr::kable()
+
+data1 %>%
+  drop_na(Årstal) %>% 
+  mutate(
+    decade = round0(as.numeric(Årstal), 10)
+  ) %>% 
+  filter(decade>1800) %>% 
+  filter(coords_long > 7) %>%
+  filter(coords_long < 20) %>%
+  filter(coords_lat > 52) %>%
+  ggplot(aes(coords_long, coords_lat)) + geom_point(alpha = 0.1) +
+  theme_bw() + 
+  facet_wrap(~decade)
+  
+
+
