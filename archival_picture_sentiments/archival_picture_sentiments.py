@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 """
 Created on Mon May 11 2024
-Facial Emotion Recognition (FER) Script
+Archival Picture Sentiments (APS)
 Author: Tom Görges, Christian Vedel
-Purpose: Detect objects (persons, ties, table, chair, etc.), their locations in the image, detect faces and finally
-recognize emotions of identified persons.
+Purpose: Detect objects (persons, ties, table, chair, etc.), their bounding box 
+in the image, detect faces and finally recognize emotions of identified persons.
 """
 
 from PIL import Image, ImageDraw, ImageFont
@@ -17,7 +17,15 @@ import face_recognition
 import matplotlib.pyplot as plt
 from fer import FER # Importing the FER library
 import time
+from yoloface import face_analysis
+import random
 
+
+# https://huggingface.co/ycbq999/facial_emotions_image_detection
+# https://chatgpt.com/c/91d25528-9831-4b8c-93de-73889a1f3a18 # Fix slow face recogn.
+# https://huggingface.co/qubvel-hf/facebook-detr-resnet-50-finetuned-10k-cppe5
+# Fast face detection: https://github.com/elyha7/yoloface
+# ElenaRyumina/face_emotion_recognition
 
 # Load fonts for drawing text on images, use default if not found
 try:
@@ -37,12 +45,13 @@ def draw_image(image):
     plt.axis('off')  # Hide axes
     plt.show()
 
-def hms_string(x):
-    # Convert x_seconds to hours, minutes, and seconds
-    x_hours = int(x // 3600)
+def dhms_string(x):
+    # Convert x_seconds to days, hours, minutes, and seconds
+    x_days = int(x // 86400)  # 1 day = 86400 seconds
+    x_hours = int((x % 86400) // 3600)
     x_minutes = int((x % 3600) // 60)
     x_seconds = int(x % 60)
-    x_str = f"{x_hours}h {x_minutes}m {x_seconds}s"
+    x_str = f"{x_days}d {x_hours}h {x_minutes}m {x_seconds}s"
     
     return x_str
 
@@ -65,14 +74,14 @@ def eta(i, start_time: float, cap_n: int) -> str:
     eta_seconds = remaining_n * average_time_per_n
         
     # Elapsed string
-    elapsed_str = hms_string(elapsed_time)
+    elapsed_str = dhms_string(elapsed_time)
 
     # Convert eta_seconds to hours, minutes, and seconds
-    eta_str = hms_string(eta_seconds)
+    eta_str = dhms_string(eta_seconds)
 
     # Convert total_seconds to hours, minutes, and seconds
     total_seconds = cap_n * average_time_per_n
-    total_str = hms_string(total_seconds)
+    total_str = dhms_string(total_seconds)
 
     full_str = f"{i} of {cap_n}: Elapsed {elapsed_str}; ETA: {eta_str} of {total_str}"
 
@@ -98,14 +107,17 @@ class ImageDetector:
             verbose (bool): Should updates be printed?
             object_detection_thr (float): Threshold to use for object detection
         """
+                
         self.image_path = image_path
         self.annotated_image_path = annotated_image_path
         self.batch_size = batch_size
         self.csv_file = results_file_name
         self.verbose = verbose
         self.object_detection_thr = object_detection_thr
+        self.face = face_analysis()
         
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'  # Autoloads cuda if available
+        print(f"--> Using {self.device}")
         
         self.processor_det = DetrImageProcessor.from_pretrained("facebook/detr-resnet-50")
         self.model_det = DetrForObjectDetection.from_pretrained("facebook/detr-resnet-50").to(self.device)
@@ -180,9 +192,7 @@ class ImageDetector:
         for i, result in enumerate(results):
             objects = self._process_object_detection(images[i], filenames[i], result)
             objects_detected.extend(objects)
-        
-        
-        
+               
         return objects_detected
     
             
@@ -233,7 +243,9 @@ class ImageDetector:
             }
     
         cropped_image = image.crop(object_box)
-        face_locations = face_recognition.face_locations(np.array(cropped_image), model="cnn")
+        # cropped_image.save("tmp.png")
+        # img, box, conf = self.face.face_detection("tmp.png",model='full')
+        face_locations = face_recognition.face_locations(np.array(cropped_image))
     
         if not face_locations:
             return {
@@ -265,6 +277,8 @@ class ImageDetector:
         face_images = []
         face_details = []
         
+        fer_start_time = time.time()
+        
         # Collect face images
         for obj in objects_detected:
             filename = obj['Image']
@@ -284,6 +298,9 @@ class ImageDetector:
             if face_details_dict['Face Detected'] == "Yes":
                 face_images.append(face_details_dict['Face Image'])
                 face_details.append((obj, image, draw, face_details_dict['Face Location']))
+        
+        if self.verbose:
+            print(f"Face detection took: {dhms_string(time.time() - fer_start_time)}")
     
         # Process all face images in batch
         if face_images:
@@ -303,7 +320,9 @@ class ImageDetector:
                     # Draw bounding boxes and labels on the image
                     draw.rectangle(face_box, outline='blue', width=2)
                     draw.text((face_box[0], face_box[1] - 10), f"{dominant_emotion}: {round(emotion_scores[dominant_emotion], 2)}", fill='blue')
-
+        
+        if self.verbose:
+            print(f"Emotion detection took: {dhms_string(time.time() - fer_start_time)}")
     
         # Draw object bounding boxes and labels
         for obj in objects_detected:
@@ -362,13 +381,16 @@ class ImageDetector:
     
     def run_aps(self, skip_already_analysed = True):
         """
-        Main method of the class. Runs FER on images in 'image_path'.
+        Main method of the class. Runs APS on images in 'image_path'.
         """
         image_files = [f for f in os.listdir(self.image_path) if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
         
         if skip_already_analysed:
             processed_files = self._already_processed()
             image_files = [f for f in image_files if f not in processed_files]
+        
+        # Shuffle the order of images
+        random.shuffle(image_files)
         
         start_time = time.time()
         counter = 0
@@ -380,22 +402,22 @@ class ImageDetector:
             images, filenames, draws = self._load_images_batch(image_batch)
             
             if self.verbose:
-                print(f"Processing batch: {filenames}, {hms_string(time.time() - start_time_batch)}")
+                print(f"Processing batch: {filenames}, Batch time: {dhms_string(time.time() - start_time_batch)}")
             
             # Step 2: Detect objects and process images
             objects_detected = self._detect_objects_in_batch(images, filenames)
             if self.verbose:
-                print(f"--> Finished object detection in batch, {hms_string(time.time() - start_time_batch)}")
+                print(f"--> Finished object detection in batch, Batch time: {dhms_string(time.time() - start_time_batch)}")
             
             # Step 3: Process detected objects
             results_batch = self._fer_in_detected_objects(objects_detected, images, filenames, draws)
             if self.verbose:
-                print(f"--> Finished facial emotional recognition in batch, {hms_string(time.time() - start_time_batch)}")
+                print(f"--> Finished facial emotional recognition in batch, Batch time: {dhms_string(time.time() - start_time_batch)}")
             
             # Step 4
             self._update_csv(results_batch)
             if self.verbose:
-                print(f"--> Writing results to csv, {hms_string(time.time() - start_time_batch)}")
+                print(f"--> Writing results to csv, Batch time: {dhms_string(time.time() - start_time_batch)}")
                 
             # Print ETA string
             if self.verbose:
@@ -403,7 +425,7 @@ class ImageDetector:
                 print(eta(i = counter, start_time=start_time, cap_n = len(image_files)))
                 
 
-def run_aps_wrapper(image_path = "Example_images", annotated_image_path = None, batch_size = 4, results_file_name = 'fer_results.csv'):
+def run_aps_wrapper(image_path = "Example_images", annotated_image_path = None, batch_size = 8, results_file_name = 'fer_results.csv'):
     """
     image_path, 
     annotated_image_path
@@ -420,5 +442,5 @@ def run_aps_wrapper(image_path = "Example_images", annotated_image_path = None, 
 if __name__ == '__main__':
     run_aps_wrapper(
         image_path = "D:/Dropbox/Research_projects/Railways/Data not redistributable/Arkiv.dk/Images",
-        results_file_name = 'fer_results_test.csv'
+        results_file_name = 'fer_results.csv'
         )
