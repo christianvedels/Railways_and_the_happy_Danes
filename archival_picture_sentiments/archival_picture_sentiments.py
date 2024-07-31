@@ -20,13 +20,6 @@ import time
 from yoloface import face_analysis
 import random
 
-
-# https://huggingface.co/ycbq999/facial_emotions_image_detection
-# https://chatgpt.com/c/91d25528-9831-4b8c-93de-73889a1f3a18 # Fix slow face recogn.
-# https://huggingface.co/qubvel-hf/facebook-detr-resnet-50-finetuned-10k-cppe5
-# Fast face detection: https://github.com/elyha7/yoloface
-# ElenaRyumina/face_emotion_recognition
-
 # Load fonts for drawing text on images, use default if not found
 try:
     font = ImageFont.truetype("arial.ttf", 30)
@@ -425,7 +418,7 @@ class ImageDetector:
                 print(eta(i = counter, start_time=start_time, cap_n = len(image_files)))
                 
 
-def run_aps_wrapper(image_path = "Example_images", annotated_image_path = None, batch_size = 8, results_file_name = 'fer_results.csv'):
+def run_aps_wrapper(image_path = "Example_images", annotated_image_path = None, batch_size = 2, results_file_name = 'fer_results.csv'):
     """
     image_path, 
     annotated_image_path
