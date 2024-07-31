@@ -2,3 +2,16 @@
 .Rproj.user/38A1517/sources/session-b0a817d0/lock_file
 .Rhistory
 .Rproj.user
+archival_picture_sentiments/.yoloface/face_detection.cfg
+archival_picture_sentiments/.yoloface/face_detection.weights
+archival_picture_sentiments/.yoloface/yolov3_tiny_face.cfg
+archival_picture_sentiments/.yoloface/yolov3-tiny_face.weights
+archival_picture_sentiments/__pycache__/archival_picture_sentiments.cpython-38.pyc
+archival_picture_sentiments/__pycache__/fer.cpython-38.pyc
+archival_picture_sentiments/Example images/7055100.png
+archival_picture_sentiments/Example images/7055378.png
+archival_picture_sentiments/Example images/7057211.png
+archival_picture_sentiments/Example images/Group_picture/5661879.png
+archival_picture_sentiments/Example images/Group_picture/7055100.png
+archival_picture_sentiments/Example images/Group_picture/7055378.png
+archival_picture_sentiments/Example images/Group_picture/7057211.png
