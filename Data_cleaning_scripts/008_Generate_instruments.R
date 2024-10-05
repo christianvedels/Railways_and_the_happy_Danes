@@ -30,7 +30,7 @@ outline_dk <- st_read("../../Data not redistributable/Outline DK/DNK_adm0.shp") 
 
 
 # Obtain elevation raster (from OpenStreetMap)
-denmark_elev <- get_elev_raster(outline_dk, z = 9, source = "osm", clip = "locations") # z(oom) = 9 also used by package "movecost", probably need zoom = 10 or higher
+denmark_elev <- get_elev_raster(outline_dk, z = 7, source = "osm", clip = "locations") # z(oom) = 9 used by package "movecost", probably need zoom = 10 or higher but my computer breaks down at this resolution
 plot(denmark_elev)
 
 dnk <- as(denmark_elev, "SpatRaster")
