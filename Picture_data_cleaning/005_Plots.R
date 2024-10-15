@@ -132,6 +132,12 @@ df = df %>%
   ) %>%
   ungroup()
 
+df %>% 
+  select(long_archive, coords_long, centroid_long) %>% 
+  summarise_all(
+    function(x){sum(!is.na(x))}
+  )
+
 plot_data = df %>% 
   mutate(
     decade = round0(midpoint_year, 10)
@@ -185,5 +191,15 @@ p1 = plot_data %>%
 
 p1
 
-p1 + 
+p1 = p1 + 
   facet_wrap(~decade)
+
+x = plot_data %>% 
+  group_by(coords_long, coords_lat) %>% 
+  mutate(
+    lag_emotion_score_happy = lag(emotion_score_happy)
+  )
+
+lm(emotion_score_happy ~lag_emotion_score_happy, data = x) %>% summary()
+
+ggsave("Picture_data_cleaning/Spread_of_happiness.png", plot = p1)
