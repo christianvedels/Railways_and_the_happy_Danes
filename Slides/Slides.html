@@ -4,7 +4,7 @@
     <title>Railroads and the happy Danes</title>
     <meta charset="utf-8" />
     <meta name="author" content="Tom Görges^1, Paul Sharp^2, Christian Vedel^2, Magnus Ørberg^2 .small123[  TU Dortmund University^1, University of Southern Denmark^2, University of Copenhagen^3]   Email: christian-vs@sam.sdu.dk  Twitter: @ChristianVedel&lt;br&gt;   .small123[github.com/christianvedels/Railways_and_the_happy_Danes]" />
-    <script src="libs/header-attrs-2.21/header-attrs.js"></script>
+    <script src="libs/header-attrs-2.25/header-attrs.js"></script>
     <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
     <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
     <link href="libs/panelset-0.2.6/panelset.css" rel="stylesheet" />
@@ -24,7 +24,7 @@ class: center, middle, inverse, title-slide
 ### Tom Görges<span class="math inline"><sup>1</sup></span>, Paul Sharp<span class="math inline"><sup>2</sup></span>, Christian Vedel<span class="math inline"><sup>2</sup></span>, Magnus Ørberg<span class="math inline"><sup>2</sup></span> .small123[<br><br>TU Dortmund University<span class="math inline"><sup>1</sup></span>, University of Southern Denmark<span class="math inline"><sup>2</sup></span>, University of Copenhagen<span class="math inline"><sup>3</sup></span>]<br><br> Email: <a href="mailto:christian-vs@sam.sdu.dk" class="email">christian-vs@sam.sdu.dk</a><br> Twitter: <span class="citation">@ChristianVedel&lt;br</span>&gt;<br><br> .small123[<em><a href="https://github.com/christianvedels/Railways_and_the_happy_Danes">github.com/christianvedels/Railways_and_the_happy_Danes</a></em>]
 ]
 .date[
-### Updated 2023-11-30
+### Updated 2024-10-20
 ]
 
 ---
@@ -107,35 +107,58 @@ class: center, middle, inverse, title-slide
 .xsmall123 {
   font-size: 0.60em;
 }
+
+.pull-center {
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+  text-align: left;
+}
+
+.pull-center-narrow {
+  margin-left: auto;
+  margin-right: auto;
+  width: 30%;
+  text-align: left;
+}
 &lt;/style&gt;
 
+
+
+.pull-left-wide[
 # Railways and the Happy Danes
 
-.pull-left[
 ### Motivaiton
-- It is reasonable to suppose that there is interplay between institutions, human capital, culture and geography (market access)
-- **Hypothesis:** Danish railways brought Grudtvigianism - socalled 'happy' Danes
+- People are complex and hence economics. There is a complex interplay between institutions, geography, culture and institutions that shape society
+- **Hypothesis:** Danish railways brought modernity but also Grudtvigianism - socalled 'happy' Danes. 
 
 ### This presentation
-- Very preliminary - mostly speculative 
+- Using off-the-shelf ML, we analyzing 2M pictures to find an answer
 - Brief historical background
-- Some preliminary results and ideas for identification
+- Some preliminary results
 ]
 
-.pull-right[
-![Trees](Figures/Trees.jpg)
+.pull-right-narrow[
+Example picture from Arkiv.dk
+ 
+https://arkiv.dk/vis/178152
+
+![School](Figures/annotated_178152.png)
+.small123[
+*Source: Arkiv.dk*
 ]
+]
+
+
+---
+class: inverse, center, middle
+
+# Background
 
 ---
 # Origin
 .pull-left-wide[
-- Paul supervised Magnus' masters Thesis, which replicated Berger (2019) in Denmark 
-- Tom started studying the influence of railways on human capital and social mobility 
-- I've been interested in railways ever since I wrote my Bachelor thesis on it 
 
-
-- Rough draft of the synergy of all these ideas: **Railways and the Happy Danes**
-- Seemingly the first ever EH paper on Danish railways 
 
 ]
 
@@ -158,7 +181,8 @@ class: center, middle, inverse, title-slide
 - Zimran (2020): Urbanization and health
 - Bogart, You, Alvarez-Palau, Satchell, Shaw-Taylor (2022): Urbanization and structural change
 - Cermeño, Enflo, Lindvall (2022): Railroads, state and schooling
-- Vedel (2023): Infrastructure caused 24 percent population growth in DK  
+- Melander (2023): Railroads and social movements in Sweden
+- Vedel (2024): Water infrastructure: 26 percent population growth in DK  
 
 ...*So much more*
 ]
@@ -184,6 +208,24 @@ Petro, Brassey, Betts company ([Wikimedia commons](https://commons.wikimedia.org
 
 
 ---
+# Holy vs. Happy Danes
+### Competing religious movements within Denmark's state Lutheran church
+.small123[*Bentzen (2023), Bentzen (2024)*]
+
+.pull-left[
+### Conservative Inner Mission (IM) [*Holy Danes*]
+- Belief in the literal word of the Bible, salvation must come through deeds during life
+- Followers sought repentance, no alcohol, and no dancing
+]
+
+.pull-right[
+### Liberal Grundtvigianism [*Happy Danes*]
+- Spread by young clerics inspired by N. F. S. Grundtvig (1783-1872)
+- Optimistic focus on "living and confessing", life seen as a gift to be enjoyed
+- Promoted democracy &amp; (adult) education through community houses and folk high schools
+]
+
+---
 # Grundvianism 
 .pull-left[
 - The origin of the liberal Danish spirit
@@ -195,8 +237,7 @@ Petro, Brassey, Betts company ([Wikimedia commons](https://commons.wikimedia.org
   + His influence touches everything
   + Community houses: Local democracy
   + Høj skoler: Education of farmers
-
-
+  + Cooperative creameries! (Important: Lampe &amp; Sharp)
 ]
 
 .pull-right[
@@ -247,24 +288,121 @@ C.A. Jensen (1843) 'Nikolaj Frederik Severin Grundtvig'. [Wikimedia commons](htt
 ]
 
 ---
+class: inverse, center, middle
+
+# Testing out our idea in data
+
+---
+class: center, middle
+
 # The hypothesis in summary
 
-1. The 'happy Danes' promoted the foundation for the modern success of the Danish state
-2. This was done via forsamlingshuse and 'højskoler' ('high schools'). 
-3. .red[The 'Happy Danes' are a product of market access]
+.pull-center[
+1. Railways brought modern production and modern ideas 
+2. In the Danish case the central idea was Grundtvigianism 
+3. Railways made people happier `\(\rightarrow\)` Market access shapes emotional well-being (?*) 
+]
 
+
+.footnote[
+.small123[
+  *The null finding is also rather interesting: Interconnectedness having no effect on well-being.
+]
+]
+
+---
+class: center
+
+# The hypothesis in pictures
+--
+
+.pull-left-narrow[
+.panelset[
+.panel[.panel-name[Sad]
+**Crilles Dirches &amp; Ane Sophie Hans Johansens**
+*https://arkiv.dk/vis/159960*
+&lt;img src="Figures/annotated_159960.png" width="75%" alt="https://arkiv.dk/vis/159960"&gt;
+]
+.panel[.panel-name[Fear]
+**Master Taylor Mathias Jørgen Schrøder**
+*https://arkiv.dk/vis/1042395*
+&lt;img src="Figures/annotated_1042395.png" width="75%" alt="https://arkiv.dk/vis/1042395"&gt;
+]
+.panel[.panel-name[Anger]
+**Bodil Jensdatter**
+*https://arkiv.dk/vis/369089*
+&lt;img src="Figures/annotated_369089.png" width="75%" alt="https://arkiv.dk/vis/369089"&gt;
+]
+
+]
+]
+
+--
+
+.pull-right-wide[
+.panelset[
+.panel[.panel-name[Train]
+**...But then**  
+&lt;img src="Figures/beta.dreamstudio.ai.png" width="40%" alt="AI generated train"&gt;
+]
+
+.panel[.panel-name[Happy 1]
+
+**Thora Kirstine Thorsen**
+*https://arkiv.dk/vis/178152*
+&lt;img src="Figures/annotated_178152.png" width="40%" alt="https://arkiv.dk/vis/178152"&gt;
+]
+
+.panel[.panel-name[Happy 2]
+
+**Niels Aage Nielsen**
+*https://arkiv.dk/vis/103676*
+&lt;img src="Figures/annotated_103676.png" width="75%" alt="https://arkiv.dk/vis/103676"&gt;
+]
+
+.panel[.panel-name[Happy 3]
+**Inge, Grete &amp; Axel**
+*https://arkiv.dk/vis/114519*
+&lt;img src="Figures/annotated_114519.png" width="75%" alt="https://arkiv.dk/vis/114519"&gt;
+]
+
+.panel[.panel-name[Happy 4]
+**Ena &amp; Eriks wedding**
+*https://arkiv.dk/vis/316474*
+&lt;img src="Figures/annotated_316474.png" width="75%" alt="https://arkiv.dk/vis/316474"&gt;
+]
+]
+]
+
+
+
+---
+class: middle
+# Hypothesis broken down
+1. Railways and markets
+2. Railways and modern ideas
+3. Pictures and happiness
+4. Railways and happiness
+
+---
+# Obvious problems
+
+- Should you smile on a picture? Obviously a cultural matter
+- AI quality and bias
+- Selection: Pictures don't end up in local archives randomly
+- We are working on addressing all of these. 
 
 ---
 # Data
 
 .pull-left[
 - Census data 1787-1901 (Link lives)
-- HISCO codes for census descriptions (Dahl &amp; Vedel, 2023)
-- Linking with parish borders and consistency (Vedel, 2023)
+- HISCO codes for census descriptions (Dahl, Johansen, Vedel, 2024)
+- Linking with parish borders and consistency (Vedel, 2024)
 - Railroads shape files (Fertner 2013)
 - Location of assembly houses (Trap 3/4; Bentzen, Boberg-Fazlic, Sharp, Skovsgaard, Vedel, 2023)
 - For identification: Elevation data from Open Street Map
-- **Missing:** Regional quantification of happyness
+- Indidivual level happiness from pictures
 ]
 
 .pull-right[
@@ -286,36 +424,11 @@ C.A. Jensen (1843) 'Nikolaj Frederik Severin Grundtvig'. [Wikimedia commons](htt
 ]
 ]
 
+
 ---
 # Some ocular regression: Tommerup Stationsby
 .center[
 &lt;iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d38285.490263207925!2d10.191880045700286!3d55.333963183235056!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e1!3m2!1sen!2sdk!4v1701266724087!5m2!1sen!2sdk" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"&gt;&lt;/iframe&gt;
-]
-
----
-# Skanderup-'vognen'
-.center[
-&lt;iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d22683.42067055953!2d9.30969026595339!3d55.47529448680792!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e1!3m2!1sen!2sdk!4v1701267026667!5m2!1sen!2sdk" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"&gt;&lt;/iframe&gt;
-]
-
----
-# Anecdotal evidence for the Holy Danes 
-.pull-left[
-### Carl Moe
-- Harboører from 1877
-- Skanderup from 1885
-- Old flock visited Skanderup every year with the 'Skanderup-vogn'
-- Carl Moe known for things named like: "The Akvavit Sermon", "The hell sermon" 
-- Ideas spread with connectivity 
-- Maybe liberal ideals also spread? 
-
-]
-
-.pull-right[
-![Carl_Moe](Figures/CarlMoe.jpg)
-.small123[
-*Carl Moe, kb.dk*
-]
 ]
 
 ---
@@ -349,21 +462,18 @@ C.A. Jensen (1843) 'Nikolaj Frederik Severin Grundtvig'. [Wikimedia commons](htt
 .pull-right[
 .panelset[
 .panel[.panel-name[Old map]
-![Map](Figures/Course of railways in terrain.png)
+&lt;img src="Figures/Course of railways in terrain.png" width="80%" alt="Predicted lines"&gt;
 ]
 .panel[.panel-name[Predicted lines]
-![Predicted lines](Figures/LCP_IV_crit2.png)
+&lt;img src="Figures/LCP_IV_crit2.png" width="100%" alt="Predicted lines"&gt;
 ]
 ]
 ]
 
 ---
-# Least Cost Path
-![Predicted lines](Figures/LCP_IV_crit2.png)
----
-# Early results
+# Railways and the Economy
 .panelset[
-.panel[.panel-name[TWFE: Pop]
+.panel[.panel-name[Railways and the Economy]
 .small123[
 | |(1) log(Pop)           |(2) log(Child women ratio) |(3) log(Manufacturing 789) |(4) log(hisclass avg) |(5) log(Born different county) |
 |:-----------|:-----------|:-----------|:-----------|:-----------|:-----------|
@@ -371,11 +481,12 @@ C.A. Jensen (1843) 'Nikolaj Frederik Severin Grundtvig'. [Wikimedia commons](htt
 |GIS_ID FE        |Yes                |Yes                    |Yes                    |Yes               |Yes                        |
 |Year FE          |Yes                |Yes                    |Yes                    |Yes               |Yes                        |
 |Observations    |6,374              |6,352                  |6,357                  |6,373             |6,282                      |
-
+- Classical effect as expected
+- Still novel for the DK setting
 ]
 
 ]
-.panel[.panel-name[TWFE: Grundtv.]
+.panel[.panel-name[Railways and the Ideas (Grundtvig)]
 .small123[
 |Dependent Var.: |(1) Assembly house    |(2) log(MA assembly) |(3) High School        |(4) log(MA High) |
 |:---------------|:-----------------|:----------------|:-----------------|:----------------|
@@ -384,32 +495,20 @@ C.A. Jensen (1843) 'Nikolaj Frederik Severin Grundtvig'. [Wikimedia commons](htt
 |GIS_ID FE       |Yes               |Yes              |Yes               |Yes              |
 |Year FE         |Yes               |Yes              |Yes               |Yes              |
 |Observations    |100,485           |102,245          |324,005           |324,005          |
+- Grudtvigian institutions specifically placed in connected places
 ]
 ]
 ]
 
+.footnote[
+.small123[
+**This also holds using the CS estimator*
+]
+]
 
 ---
-# Early results DiD
-.panelset[
-.panel[.panel-name[Pop]
-.center[
-&lt;img src="Figures/DID_pop.png" width="40%" /&gt;
-]
-]
-.panel[.panel-name[Assembly houses]
-.center[
-&lt;img src="Figures/DID_assembly.png" width="80%" /&gt;
-]
-]
-.panel[.panel-name[High schools]
-.center[
-&lt;img src="Figures/DID_HighSchool.png" width="80%" /&gt;
-]
-]
-]
+# Railways and pictures
 
-*Using the Callaway, Sant'Anna (2021) estimator*
 
 ---
 ## References (1/2)
@@ -453,7 +552,8 @@ Zimran, A. (2020). Transportation and Health in the Antebellum United States, 18
 <script>var slideshow = remark.create({
 "highlightStyle": "github",
 "highlightLines": true,
-"countIncrementalSlides": false
+"countIncrementalSlides": false,
+"ratio": "16:9"
 });
 if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
   window.dispatchEvent(new Event('resize'));
@@ -552,14 +652,14 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
 })(document);</script>
 <style>
 .logo {
-  background-image: url(SDU_logo.png);
+  background-image: url(Logos.png);
   background-size: contain;
   background-repeat: no-repeat;
   position: absolute;
   top: 1em;
   right: 1em;
-  width: 125px;
-  height: 60px;
+  width: 83px;
+  height: 96px;
   z-index: 0;
 }
 </style>
