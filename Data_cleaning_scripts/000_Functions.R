@@ -349,3 +349,52 @@ confusion_matrix = function(data_f){
   return(conf_mat)
 }
 
+# ==== impute_it() ====
+impute_it = function(x, min_year, max_year) {
+  # Create a data frame with the full range of years
+  full_years = data.frame(midpoint_year = min_year:max_year)
+  
+  # Join with the input data
+  joined_data = left_join(full_years, x, by = "midpoint_year")
+  
+  # Initialize the result with joined_data
+  result = joined_data
+  
+  # Loop over each column that starts with "emotion_score_"
+  for (col_name in names(joined_data)[grepl("^emotion_score_", names(joined_data))]) {
+    # Extract the column data
+    col_data = joined_data[[col_name]]
+    
+    # Interpolate the data if not all values are NA
+    if (sum(!is.na(col_data))>1) {
+      interpolated_values = approx(
+        x = joined_data$midpoint_year,
+        y = col_data,
+        xout = min_year:max_year,
+        rule = 2
+      )$y
+    } else {
+      interpolated_values = col_data
+    }
+    
+    # Assign the interpolated values to the result
+    result[[col_name]] = interpolated_values
+    
+    # Create imputation flags
+    result[[paste0("flag_", col_name)]] = ifelse(is.na(joined_data[[col_name]]), 1, 0)
+  }
+  
+  return(result)
+}
+
+# ==== Better as.numeric ====
+as_numeric0 = function(x){
+  if(is.factor(x)){
+    x = as.character(x)
+    x = as.numeric(x)
+  } else {
+    x = as.numeric(x)
+  }
+  return(x)
+}
+
