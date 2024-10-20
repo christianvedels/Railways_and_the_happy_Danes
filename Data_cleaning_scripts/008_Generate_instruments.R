@@ -89,7 +89,7 @@ for (crit_slope in crit_slope_values) {
   
   # Construct the file path dynamically based on the crit_slope value
   file_path = paste0(
-    "Data/lcp_slope_cost surfaces/slope_cs_crit_",
+    "../Data not redistributable/Instrument_shapes/lcp_slope_cost_surfaces/slope_cs_crit_",
     slope_label,
     ".rds"
   )
@@ -97,6 +97,7 @@ for (crit_slope in crit_slope_values) {
   # Save the 'slope_cs' object to a .rds file with the current crit_slope in the filename
   write_rds(slope_cs, file_path)
 }
+
 
 
 ############################
@@ -126,7 +127,7 @@ for (i in crit_slope_values) {
   
   # Construct the file path for each crit_slope value
   file_path = paste0(
-    "Data/lcp_slope_cost surfaces/slope_cs_crit_",
+    "../Data not redistributable/Instrument_shapes/lcp_slope_cost_surfaces/slope_cs_crit_",
     i,
     ".rds"
   )
@@ -370,14 +371,13 @@ for (slope_label in names(cost_surfaces)) {
 # Optional: Save the LCPs for each cost surface with town_pair in shapefile
 for (slope_label in names(lcp_sf_all_cost_surfaces)) {
   st_write(lcp_sf_all_cost_surfaces[[slope_label]], 
-           paste0("Data/lcp_shape_files/LCP_scrit_", slope_label, ".shp"), 
+           paste0("../Data not redistributable/Instrument_shapes/lcp_shape_files/LCP_scrit_", slope_label, ".shp"), 
            driver = "ESRI Shapefile",
            append = F) # replace existing file
 }
 
 
-test = st_read("Data/lcp_shape_files/LCP_scrit_10.shp")
+test = st_read("../Data not redistributable/Instrument_shapes/lcp_shape_files/LCP_scrit_10.shp")
 plot(test$geometry)
-
 
 
