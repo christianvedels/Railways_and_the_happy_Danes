@@ -16,7 +16,7 @@ library(foreach)
 library(raster)
 library(elevatr)
 
-source("000_Functions.R") # Contains calc_rail()
+source("Data_cleaning_scripts/000_Functions.R") # Contains calc_rail()
 
 # ==== Load data ====
 # Load shape files
@@ -32,7 +32,7 @@ shapes = foreach(f = f_shapes) %do% {
 
 ### Add variable fake close. Necessary for function
 for(i in seq_along(shapes)) {
-  shapes[[i]]$fake_close = 2020
+  shapes[[i]]$fake_close = 3000
 }
 
 
@@ -49,7 +49,7 @@ foreach(i = 1:length(shapes)) %do% {
     verbose = TRUE,
     plots = TRUE,
     id = paste0("predicted_rail_paramS",i),
-    years = 1846:1877
+    years = 1846:2020
   )
   
   # Add parameter info 

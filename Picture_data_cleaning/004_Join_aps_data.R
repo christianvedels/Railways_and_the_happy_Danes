@@ -10,10 +10,11 @@ source("Picture_data_cleaning/000_Functions.R")
 
 # ==== Read data ====
 # Read aps data
-df = read_aps_data("archival_picture_sentiments/fer_results.csv")
-
+df = read_aps_data("../Data not redistributable/APS_data/fer_results.csv")
 # Metadata
 metadata = read_rds("../Data not redistributable/Tmp_data/Tmp_picture_data.rds")
+
+
 
 # Geographical features
 path = "https://raw.githubusercontent.com/christianvedels/A_perfect_storm_replication/main/Data/Geo.csv"
