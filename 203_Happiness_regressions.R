@@ -70,7 +70,7 @@ reg_data_n_pics %>%
   count(is.na(id))
 
 # ==== plot TWFE function ====
-plots_funky = function(x, treat_var, se = TRUE){
+plots_funky = function(x, treat_var, e, se = TRUE){
   treat_var = removePunctuation(treat_var, preserve_intra_word_dashes = TRUE)
   
   p1 = x %>% 
@@ -86,16 +86,21 @@ plots_funky = function(x, treat_var, se = TRUE){
     mutate(
       var = gsub(treat_var, "", var) %>% as.numeric
     ) %>% 
+    filter(abs(var) < 100) %>% 
     ggplot(aes(var, Estimate)) + 
     geom_point() + 
     labs(
-      title = attr(x, "outcome")
+      title = e
     ) + 
     geom_vline(
       xintercept = 0,
       lty = 2
     ) + 
-    theme_bw()
+    geom_hline(
+      yintercept = 0
+    ) + 
+    theme_bw() + 
+    scale_alpha_continuous(breaks = seq(-100, 100, by = 20))
   
   if(se){
     p1 = p1 +
@@ -111,27 +116,56 @@ plots_funky = function(x, treat_var, se = TRUE){
 
 # ==== TWFE ====
 mods_opened = foreach(e = reg_data_parish %>% select(emotion_score_angry:emotion_score_neutral) %>% names()) %do% {
-  formula0 = as.formula(paste0("log(", e, ") ~ treat_time_opened | GIS_ID_w_closest + midpoint_year"))
+  formula0 = as.formula(paste0(e, " ~ treat_time_opened | GIS_ID_w_closest + midpoint_year"))
   mod = feols(
     formula0,
-    data = reg_data_indiv
+    data = reg_data_parish
   )
-  attr(mod, "outcome") = paste0("log(", e, ")")
+  attr(mod, "outcome") = e
   return(mod)
 }
 
-plots_opnened = lapply(mods_opened, function(x) plots_funky(coeftable(x), treat_var = "treat_time_opened"))
+plots_opnened = lapply(mods_opened, function(x) {
+  plots_funky(coeftable(x),
+              e = attr(x, "outcome"),
+              treat_var = "treat_time_opened")
+})
+names(plots_opnened) = emotions
+
+for(e in emotions){
+  ggsave(
+    paste0("Figures/Railways_on_emotions_opened/", e, ".png"),
+    plot = plots_opnened[[e]],
+    width = dims$width,
+    height = dims$height
+  )
+}
 
 mods_closed = foreach(e = reg_data_parish %>% select(emotion_score_angry:emotion_score_neutral) %>% names()) %do% {
   formula0 = as.formula(paste0(e, " ~ treat_time_closed | GIS_ID_w_closest + midpoint_year"))
-  feols(
+  mod = feols(
     formula0,
-    data = reg_data_indiv
+    data = reg_data_parish
   )
-  attr(mod, "outcome") = paste0("log(", e, ")")
+  attr(mod, "outcome") = e
+  return(mod)
 }
 
-plots_closed = lapply(mods_closed, function(x) plots_funky(coeftable(x), treat_var = "treat_time_closed"))
+plots_closed = lapply(mods_closed, function(x) {
+  plots_funky(coeftable(x),
+              e = attr(x, "outcome"),
+              treat_var = "treat_time_closed")
+})
+names(plots_closed) = emotions
+
+for(e in emotions){
+  ggsave(
+    paste0("Figures/Railways_on_emotions_closed/", e, ".png"),
+    plot = plots_closed[[e]],
+    width = dims$width,
+    height = dims$height
+  )
+}
 
 # ==== RIF ====
 # To understand what is going on with variance
@@ -154,7 +188,7 @@ attr(x, "outcome") = "rif_variance"
 plots_funky(x, "treat_time_opened", se = FALSE)
 
 # ==== Number of pics ====
-estimate_n_pics = att_gt(
+estimate_n_pics_opened = att_gt(
   yname = "l_n_pics",
   tname = "midpoint_year",
   idname = "id",
@@ -163,11 +197,14 @@ estimate_n_pics = att_gt(
   panel = TRUE
 )
 
-sum_simple = aggte(estimate, type = "simple", na.rm = TRUE)
-sum_dynamic = aggte(estimate, type = "dynamic", na.rm = TRUE)
-sum_calendar = aggte(estimate, type = "calendar", na.rm = TRUE)
+sum_simple = aggte(estimate_n_pics_opened, type = "simple", na.rm = TRUE)
+sum_dynamic = aggte(estimate_n_pics_opened, type = "dynamic", na.rm = TRUE)
+sum_calendar = aggte(estimate_n_pics_opened, type = "calendar", na.rm = TRUE)
 
-sum_simple
+sink("Tables/DID_n_pictures_opened.txt")
+print(sum_simple)
+sink()
+
 p1 = sum_dynamic %>%
   ggdid() +
   theme(
@@ -179,9 +216,9 @@ p1 = sum_dynamic %>%
 
 
 p1
-ggsave("Figures/DiD_n_pictures.png", width = 8, height = 6, plot = p1)
+ggsave("Figures/DiD_n_pictures_opened.png", width = 8, height = 6, plot = p1)
 
-sum_calendar %>% ggdid() +
+p1 = sum_calendar %>% ggdid() +
   theme(
     axis.text.x = element_text(angle = 90)
   ) +
@@ -189,8 +226,11 @@ sum_calendar %>% ggdid() +
     breaks = seq(1800, 2000, by = 20)
   )
 
+p1
+ggsave("Figures/DiD_n_pictures_opened_effect_by_calendar.png", width = 8, height = 6, plot = p1)
+
 # ==== Number of pics railway closed ====
-estimate_n_pics = att_gt(
+estimate_n_pics_closed = att_gt(
   yname = "l_n_pics",
   tname = "midpoint_year",
   idname = "id",
@@ -199,11 +239,14 @@ estimate_n_pics = att_gt(
   panel = TRUE
 )
 
-sum_simple = aggte(estimate, type = "simple", na.rm = TRUE)
-sum_dynamic = aggte(estimate, type = "dynamic", na.rm = TRUE)
-sum_calendar = aggte(estimate, type = "calendar", na.rm = TRUE)
+sum_simple = aggte(estimate_n_pics_closed, type = "simple", na.rm = TRUE)
+sum_dynamic = aggte(estimate_n_pics_closed, type = "dynamic", na.rm = TRUE)
+sum_calendar = aggte(estimate_n_pics_closed, type = "calendar", na.rm = TRUE)
 
-sum_simple
+sink("Tables/DID_n_pictures_closed.txt")
+print(sum_simple)
+sink()
+
 p1 = sum_dynamic %>%
   ggdid() +
   theme(
@@ -213,17 +256,19 @@ p1 = sum_dynamic %>%
     breaks = seq(-180, 180, by = 20)
   )
 
-
 p1
 ggsave("Figures/DiD_n_pictures_closed.png", width = 8, height = 6, plot = p1)
 
-sum_calendar %>% ggdid() +
+p1 = sum_calendar %>% ggdid() +
   theme(
     axis.text.x = element_text(angle = 90)
   ) +
   scale_x_continuous(
     breaks = seq(1800, 2000, by = 20)
   )
+
+p1
+ggsave("Figures/DiD_n_pictures_closed_effect_by_calendar.png", width = 8, height = 6, plot = p1)
 
 # ==== Railways and Happiness DiD ====
 estimate_happy = att_gt(
