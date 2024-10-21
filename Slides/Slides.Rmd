@@ -107,7 +107,7 @@ xaringanExtra::use_progress_bar(color = "#808080", location = "top")
 
 ### Motivaiton
 - People are complex and hence economics. There is a complex interplay between institutions, geography, culture and institutions that shape society
-- **Hypothesis:** Danish railways brought modernity but also Grudtvigianism - socalled 'happy' Danes. 
+- **Hypothesis:** Danish railways brought modernity but also Grudtvigianism - socalled 'happy' Danes. Maybe they also smiled more?
 
 ### This presentation
 - Using off-the-shelf ML, we analyzing 2M pictures to find an answer
@@ -132,17 +132,6 @@ class: inverse, center, middle
 
 # Background
 
----
-# Origin
-.pull-left-wide[
-
-
-]
-
-.pull-right-narrow[
-![Railway](Figures/beta.dreamstudio.ai.png)
-.small123[*beta.dreamstudio.ai*]
-]
 
 ---
 # Literature
@@ -183,27 +172,8 @@ class: inverse, center, middle
 Petro, Brassey, Betts company ([Wikimedia commons](https://commons.wikimedia.org/wiki/File:Victoria_Bridge,_Montreal.jpg))
 ]
 
-
 ---
-# Holy vs. Happy Danes
-### Competing religious movements within Denmark's state Lutheran church
-.small123[*Bentzen (2023), Bentzen (2024)*]
-
-.pull-left[
-### Conservative Inner Mission (IM) [*Holy Danes*]
-- Belief in the literal word of the Bible, salvation must come through deeds during life
-- Followers sought repentance, no alcohol, and no dancing
-]
-
-.pull-right[
-### Liberal Grundtvigianism [*Happy Danes*]
-- Spread by young clerics inspired by N. F. S. Grundtvig (1783-1872)
-- Optimistic focus on "living and confessing", life seen as a gift to be enjoyed
-- Promoted democracy & (adult) education through community houses and folk high schools
-]
-
----
-# Grundvianism 
+# Grundtvianism 
 .pull-left[
 - The origin of the liberal Danish spirit
 - NFS Grundtvig (1783-1872):
@@ -218,7 +188,7 @@ Petro, Brassey, Betts company ([Wikimedia commons](https://commons.wikimedia.org
 ]
 
 .pull-right[
-![Forsamlingshus](Figures/Forsamlingshus.jpg)
+<img src="Figures/Forsamlingshus.jpg" width="65%" alt="Forsamlingshus">
 .small123[
 'Fyns forsamlingshus' (1971) (Stadsarkivet)
 ]
@@ -235,13 +205,13 @@ Petro, Brassey, Betts company ([Wikimedia commons](https://commons.wikimedia.org
 - Local democracy and societies
 - *"Leave two Danes in a room and they will at least three societies"*
 
-![Ansager](Figures/Generalforsamling_i_Ansager_Andelsmejeri.jpg)
+<img src="Figures/Generalforsamling_i_Ansager_Andelsmejeri.jpg" width="80%" alt="Ansager">  
 .small123[*Agersnap, H. (1885) Generalforsamling i Ansager Andelsmejeri [wikimedia](https://commons.wikimedia.org/wiki/File:Generalforsamling_i_Ansager_Andelsmejeri.jpg)*]
 ]
 
 .pull-right[
 .small123[
-![Grundtvig](Figures/Grundtvig_wikimedia.jpg)
+<img src="Figures/Grundtvig_wikimedia.jpg" width="75%" alt="Grundtvig">  
 C.A. Jensen (1843) 'Nikolaj Frederik Severin Grundtvig'. [Wikimedia commons](https://commons.wikimedia.org/wiki/File:N-f-s-grundtvig-portr%C3%A6t.jpg)
 ]
 ]
@@ -262,6 +232,7 @@ C.A. Jensen (1843) 'Nikolaj Frederik Severin Grundtvig'. [Wikimedia commons](htt
 - Danish language and traditon (folkliness) 
 - Connection between belief and nationality
 - Liberal values
+- We show in Boberg et al (2023) how influential this was in the US-Danish communities
 ]
 
 ---
@@ -361,13 +332,7 @@ class: middle
 3. Pictures and happiness
 4. Railways and happiness
 
----
-# Obvious problems
 
-- Should you smile on a picture? Obviously a cultural matter
-- AI quality and bias
-- Selection: Pictures don't end up in local archives randomly
-- We are working on addressing all of these. 
 
 ---
 # Data
@@ -399,6 +364,30 @@ class: middle
 ]
 ]
 ]
+]
+
+
+---
+class: middle
+# Happiness from pictures
+
+.pull-left[
+### Method
+- We use off the shelf object detection (DERT-ResNet-50): https://huggingface.co/facebook/detr-resnet-50 
+- And off the shelf Facial Emotion Detection (FER library)
+
+### Obvious problems
+
+- Should you smile on a picture? Obviously a cultural matter
+- AI quality and bias
+- Selection: Pictures don't end up in local archives randomly
+- We are working on addressing all of these. 
+]
+
+.pull-right[
+**Thora Kirstine Thorsen**
+*https://arkiv.dk/vis/178152*
+<img src="Figures/annotated_178152.png" width="60%" alt="https://arkiv.dk/vis/178152">
 ]
 
 
@@ -484,40 +473,173 @@ class: middle
 ]
 
 ---
+# Do smiling people correlate with happiness?
+
+.pull-left-narrow[
+### Approach
+- We looked at the world happiness report and what they suggest is related to happiness in the cannonical 'Cantril Ladder' (Helliwell et al, 2023)
+
+### Correlates we can find historical data for (still WIP):
+- Income 
+- Social support 
+- Freedom to make life choices (education)
+- Generosity 
+]
+
+.pull-right-wide[
+.panelset[
+.panel[.panel-name[Income]
+.center[<img src="Figures/Reg_income_emotion.png" width="75%" alt="Income">]
+*Parish level occ. income and emoitons*
+]
+.panel[.panel-name[... more to come]
+]
+]
+]
+
+---
 # Railways and pictures
+.pull-left-narrow[
+- Simple (log of) count of pictures in parish
+- Fine grained year by year data
+- Very long run (100s of years!)
+- **ATT-estimate:**  0.0879 [0.0669, 0.1089] $\rightarrow$ 9 pct
 
+- Effect of opening. None of closing.
+]
 
----
-## References (1/2)
+.pull-right-wide[
+.panelset[
+.panel[.panel-name[Open]
+.center[<img src="Figures/DiD_n_pictures_opened.png" width="75%" alt="Opening">]
+]
 
-.small123[
-Atack, J., Bateman, F., Haines, M., & Margo, R. A. (2010). Did Railroads Induce or Follow Economic Growth? Urbanization and Population Growth in the American Midwest, 1850-1860. Social Science History, 34(2), 171–197. http://www.jstor.org/stable/40587344
+.panel[.panel-name[Open - cal.]
+.center[<img src="Figures/DiD_n_pictures_opened_effect_by_calendar.png" width="75%" alt="Opening">]
+]
 
-Berger, T. (2019). Railroads and Rural Industrialization: Evidence from a Historical Policy Experiment. Explorations in Economic History, 74, 101277. https://doi.org/10.1016/j.eeh.2019.06.002
+.panel[.panel-name[Closed]
+.center[<img src="Figures/DiD_n_pictures_closed.png" width="75%" alt="Opening">]
+]
+.panel[.panel-name[Closed - cal.]
+.center[<img src="Figures/DiD_n_pictures_closed_effect_by_calendar.png" width="75%" alt="Opening">]
+]
 
-Berger, T., & Enflo, K. (2017). Locomotives of local growth: The short- and long-term impact of railroads in Sweden. Journal of Urban Economics, 98(C), 124-138. https://doi.org/10.1016/j.jue.2015.09.001
+]
 
-Bogart, D., You, X., Alvarez-Palau, E. J., Satchell, M., & Shaw-Taylor, L. (2022). Railways, divergence, and structural change in 19th century England and Wales. Journal of Urban Economics, 128, 103390. https://doi.org/10.1016/j.jue.2021.103390.
-
-Callaway B, Sant'Anna P (2021). “Difference-in-differences with multiple time periods.” _Journal of Econometrics_. https://doi.org/10.1016/j.jeconom.2020.12.001.
-
-Cermeño, A., Enflo, K., & Lindvall, J. (2022). Railroads and Reform: How Trains Strengthened the Nation State. British Journal of Political Science, 52(2), 715-735. doi:10.1017/S0007123420000654
-
-Feyrer, J. (2021). Distance, trade, and income — The 1967 to 1975 closing of the Suez canal as a natural experiment. Journal of Development Economics, 153, 102708. https://doi.org/10.1016/j.jdeveco.2021.102708. 
 ]
 
 ---
-## References (2/2)
-
-.small123[
-Fogel, R. W. (1964). Railroads and American Economic Growth: Essays in Econometric History. Johns Hopkins Press. ISBN: 9780801802010
-
-Mullainathan, S., Spiess, J. (2017) Machine Learning: An Applied Econometric Approach Journal of Economic Perspectives Vol. 31 (2). DOI: 10.1257/jep.31.2.87
-
-Vedel, C. (2023). Natural Experiments in Geography and Institutions: Essays in the Economic History of Denmark. [Ph.D. thesis, SDU]. Syddansk Universitet. Det Samfundsvidenskabelige Fakultet. https://doi.org/10.21996/jt34-zc23
-
-Zimran, A. (2020). Transportation and Health in the Antebellum United States, 1820–1847. The Journal of Economic History, 80(3), 670-709. doi:10.1017/S0022050720000315 
+# Railways and emotions - opening
+.pull-left-narrow[
+- TWFE of average emotions in parish on railway connection
+- **NOTE:** Shanky imputation procedure to balance data. Needs to be fixed. 
+- Need to run this in one of the new DiD estimators
+- Very long run (100s of years!)
 ]
+
+.pull-right-wide[
+.panelset[
+.panel[.panel-name[Angry]
+.center[<img src="Figures/Railways_on_emotions_opened/emotion_score_angry.png" width="75%" alt="Angry">]
+]
+
+.panel[.panel-name[Disgust]
+.center[<img src="Figures/Railways_on_emotions_opened/emotion_score_disgust.png" width="75%" alt="Disgust">]
+]
+
+.panel[.panel-name[Fear]
+.center[<img src="Figures/Railways_on_emotions_opened/emotion_score_fear.png" width="75%" alt="Fear">]
+]
+
+.panel[.panel-name[Happy]
+.center[<img src="Figures/Railways_on_emotions_opened/emotion_score_happy.png" width="75%" alt="Happy">]
+]
+
+.panel[.panel-name[Neutral]
+.center[<img src="Figures/Railways_on_emotions_opened/emotion_score_neutral.png" width="75%" alt="Neutral">]
+]
+
+.panel[.panel-name[Sad]
+.center[<img src="Figures/Railways_on_emotions_opened/emotion_score_sad.png" width="75%" alt="Sad">]
+]
+
+.panel[.panel-name[Surprise]
+.center[<img src="Figures/Railways_on_emotions_opened/emotion_score_surprise.png" width="75%" alt="Surprise">]
+]
+
+]
+
+]
+
+---
+# Railways and emotions - closing
+.pull-left-narrow[
+- TWFE of average emotions in parish on railway connection
+- **NOTE:** Shanky imputation procedure to balance data. Needs to be fixed. 
+- Need to run this in one of the new DiD estimators
+- Very long run (100s of years!)
+]
+
+.pull-right-wide[
+.panelset[
+.panel[.panel-name[Angry]
+.center[<img src="Figures/Railways_on_emotions_closed/emotion_score_angry.png" width="75%" alt="Angry">]
+]
+
+.panel[.panel-name[Disgust]
+.center[<img src="Figures/Railways_on_emotions_closed/emotion_score_disgust.png" width="75%" alt="Disgust">]
+]
+
+.panel[.panel-name[Fear]
+.center[<img src="Figures/Railways_on_emotions_closed/emotion_score_fear.png" width="75%" alt="Fear">]
+]
+
+.panel[.panel-name[Happy]
+.center[<img src="Figures/Railways_on_emotions_closed/emotion_score_happy.png" width="75%" alt="Happy">]
+]
+
+.panel[.panel-name[Neutral]
+.center[<img src="Figures/Railways_on_emotions_closed/emotion_score_neutral.png" width="75%" alt="Neutral">]
+]
+
+.panel[.panel-name[Sad]
+.center[<img src="Figures/Railways_on_emotions_closed/emotion_score_sad.png" width="75%" alt="Sad">]
+]
+
+.panel[.panel-name[Surprise]
+.center[<img src="Figures/Railways_on_emotions_closed/emotion_score_surprise.png" width="75%" alt="Surprise">]
+]
+
+]
+
+]
+
+
+---
+class: middle
+# Conclusion
+.pull-left[
+- We turn pictures into data that we can analyze
+- Scratching the surface of the complex interplay between institutions, geography, culture and institutions
+- Railways improved classical economic outcome and caused ideas to spread.
+- Did people become happier?
+
+**Feel free to reach out**  
+Twitter: @ChristianVedel  
+christian-vs@sam.sdu.dk  
+]
+
+.pull-right[
+
+https://arkiv.dk/vis/1117673
+
+![School](Figures/annotated_1117673.png)
+*Would you smile if you were that person?*
+
+]
+
+
 
 
 
