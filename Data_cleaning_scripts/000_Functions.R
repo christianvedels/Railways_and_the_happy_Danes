@@ -4,6 +4,19 @@
 # Auhtor:         Christian Vedel 
 # Purpose:        Functions used in the rest of the project
 
+# ==== Colors ====
+colours = list(
+  black = "black",
+  blue = "#273a8f",
+  green = "#2c5c34",
+  red = "#b33d3d",
+  orange = "#DE7500"
+)
+
+dims = list(
+  width = 8,
+  height = 6
+)
 
 # ==== pretty_pct(x, digits = 4) ====
 # Makes pretty pct string
@@ -397,4 +410,34 @@ as_numeric0 = function(x){
   }
   return(x)
 }
+
+# ==== sub_scandi ====
+# this substitutes scandinavian letters
+sub_scandi = function(x){
+  scandi_letters = c("Æ",
+                     "æ",
+                     "Ø",
+                     "ø",
+                     "Å",
+                     "å")
+  
+  replacement = c("Ae",
+                  "ae",
+                  "Oe",
+                  "oe",
+                  "Aa",
+                  "aa")
+  
+  for(i in 1:length(scandi_letters)){
+    x = gsub(
+      scandi_letters[i],
+      replacement[i],
+      x
+    )
+  }
+  
+  return(x)
+  
+}
+
 
