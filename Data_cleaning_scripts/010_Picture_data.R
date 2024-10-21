@@ -142,7 +142,7 @@ parish_data_approx = parish_data_approx %>%
   )
 
 # ==== Individual reg data ====
-reg_data_indiv = df %>% 
+reg_data_indiv = df %>% # TODO: Move creation of regdata in sepperate script
   mutate(
     midpoint_year = floor(midpoint_year)
   ) %>% 
