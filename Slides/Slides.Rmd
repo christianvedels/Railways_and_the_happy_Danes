@@ -106,8 +106,8 @@ xaringanExtra::use_progress_bar(color = "#808080", location = "top")
 # Railways and the Happy Danes
 
 ### Motivaiton
-- People are complex and hence economics. There is a complex interplay between institutions, geography, culture and institutions that shape society
-- **Hypothesis:** Danish railways brought modernity but also Grudtvigianism - socalled 'happy' Danes. Maybe they also smiled more?
+- People are complex and hence economics. There is a complex interplay between geography, culture and institutions that shape society
+- **Hypothesis:** Danish railways brought modernity but also Grudtvigianism - so-called 'happy' Danes. Maybe they also smiled more?
 
 ### This presentation
 - Using off-the-shelf ML, we analyzing 2M pictures to find an answer
@@ -131,6 +131,24 @@ https://arkiv.dk/vis/178152
 class: inverse, center, middle
 
 # Background
+
+---
+class: center, middle
+
+# The hypothesis in summary (preview)
+
+.pull-center[
+1. Railways brought modern production and modern ideas 
+2. In the Danish case the central idea was Grundtvigianism 
+3. Railways made people happier. Market access shapes emotional well-being (?*) 
+]
+
+
+.footnote[
+.small123[
+  *The null finding is also rather interesting: Interconnectedness having no effect on well-being.
+]
+]
 
 
 ---
@@ -174,7 +192,7 @@ Petro, Brassey, Betts company ([Wikimedia commons](https://commons.wikimedia.org
 
 ---
 # Grundtvianism 
-.pull-left[
+.pull-left-wide[
 - The origin of the liberal Danish spirit
 - NFS Grundtvig (1783-1872):
   + 'Founding father' of the first 'free' constitution in 1849 
@@ -183,14 +201,15 @@ Petro, Brassey, Betts company ([Wikimedia commons](https://commons.wikimedia.org
   + Wrote more than 30000 works 
   + His influence touches everything
   + Community houses: Local democracy
-  + Høj skoler: Education of farmers
+  + Høj skoler: Education of farmers (Folk high schools)
   + Cooperative creameries! (Important: Lampe & Sharp)
 ]
 
-.pull-right[
+.pull-right-narrow[
 <img src="Figures/Forsamlingshus.jpg" width="65%" alt="Forsamlingshus">
 .small123[
-'Fyns forsamlingshus' (1971) (Stadsarkivet)
+Grundtvigian Community House of Funen in Odense  
+1971 (Stadsarkivet)
 ]
 ]
 
@@ -203,7 +222,7 @@ Petro, Brassey, Betts company ([Wikimedia commons](https://commons.wikimedia.org
 - Human capital 
 - Cultural identity
 - Local democracy and societies
-- *"Leave two Danes in a room and they will at least three societies"*
+- *"Leave two Danes in a room and they will form at least three societies"*
 
 <img src="Figures/Generalforsamling_i_Ansager_Andelsmejeri.jpg" width="80%" alt="Ansager">  
 .small123[*Agersnap, H. (1885) Generalforsamling i Ansager Andelsmejeri [wikimedia](https://commons.wikimedia.org/wiki/File:Generalforsamling_i_Ansager_Andelsmejeri.jpg)*]
@@ -217,18 +236,25 @@ C.A. Jensen (1843) 'Nikolaj Frederik Severin Grundtvig'. [Wikimedia commons](htt
 ]
 
 ---
+
+# Meanwhile in America...
 .pull-left[
 ### Sad Danes - Inner Mission
+.center[
+<img src="Figures/Sad_Dane.png" width="40%" alt="Sad Dane">  
+]
 (Holy Danes)
-![Sad](Figures/Sad_Dane.png)
 - Emphasis on assimilation 
 - Focus on America
 - Strict religious view
 ]
 
 .pull-right[
-### Happy Danes - Grundtvigianism
-![Happy](Figures/HappyDane.png)
+### Happy Danes - Grundtvigianism 
+.center[
+<img src="Figures/HappyDane.png" width="50%" alt="Happy Dane">  
+]
+
 - Danish language and traditon (folkliness) 
 - Connection between belief and nationality
 - Liberal values
@@ -248,7 +274,7 @@ class: center, middle
 .pull-center[
 1. Railways brought modern production and modern ideas 
 2. In the Danish case the central idea was Grundtvigianism 
-3. Railways made people happier $\rightarrow$ Market access shapes emotional well-being (?*) 
+3. Railways made people happier. Market access shapes emotional well-being (?*) 
 ]
 
 
@@ -390,6 +416,18 @@ class: middle
 <img src="Figures/annotated_178152.png" width="60%" alt="https://arkiv.dk/vis/178152">
 ]
 
+---
+# Number of pictures over time
+![N](Figures/Number_of_pictures.png)
+
+
+---
+# Objects
+![N](Figures/Objects_detected_above1000.png)
+
+---
+# Emotions
+![N](Figures/Average_emotions_by_decade.png)
 
 ---
 # Some ocular regression: Tommerup Stationsby
@@ -622,7 +660,7 @@ class: middle
 .pull-left[
 - We turn pictures into data that we can analyze
 - Scratching the surface of the complex interplay between institutions, geography, culture and institutions
-- Railways improved classical economic outcome and caused ideas to spread.
+- Railways improved classical economic outcomes and caused ideas to spread.
 - Did people become happier?
 
 **Feel free to reach out**  
