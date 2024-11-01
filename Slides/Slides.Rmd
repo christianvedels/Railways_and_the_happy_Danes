@@ -352,7 +352,7 @@ class: center
 
 ---
 class: middle
-# Hypothesis broken down
+# Hypothesis in terms of things we can measure:
 1. Railways and markets
 2. Railways and modern ideas
 3. Pictures and happiness
