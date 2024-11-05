@@ -4,11 +4,11 @@
     <title>Railroads and the happy Danes</title>
     <meta charset="utf-8" />
     <meta name="author" content="Tom Görges^1, Paul Sharp^2, Christian Vedel^2, Magnus Ørberg^2 .small123[  TU Dortmund University^1, University of Southern Denmark^2, University of Copenhagen^3]   Email: christian-vs@sam.sdu.dk  Twitter: @ChristianVedel&lt;br&gt;   .small123[github.com/christianvedels/Railways_and_the_happy_Danes]" />
-    <script src="libs/header-attrs-2.21/header-attrs.js"></script>
+    <script src="libs/header-attrs-2.28/header-attrs.js"></script>
     <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
     <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
-    <link href="libs/panelset-0.2.6/panelset.css" rel="stylesheet" />
-    <script src="libs/panelset-0.2.6/panelset.js"></script>
+    <link href="libs/panelset-0.3.0/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset-0.3.0/panelset.js"></script>
     <link href="libs/tile-view-0.2.6/tile-view.css" rel="stylesheet" />
     <script src="libs/tile-view-0.2.6/tile-view.js"></script>
     <script src="libs/xaringanExtra-progressBar-0.0.1/progress-bar.js"></script>
@@ -24,7 +24,7 @@ class: center, middle, inverse, title-slide
 ### Tom Görges<span class="math inline"><sup>1</sup></span>, Paul Sharp<span class="math inline"><sup>2</sup></span>, Christian Vedel<span class="math inline"><sup>2</sup></span>, Magnus Ørberg<span class="math inline"><sup>2</sup></span> .small123[<br><br>TU Dortmund University<span class="math inline"><sup>1</sup></span>, University of Southern Denmark<span class="math inline"><sup>2</sup></span>, University of Copenhagen<span class="math inline"><sup>3</sup></span>]<br><br> Email: <a href="mailto:christian-vs@sam.sdu.dk" class="email">christian-vs@sam.sdu.dk</a><br> Twitter: <span class="citation">@ChristianVedel&lt;br</span>&gt;<br><br> .small123[<em><a href="https://github.com/christianvedels/Railways_and_the_happy_Danes">github.com/christianvedels/Railways_and_the_happy_Danes</a></em>]
 ]
 .date[
-### Updated 2023-11-30
+### Updated 2024-10-31
 ]
 
 ---
@@ -107,42 +107,72 @@ class: center, middle, inverse, title-slide
 .xsmall123 {
   font-size: 0.60em;
 }
+
+.pull-center {
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+  text-align: left;
+}
+
+.pull-center-narrow {
+  margin-left: auto;
+  margin-right: auto;
+  width: 30%;
+  text-align: left;
+}
 &lt;/style&gt;
 
+
+
+.pull-left-wide[
 # Railways and the Happy Danes
 
-.pull-left[
 ### Motivaiton
-- It is reasonable to suppose that there is interplay between institutions, human capital, culture and geography (market access)
-- **Hypothesis:** Danish railways brought Grudtvigianism - socalled 'happy' Danes
+- People are complex and hence economics. There is a complex interplay between geography, culture and institutions that shape society
+- **Hypothesis:** Danish railways brought modernity but also Grudtvigianism - so-called 'happy' Danes. Maybe they also smiled more?
 
 ### This presentation
-- Very preliminary - mostly speculative 
+- Using off-the-shelf ML, we analyzing 2M pictures to find an answer
 - Brief historical background
-- Some preliminary results and ideas for identification
-]
-
-.pull-right[
-![Trees](Figures/Trees.jpg)
-]
-
----
-# Origin
-.pull-left-wide[
-- Paul supervised Magnus' masters Thesis, which replicated Berger (2019) in Denmark 
-- Tom started studying the influence of railways on human capital and social mobility 
-- I've been interested in railways ever since I wrote my Bachelor thesis on it 
-
-
-- Rough draft of the synergy of all these ideas: **Railways and the Happy Danes**
-- Seemingly the first ever EH paper on Danish railways 
-
+- Some preliminary results
 ]
 
 .pull-right-narrow[
-![Railway](Figures/beta.dreamstudio.ai.png)
-.small123[*beta.dreamstudio.ai*]
+Example picture from Arkiv.dk
+ 
+https://arkiv.dk/vis/178152
+
+![School](Figures/annotated_178152.png)
+.small123[
+*Source: Arkiv.dk*
 ]
+]
+
+
+---
+class: inverse, center, middle
+
+# Background
+
+---
+class: center, middle
+
+# The hypothesis in summary (preview)
+
+.pull-center[
+1. Railways brought modern production and modern ideas 
+2. In the Danish case the central idea was Grundtvigianism 
+3. Railways made people happier. Market access shapes emotional well-being (?*) 
+]
+
+
+.footnote[
+.small123[
+  *The null finding is also rather interesting: Interconnectedness having no effect on well-being.
+]
+]
+
 
 ---
 # Literature
@@ -158,7 +188,8 @@ class: center, middle, inverse, title-slide
 - Zimran (2020): Urbanization and health
 - Bogart, You, Alvarez-Palau, Satchell, Shaw-Taylor (2022): Urbanization and structural change
 - Cermeño, Enflo, Lindvall (2022): Railroads, state and schooling
-- Vedel (2023): Infrastructure caused 24 percent population growth in DK  
+- Melander (2023): Railroads and social movements in Sweden
+- Vedel (2024): Water infrastructure: 26 percent population growth in DK  
 
 ...*So much more*
 ]
@@ -182,10 +213,9 @@ class: center, middle, inverse, title-slide
 Petro, Brassey, Betts company ([Wikimedia commons](https://commons.wikimedia.org/wiki/File:Victoria_Bridge,_Montreal.jpg))
 ]
 
-
 ---
-# Grundvianism 
-.pull-left[
+# Grundtvianism 
+.pull-left-wide[
 - The origin of the liberal Danish spirit
 - NFS Grundtvig (1783-1872):
   + 'Founding father' of the first 'free' constitution in 1849 
@@ -194,15 +224,15 @@ Petro, Brassey, Betts company ([Wikimedia commons](https://commons.wikimedia.org
   + Wrote more than 30000 works 
   + His influence touches everything
   + Community houses: Local democracy
-  + Høj skoler: Education of farmers
-
-
+  + Høj skoler: Education of farmers (Folk high schools)
+  + Cooperative creameries! (Important: Lampe &amp; Sharp)
 ]
 
-.pull-right[
-![Forsamlingshus](Figures/Forsamlingshus.jpg)
+.pull-right-narrow[
+&lt;img src="Figures/Forsamlingshus.jpg" width="65%" alt="Forsamlingshus"&gt;
 .small123[
-'Fyns forsamlingshus' (1971) (Stadsarkivet)
+Grundtvigian Community House of Funen in Odense  
+1971 (Stadsarkivet)
 ]
 ]
 
@@ -215,43 +245,142 @@ Petro, Brassey, Betts company ([Wikimedia commons](https://commons.wikimedia.org
 - Human capital 
 - Cultural identity
 - Local democracy and societies
-- *"Leave two Danes in a room and they will at least three societies"*
+- *"Leave two Danes in a room and they will form at least three societies"*
 
-![Ansager](Figures/Generalforsamling_i_Ansager_Andelsmejeri.jpg)
+&lt;img src="Figures/Generalforsamling_i_Ansager_Andelsmejeri.jpg" width="80%" alt="Ansager"&gt;  
 .small123[*Agersnap, H. (1885) Generalforsamling i Ansager Andelsmejeri [wikimedia](https://commons.wikimedia.org/wiki/File:Generalforsamling_i_Ansager_Andelsmejeri.jpg)*]
 ]
 
 .pull-right[
 .small123[
-![Grundtvig](Figures/Grundtvig_wikimedia.jpg)
+&lt;img src="Figures/Grundtvig_wikimedia.jpg" width="75%" alt="Grundtvig"&gt;  
 C.A. Jensen (1843) 'Nikolaj Frederik Severin Grundtvig'. [Wikimedia commons](https://commons.wikimedia.org/wiki/File:N-f-s-grundtvig-portr%C3%A6t.jpg)
 ]
 ]
 
 ---
+
+# Meanwhile in America...
 .pull-left[
 ### Sad Danes - Inner Mission
+.center[
+&lt;img src="Figures/Sad_Dane.png" width="40%" alt="Sad Dane"&gt;  
+]
 (Holy Danes)
-![Sad](Figures/Sad_Dane.png)
 - Emphasis on assimilation 
 - Focus on America
 - Strict religious view
 ]
 
 .pull-right[
-### Happy Danes - Grundtvigianism
-![Happy](Figures/HappyDane.png)
+### Happy Danes - Grundtvigianism 
+.center[
+&lt;img src="Figures/HappyDane.png" width="50%" alt="Happy Dane"&gt;  
+]
+
 - Danish language and traditon (folkliness) 
 - Connection between belief and nationality
 - Liberal values
+- We show in Boberg et al (2023) how influential this was in the US-Danish communities
 ]
 
 ---
+class: inverse, center, middle
+
+# Testing out our idea in data
+
+---
+class: center, middle
+
 # The hypothesis in summary
 
-1. The 'happy Danes' promoted the foundation for the modern success of the Danish state
-2. This was done via forsamlingshuse and 'højskoler' ('high schools'). 
-3. .red[The 'Happy Danes' are a product of market access]
+.pull-center[
+1. Railways brought modern production and modern ideas 
+2. In the Danish case the central idea was Grundtvigianism 
+3. Railways made people happier. Market access shapes emotional well-being (?*) 
+]
+
+
+.footnote[
+.small123[
+  *The null finding is also rather interesting: Interconnectedness having no effect on well-being.
+]
+]
+
+---
+class: center
+
+# The hypothesis in pictures
+--
+
+.pull-left-narrow[
+.panelset[
+.panel[.panel-name[Sad]
+**Crilles Dirches &amp; Ane Sophie Hans Johansens**
+*https://arkiv.dk/vis/159960*
+&lt;img src="Figures/annotated_159960.png" width="75%" alt="https://arkiv.dk/vis/159960"&gt;
+]
+.panel[.panel-name[Fear]
+**Master Taylor Mathias Jørgen Schrøder**
+*https://arkiv.dk/vis/1042395*
+&lt;img src="Figures/annotated_1042395.png" width="75%" alt="https://arkiv.dk/vis/1042395"&gt;
+]
+.panel[.panel-name[Anger]
+**Bodil Jensdatter**
+*https://arkiv.dk/vis/369089*
+&lt;img src="Figures/annotated_369089.png" width="75%" alt="https://arkiv.dk/vis/369089"&gt;
+]
+
+]
+]
+
+--
+
+.pull-right-wide[
+.panelset[
+.panel[.panel-name[Train]
+**...But then**  
+&lt;img src="Figures/beta.dreamstudio.ai.png" width="40%" alt="AI generated train"&gt;
+]
+
+.panel[.panel-name[Happy 1]
+
+**Thora Kirstine Thorsen**
+*https://arkiv.dk/vis/178152*
+&lt;img src="Figures/annotated_178152.png" width="40%" alt="https://arkiv.dk/vis/178152"&gt;
+]
+
+.panel[.panel-name[Happy 2]
+
+**Niels Aage Nielsen**
+*https://arkiv.dk/vis/103676*
+&lt;img src="Figures/annotated_103676.png" width="75%" alt="https://arkiv.dk/vis/103676"&gt;
+]
+
+.panel[.panel-name[Happy 3]
+**Inge, Grete &amp; Axel**
+*https://arkiv.dk/vis/114519*
+&lt;img src="Figures/annotated_114519.png" width="75%" alt="https://arkiv.dk/vis/114519"&gt;
+]
+
+.panel[.panel-name[Happy 4]
+**Ena &amp; Eriks wedding**
+*https://arkiv.dk/vis/316474*
+&lt;img src="Figures/annotated_316474.png" width="75%" alt="https://arkiv.dk/vis/316474"&gt;
+]
+]
+]
+
+
+
+---
+class: middle
+# Hypothesis in terms of things we can measure:
+1. Railways and markets
+2. Railways and modern ideas
+3. Pictures and happiness
+4. Railways and happiness
+
 
 
 ---
@@ -259,12 +388,12 @@ C.A. Jensen (1843) 'Nikolaj Frederik Severin Grundtvig'. [Wikimedia commons](htt
 
 .pull-left[
 - Census data 1787-1901 (Link lives)
-- HISCO codes for census descriptions (Dahl &amp; Vedel, 2023)
-- Linking with parish borders and consistency (Vedel, 2023)
+- HISCO codes for census descriptions (Dahl, Johansen, Vedel, 2024)
+- Linking with parish borders and consistency (Vedel, 2024)
 - Railroads shape files (Fertner 2013)
 - Location of assembly houses (Trap 3/4; Bentzen, Boberg-Fazlic, Sharp, Skovsgaard, Vedel, 2023)
 - For identification: Elevation data from Open Street Map
-- **Missing:** Regional quantification of happyness
+- Indidivual level happiness from pictures
 ]
 
 .pull-right[
@@ -286,36 +415,47 @@ C.A. Jensen (1843) 'Nikolaj Frederik Severin Grundtvig'. [Wikimedia commons](htt
 ]
 ]
 
+
+---
+class: middle
+# Happiness from pictures
+
+.pull-left[
+### Method
+- We use off the shelf object detection (DERT-ResNet-50): https://huggingface.co/facebook/detr-resnet-50 
+- And off the shelf Facial Emotion Detection (FER library)
+
+### Obvious problems
+
+- Should you smile on a picture? Obviously a cultural matter
+- AI quality and bias
+- Selection: Pictures don't end up in local archives randomly
+- We are working on addressing all of these. 
+]
+
+.pull-right[
+**Thora Kirstine Thorsen**
+*https://arkiv.dk/vis/178152*
+&lt;img src="Figures/annotated_178152.png" width="60%" alt="https://arkiv.dk/vis/178152"&gt;
+]
+
+---
+# Number of pictures over time
+![N](Figures/Number_of_pictures.png)
+
+
+---
+# Objects
+![N](Figures/Objects_detected_above1000.png)
+
+---
+# Emotions
+![N](Figures/Average_emotions_by_decade.png)
+
 ---
 # Some ocular regression: Tommerup Stationsby
 .center[
 &lt;iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d38285.490263207925!2d10.191880045700286!3d55.333963183235056!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e1!3m2!1sen!2sdk!4v1701266724087!5m2!1sen!2sdk" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"&gt;&lt;/iframe&gt;
-]
-
----
-# Skanderup-'vognen'
-.center[
-&lt;iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d22683.42067055953!2d9.30969026595339!3d55.47529448680792!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e1!3m2!1sen!2sdk!4v1701267026667!5m2!1sen!2sdk" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"&gt;&lt;/iframe&gt;
-]
-
----
-# Anecdotal evidence for the Holy Danes 
-.pull-left[
-### Carl Moe
-- Harboører from 1877
-- Skanderup from 1885
-- Old flock visited Skanderup every year with the 'Skanderup-vogn'
-- Carl Moe known for things named like: "The Akvavit Sermon", "The hell sermon" 
-- Ideas spread with connectivity 
-- Maybe liberal ideals also spread? 
-
-]
-
-.pull-right[
-![Carl_Moe](Figures/CarlMoe.jpg)
-.small123[
-*Carl Moe, kb.dk*
-]
 ]
 
 ---
@@ -349,21 +489,18 @@ C.A. Jensen (1843) 'Nikolaj Frederik Severin Grundtvig'. [Wikimedia commons](htt
 .pull-right[
 .panelset[
 .panel[.panel-name[Old map]
-![Map](Figures/Course of railways in terrain.png)
+&lt;img src="Figures/Course of railways in terrain.png" width="80%" alt="Predicted lines"&gt;
 ]
 .panel[.panel-name[Predicted lines]
-![Predicted lines](Figures/LCP_IV_crit2.png)
+&lt;img src="Figures/LCP_IV_crit2.png" width="100%" alt="Predicted lines"&gt;
 ]
 ]
 ]
 
 ---
-# Least Cost Path
-![Predicted lines](Figures/LCP_IV_crit2.png)
----
-# Early results
+# Railways and the Economy
 .panelset[
-.panel[.panel-name[TWFE: Pop]
+.panel[.panel-name[Railways and the Economy]
 .small123[
 | |(1) log(Pop)           |(2) log(Child women ratio) |(3) log(Manufacturing 789) |(4) log(hisclass avg) |(5) log(Born different county) |
 |:-----------|:-----------|:-----------|:-----------|:-----------|:-----------|
@@ -371,11 +508,12 @@ C.A. Jensen (1843) 'Nikolaj Frederik Severin Grundtvig'. [Wikimedia commons](htt
 |GIS_ID FE        |Yes                |Yes                    |Yes                    |Yes               |Yes                        |
 |Year FE          |Yes                |Yes                    |Yes                    |Yes               |Yes                        |
 |Observations    |6,374              |6,352                  |6,357                  |6,373             |6,282                      |
-
+- Classical effect as expected
+- Still novel for the DK setting
 ]
 
 ]
-.panel[.panel-name[TWFE: Grundtv.]
+.panel[.panel-name[Railways and the Ideas (Grundtvig)]
 .small123[
 |Dependent Var.: |(1) Assembly house    |(2) log(MA assembly) |(3) High School        |(4) log(MA High) |
 |:---------------|:-----------------|:----------------|:-----------------|:----------------|
@@ -384,64 +522,185 @@ C.A. Jensen (1843) 'Nikolaj Frederik Severin Grundtvig'. [Wikimedia commons](htt
 |GIS_ID FE       |Yes               |Yes              |Yes               |Yes              |
 |Year FE         |Yes               |Yes              |Yes               |Yes              |
 |Observations    |100,485           |102,245          |324,005           |324,005          |
+- Grudtvigian institutions specifically placed in connected places
 ]
 ]
 ]
 
+.footnote[
+.small123[
+**This also holds using the CS estimator*
+]
+]
 
 ---
-# Early results DiD
+# Do smiling people correlate with happiness?
+
+.pull-left-narrow[
+### Approach
+- We looked at the world happiness report and what they suggest is related to happiness in the cannonical 'Cantril Ladder' (Helliwell et al, 2023)
+
+### Correlates we can find historical data for (still WIP):
+- Income 
+- Social support 
+- Freedom to make life choices (education)
+- Generosity 
+]
+
+.pull-right-wide[
 .panelset[
-.panel[.panel-name[Pop]
-.center[
-&lt;img src="Figures/DID_pop.png" width="40%" /&gt;
+.panel[.panel-name[Income]
+.center[&lt;img src="Figures/Reg_income_emotion.png" width="75%" alt="Income"&gt;]
+*Parish level occ. income and emoitons*
+]
+.panel[.panel-name[... more to come]
 ]
 ]
-.panel[.panel-name[Assembly houses]
-.center[
-&lt;img src="Figures/DID_assembly.png" width="80%" /&gt;
-]
-]
-.panel[.panel-name[High schools]
-.center[
-&lt;img src="Figures/DID_HighSchool.png" width="80%" /&gt;
-]
-]
-]
-
-*Using the Callaway, Sant'Anna (2021) estimator*
-
----
-## References (1/2)
-
-.small123[
-Atack, J., Bateman, F., Haines, M., &amp; Margo, R. A. (2010). Did Railroads Induce or Follow Economic Growth? Urbanization and Population Growth in the American Midwest, 1850-1860. Social Science History, 34(2), 171–197. http://www.jstor.org/stable/40587344
-
-Berger, T. (2019). Railroads and Rural Industrialization: Evidence from a Historical Policy Experiment. Explorations in Economic History, 74, 101277. https://doi.org/10.1016/j.eeh.2019.06.002
-
-Berger, T., &amp; Enflo, K. (2017). Locomotives of local growth: The short- and long-term impact of railroads in Sweden. Journal of Urban Economics, 98(C), 124-138. https://doi.org/10.1016/j.jue.2015.09.001
-
-Bogart, D., You, X., Alvarez-Palau, E. J., Satchell, M., &amp; Shaw-Taylor, L. (2022). Railways, divergence, and structural change in 19th century England and Wales. Journal of Urban Economics, 128, 103390. https://doi.org/10.1016/j.jue.2021.103390.
-
-Callaway B, Sant'Anna P (2021). “Difference-in-differences with multiple time periods.” _Journal of Econometrics_. https://doi.org/10.1016/j.jeconom.2020.12.001.
-
-Cermeño, A., Enflo, K., &amp; Lindvall, J. (2022). Railroads and Reform: How Trains Strengthened the Nation State. British Journal of Political Science, 52(2), 715-735. doi:10.1017/S0007123420000654
-
-Feyrer, J. (2021). Distance, trade, and income — The 1967 to 1975 closing of the Suez canal as a natural experiment. Journal of Development Economics, 153, 102708. https://doi.org/10.1016/j.jdeveco.2021.102708. 
 ]
 
 ---
-## References (2/2)
+# Railways and pictures
+.pull-left-narrow[
+- Simple (log of) count of pictures in parish
+- Fine grained year by year data
+- Very long run (100s of years!)
+- **ATT-estimate:**  0.0879 [0.0669, 0.1089] `\(\rightarrow\)` 9 pct
 
-.small123[
-Fogel, R. W. (1964). Railroads and American Economic Growth: Essays in Econometric History. Johns Hopkins Press. ISBN: 9780801802010
-
-Mullainathan, S., Spiess, J. (2017) Machine Learning: An Applied Econometric Approach Journal of Economic Perspectives Vol. 31 (2). DOI: 10.1257/jep.31.2.87
-
-Vedel, C. (2023). Natural Experiments in Geography and Institutions: Essays in the Economic History of Denmark. [Ph.D. thesis, SDU]. Syddansk Universitet. Det Samfundsvidenskabelige Fakultet. https://doi.org/10.21996/jt34-zc23
-
-Zimran, A. (2020). Transportation and Health in the Antebellum United States, 1820–1847. The Journal of Economic History, 80(3), 670-709. doi:10.1017/S0022050720000315 
+- Effect of opening. None of closing.
 ]
+
+.pull-right-wide[
+.panelset[
+.panel[.panel-name[Open]
+.center[&lt;img src="Figures/DiD_n_pictures_opened.png" width="75%" alt="Opening"&gt;]
+]
+
+.panel[.panel-name[Open - cal.]
+.center[&lt;img src="Figures/DiD_n_pictures_opened_effect_by_calendar.png" width="75%" alt="Opening"&gt;]
+]
+
+.panel[.panel-name[Closed]
+.center[&lt;img src="Figures/DiD_n_pictures_closed.png" width="75%" alt="Opening"&gt;]
+]
+.panel[.panel-name[Closed - cal.]
+.center[&lt;img src="Figures/DiD_n_pictures_closed_effect_by_calendar.png" width="75%" alt="Opening"&gt;]
+]
+
+]
+
+]
+
+---
+# Railways and emotions - opening
+.pull-left-narrow[
+- TWFE of average emotions in parish on railway connection
+- **NOTE:** Shanky imputation procedure to balance data. Needs to be fixed. 
+- Need to run this in one of the new DiD estimators
+- Very long run (100s of years!)
+]
+
+.pull-right-wide[
+.panelset[
+.panel[.panel-name[Angry]
+.center[&lt;img src="Figures/Railways_on_emotions_opened/emotion_score_angry.png" width="75%" alt="Angry"&gt;]
+]
+
+.panel[.panel-name[Disgust]
+.center[&lt;img src="Figures/Railways_on_emotions_opened/emotion_score_disgust.png" width="75%" alt="Disgust"&gt;]
+]
+
+.panel[.panel-name[Fear]
+.center[&lt;img src="Figures/Railways_on_emotions_opened/emotion_score_fear.png" width="75%" alt="Fear"&gt;]
+]
+
+.panel[.panel-name[Happy]
+.center[&lt;img src="Figures/Railways_on_emotions_opened/emotion_score_happy.png" width="75%" alt="Happy"&gt;]
+]
+
+.panel[.panel-name[Neutral]
+.center[&lt;img src="Figures/Railways_on_emotions_opened/emotion_score_neutral.png" width="75%" alt="Neutral"&gt;]
+]
+
+.panel[.panel-name[Sad]
+.center[&lt;img src="Figures/Railways_on_emotions_opened/emotion_score_sad.png" width="75%" alt="Sad"&gt;]
+]
+
+.panel[.panel-name[Surprise]
+.center[&lt;img src="Figures/Railways_on_emotions_opened/emotion_score_surprise.png" width="75%" alt="Surprise"&gt;]
+]
+
+]
+
+]
+
+---
+# Railways and emotions - closing
+.pull-left-narrow[
+- TWFE of average emotions in parish on railway connection
+- **NOTE:** Shanky imputation procedure to balance data. Needs to be fixed. 
+- Need to run this in one of the new DiD estimators
+- Very long run (100s of years!)
+]
+
+.pull-right-wide[
+.panelset[
+.panel[.panel-name[Angry]
+.center[&lt;img src="Figures/Railways_on_emotions_closed/emotion_score_angry.png" width="75%" alt="Angry"&gt;]
+]
+
+.panel[.panel-name[Disgust]
+.center[&lt;img src="Figures/Railways_on_emotions_closed/emotion_score_disgust.png" width="75%" alt="Disgust"&gt;]
+]
+
+.panel[.panel-name[Fear]
+.center[&lt;img src="Figures/Railways_on_emotions_closed/emotion_score_fear.png" width="75%" alt="Fear"&gt;]
+]
+
+.panel[.panel-name[Happy]
+.center[&lt;img src="Figures/Railways_on_emotions_closed/emotion_score_happy.png" width="75%" alt="Happy"&gt;]
+]
+
+.panel[.panel-name[Neutral]
+.center[&lt;img src="Figures/Railways_on_emotions_closed/emotion_score_neutral.png" width="75%" alt="Neutral"&gt;]
+]
+
+.panel[.panel-name[Sad]
+.center[&lt;img src="Figures/Railways_on_emotions_closed/emotion_score_sad.png" width="75%" alt="Sad"&gt;]
+]
+
+.panel[.panel-name[Surprise]
+.center[&lt;img src="Figures/Railways_on_emotions_closed/emotion_score_surprise.png" width="75%" alt="Surprise"&gt;]
+]
+
+]
+
+]
+
+
+---
+class: middle
+# Conclusion
+.pull-left[
+- We turn pictures into data that we can analyze
+- Scratching the surface of the complex interplay between institutions, geography, culture and institutions
+- Railways improved classical economic outcomes and caused ideas to spread.
+- Did people become happier?
+
+**Feel free to reach out**  
+Twitter: @ChristianVedel  
+christian-vs@sam.sdu.dk  
+]
+
+.pull-right[
+
+https://arkiv.dk/vis/1117673
+
+![School](Figures/annotated_1117673.png)
+*Would you smile if you were that person?*
+
+]
+
+
 
 
 
@@ -453,7 +712,8 @@ Zimran, A. (2020). Transportation and Health in the Antebellum United States, 18
 <script>var slideshow = remark.create({
 "highlightStyle": "github",
 "highlightLines": true,
-"countIncrementalSlides": false
+"countIncrementalSlides": false,
+"ratio": "16:9"
 });
 if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
   window.dispatchEvent(new Event('resize'));
@@ -552,14 +812,14 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
 })(document);</script>
 <style>
 .logo {
-  background-image: url(SDU_logo.png);
+  background-image: url(Logos.png);
   background-size: contain;
   background-repeat: no-repeat;
   position: absolute;
   top: 1em;
   right: 1em;
-  width: 125px;
-  height: 60px;
+  width: 83px;
+  height: 96px;
   z-index: 0;
 }
 </style>
