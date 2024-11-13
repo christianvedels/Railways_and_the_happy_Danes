@@ -13,6 +13,7 @@ library(foreach)
 library(tm)
 source("Data_cleaning_scripts/000_Functions.R")
 
+
 # ==== Load data ====
 reg_data_indiv = read_csv2("../Data not redistributable/Picture_regression_data_indiv.csv", guess_max = 100000)
 reg_data_parish = read_csv2("Data/Picture_regression_data_parish.csv", guess_max = 100000)
