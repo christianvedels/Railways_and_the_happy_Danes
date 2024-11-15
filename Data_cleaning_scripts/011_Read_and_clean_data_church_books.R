@@ -31,6 +31,7 @@ common_vars = data0 %>%
     unique_identifier, 
     SourceDescription, 
     GivenName:Gender, 
+    BrowseLevel,
     BrowseLevel1,
     starts_with("Birth"),
     ResidenceParish, ResidenceMunicipality, ResidenceMunicipality,
@@ -53,7 +54,8 @@ bapt = data0 %>%
     EventParish0 = BaptismParish,
     EventParish1 = BrowseLevel1,
     EventMunicipality = BaptismMunicipality,
-    EventCounty = BaptismCounty,
+    EventCounty0 = BrowseLevel,
+    EventCounty1 = BaptismCounty,
     EventState = BaptismState,
     EventCountry = BaptismCountry
   ) %>% 
@@ -81,7 +83,8 @@ conf = data0 %>%
     EventParish0 = ConfirmationParish,
     EventParish1 = BrowseLevel1,
     EventMunicipality = ConfirmationMunicipality,
-    EventCounty = ConfirmationCounty,
+    EventCounty0 = BrowseLevel,
+    EventCounty1 = ConfirmationCounty,
     EventState = ConfirmationState,
     EventCountry = ConfirmationCountry
   ) %>% 
@@ -109,7 +112,8 @@ arr = data0 %>%
     EventParish0 = ArrivalParish,
     EventParish1 = BrowseLevel1,
     EventMunicipality = ArrivalMunicipality,
-    EventCounty =ArrivalCounty,
+    EventCounty0 = BrowseLevel,
+    EventCounty1 = ArrivalCounty,
     EventState = ArrivalState,
     EventCountry = ArrivalCountry
   ) %>% 
@@ -139,7 +143,8 @@ depart = data0 %>%
     EventParish0 = DepartureParish,
     EventParish1 = BrowseLevel1,
     EventMunicipality = DepartureMunicipality,
-    EventCounty = DepartureCounty,
+    EventCounty0 = BrowseLevel,
+    EventCounty1 = DepartureCounty,
     EventState = DepartureState,
     EventCountry = DepartureCountry
   ) %>% 
@@ -169,7 +174,8 @@ marr = data0 %>%
     EventParish0 = MarriageParish,
     EventParish1 = BrowseLevel1,
     EventMunicipality = MarriageMunicipality,
-    EventCounty =MarriageCounty,
+    EventCounty0 = BrowseLevel,
+    EventCounty1 = MarriageCounty,
     EventState = MarriageState,
     EventCountry = MarriageCountry
   ) %>% 
@@ -197,6 +203,7 @@ death = data0 %>%
     EventPlace = DeathPlace,
     EventParish0 = DeathParish,
     EventParish1 = BrowseLevel1,
+    EventCounty0 = BrowseLevel,
     EventMunicipality = DeathMunicipality,
     EventState = DeathState
   ) %>% 
@@ -225,7 +232,8 @@ burial = data0 %>%
     EventParish0 = BurialParish,
     EventParish1 = BrowseLevel1,
     EventMunicipality = BurialMunicipality,
-    EventCounty = BurialCounty,
+    EventCounty0 = BrowseLevel,
+    EventCounty1 = BurialCounty,
     EventState = BurialState,
     EventCountry = BurialCountry
   ) %>% 
