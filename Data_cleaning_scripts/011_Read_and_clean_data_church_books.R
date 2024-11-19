@@ -28,6 +28,7 @@ non_empty = function(x){
 # ==== Params ====
 common_vars = data0 %>% 
   select(
+    ImageFileName:SourceYearRange,
     unique_identifier, 
     SourceDescription, 
     GivenName:Gender, 
@@ -264,6 +265,88 @@ data_clean %>% NROW()
 
 # Missing
 sum(!(identifiers %in% data_clean$unique_identifier)) # 5.5%
+
+# ==== EventYears imputation ====
+# For some observations the original source did not contain a year
+# This was implied by the surrounding rows of data. It is here imputed from
+# the same information.
+
+# Look at 100 examples
+x = data_clean %>% filter(
+  EventYear == ""
+) %>% sample_n(100)
+
+# Impute toydata 
+toydata = data.frame(
+  source = "A",
+  x = rnorm(100), 
+  EventYear = c(rep("", 2),1878, 1878, 1879, rep("", 95))
+) %>% 
+  bind_rows(
+    data.frame(
+      source = "B",
+      x = rnorm(100), 
+      EventYear = c(rep("", 2),1878, 1878, 1879, rep("", 95))
+    )
+  )
+
+# Define the imputation function
+impute_event_year = function(EventYear) {
+  # Convert to character to handle mixed types
+  EventYear = as.character(EventYear)
+  
+  # Replace empty strings with NA
+  EventYear = ifelse(EventYear == "", NA, EventYear)
+  
+  # Return flag if no information
+  if(all(is.na(EventYear))){
+    warning("No none-empty years")
+    return(rep("NO INFO", length(EventYear)))
+  }
+  
+  # Forward fill missing values
+  EventYear = zoo::na.locf(EventYear, na.rm = FALSE)
+  EventYear = zoo::na.locf(EventYear, na.rm = FALSE, fromLast = TRUE)
+  
+  # Return the imputed vector
+  return(EventYear)
+}
+
+toydata %>% 
+  group_by(source) %>% 
+  mutate(
+    EventYear_imp = impute_event_year(EventYear)
+  ) # It works!
+
+
+# Run it on sample of all data:
+
+sources = data_clean %>% 
+  filter(EventYear == "")
+sources = sources$ImageFileName %>% unique()
+set.seed(20)
+sources = sample(sources, 1000)
+
+data_clean_sample = data_clean %>% 
+  filter(
+    ImageFileName %in% sources
+  ) 
+
+data_clean_sample = data_clean_sample %>% 
+  group_by(ImageFileName, event) %>% 
+  arrange(unique_identifier) %>% 
+  mutate(
+    EventYear_imp = impute_event_year(EventYear)
+  )
+
+# Run it on everything
+data_clean = data_clean %>% 
+  group_by(ImageFileName, event) %>% 
+  mutate(
+    EventYear_imp = impute_event_year(EventYear)
+  )
+
+
 
 # ==== Save ====
 data_clean %>% saveRDS(file = "../Data not redistributable/Tmp_data/Tmp_church_books.rds")
