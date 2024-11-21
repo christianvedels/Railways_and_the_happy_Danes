@@ -346,8 +346,6 @@ data_clean = data_clean %>%
     EventYear_imp = impute_event_year(EventYear)
   )
 
-
-
 # ==== Save ====
 data_clean %>% saveRDS(file = "../Data not redistributable/Tmp_data/Tmp_church_books.rds")
 

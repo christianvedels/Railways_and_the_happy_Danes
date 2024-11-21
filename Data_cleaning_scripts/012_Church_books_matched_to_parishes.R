@@ -126,5 +126,93 @@ data1 %>%
 # Comment: A few missing event years. One example: data0 %>% filter(unique_identifier == 35511) %>% View() (stillbirth)
 
 
+# ==== Summarise ====
+data1 = data1 %>% ungroup()
+# data1$event %>% unique()
+# [1] "Baptism"      "Confirmation" "Arrival"      "Departure"    "Marriage"     "Death"        "Burial"      
 
+# Baptism
+baptisms = data1 %>% 
+  filter(event == "Baptism") %>% 
+  group_by(EventYear_imp, GIS_ID) %>% 
+  summarise(
+    baptisms = n()
+  )
+
+# Death
+deaths = data1 %>% 
+  filter(event == "Burial") %>% 
+  mutate(
+    age_clean = ifelse(EventAge %in% 0:125, as.numeric(EventAge), -1)
+  ) %>% 
+  group_by(EventYear_imp, GIS_ID, age_clean) %>% 
+  count() %>% 
+  arrange(age_clean) %>% 
+  pivot_wider(values_from = n, names_from = age_clean, names_prefix = "n_age_of_death") %>% 
+  mutate_all(function(x) replace_na(x, 0)) %>% 
+  rename(
+    n_age_of_death_unk = `n_age_of_death-1`
+  ) %>%
+  mutate(
+    n_total = rowSums(across(starts_with("n_age_of_death")), na.rm = TRUE)  # Ensure only numeric columns are used
+  )
+
+# ==== Save data ====
+path = "Data/Church_book_data/"
+
+baptisms %>% write_csv2(paste0(path,"baptisms.csv"))
+deaths %>% write_csv2(paste0(path,"deaths_by_age.csv"))
+
+
+suggested_gis_id %>% 
+  write_csv2(paste0(path,"automatic_parish_to_GIS_ID_key.csv"))
+
+# ==== Simple sanity check descriptives ====
+deaths %>% 
+  pivot_longer(n_age_of_death0:n_age_of_death119) %>% 
+  mutate(
+    age = as.numeric(gsub("n_age_of_death", "", name))
+  ) %>% 
+  mutate(EventYear_imp = as.numeric(EventYear_imp)) %>% 
+  mutate(
+    decade = floor(EventYear_imp/10)*10
+  ) %>% 
+  group_by(decade, age) %>% 
+  summarise(
+    n = sum(value)
+  ) %>% 
+  ggplot(aes(age, n, col = factor(decade))) + 
+  geom_line() + 
+  facet_wrap(~decade, scales = "free_y") + 
+  theme_bw()
+
+# By gender
+x = data1 %>% 
+  filter(event == "Burial") %>% 
+  mutate(
+    age_clean = ifelse(EventAge %in% 0:125, as.numeric(EventAge), -1)
+  ) %>% 
+  group_by(EventYear_imp, age_clean, Gender) %>% 
+  count()
+
+expand.grid(
+  EventYear_imp = unique(x$EventYear_imp),
+  age_clean = unique(x$age_clean),
+  Gender = unique(x$Gender)
+) %>% 
+  left_join(
+    x, by = c("EventYear_imp", "age_clean", "Gender")
+  ) %>% 
+  filter(age_clean >= 0) %>% 
+  mutate(
+    EventYear_imp = floor(as.numeric(EventYear_imp)/10)*10
+  ) %>% 
+  ggplot(aes(x = age_clean, y = n, col = Gender)) + 
+  geom_smooth() + 
+  facet_wrap(~EventYear_imp, scales = "free_y") + 
+  theme_bw()
+
+
+  
+  
 
