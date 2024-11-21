@@ -158,7 +158,7 @@ deaths = data1 %>%
   )
 
 # ==== Save data ====
-path = "Data/Church_book_data/"
+path = "Data/Church_books_data/"
 
 baptisms %>% write_csv2(paste0(path,"baptisms.csv"))
 deaths %>% write_csv2(paste0(path,"deaths_by_age.csv"))
