@@ -6,7 +6,7 @@ Reference: Callaway, Brantly and Pedro H.C. Sant'Anna.  "Difference-in-Differenc
 
 
     ATT    Std. Error     [ 95%  Conf. Int.]  
- 0.0879        0.0107     0.0669      0.1089 *
+ 0.0879        0.0105     0.0674      0.1085 *
 
 
 ---
