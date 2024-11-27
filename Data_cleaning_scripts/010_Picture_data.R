@@ -148,7 +148,9 @@ reg_data_indiv = df %>% # TODO: Move creation of regdata in sepperate script
   ) %>% 
   left_join(railways, by = c("GIS_ID_w_closest"="GIS_ID", "midpoint_year"="Year")) %>% 
   # filter(`Face Detected` == "Yes") %>% 
-  # drop_na(coords_long) %>% # Only point data
+  mutate(
+    approximate_coordiate = is.na(coords_long) # If shape, then this is NA
+  ) %>% 
   select(
     Image,
     Detected,
@@ -161,7 +163,8 @@ reg_data_indiv = df %>% # TODO: Move creation of regdata in sepperate script
     rail_opened,
     rail_closed,
     treat_time_opened,
-    treat_time_closed
+    treat_time_closed,
+    approximate_coordiate
   ) %>% 
   filter(midpoint_year>=1800)
 
