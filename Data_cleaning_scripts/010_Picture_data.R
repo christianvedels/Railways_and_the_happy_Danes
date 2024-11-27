@@ -79,8 +79,8 @@ railways = railways %>%
     rail_closed = treatment_disapear(Year, Connected_rail)
   ) %>% 
   mutate(
-    treat_time_opened = ifelse(rail_opened != 0, rail_opened - midpoint_year, 0),
-    treat_time_closed = ifelse(rail_closed != 0, rail_closed - midpoint_year, 0)
+    treat_time_opened = ifelse(rail_opened != 0, rail_opened - Year, 0),
+    treat_time_closed = ifelse(rail_closed != 0, rail_closed - Year, 0)
   )
 
 # ==== Parish-level ====
