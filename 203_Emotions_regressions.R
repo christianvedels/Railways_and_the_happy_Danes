@@ -97,68 +97,73 @@ cat("All plots saved in:", output_dir, "\n")
 #########################
 # === SAME WITH LOG === #
 #########################
-# str + shift + c for unmuting the code
 
-# # Precompute log-transformed columns
-# for (emotion in emotion_columns) {
-#   # Add a new column with log-transformed values
-#   reg_data_indiv[[paste0("log_", emotion)]] <- log(reg_data_indiv[[emotion]] + 0.000001)
-# }
-# 
-# # Loop through emotions
-# for (emotion in emotion_columns) {
-#   # Define the new log-transformed column name
-#   log_emotion <- paste0("log_", emotion)
-#   
-#   # Run the staggered DiD for the current log emotion
-#   did_result <- att_gt(
-#     yname = log_emotion,            # Precomputed log column
-#     tname = "decade",               # Time variable (decade)
-#     gname = "rail_opened_decade",   # Treatment period (decade)
-#     data = reg_data_indiv,          # Dataset
-#     panel = FALSE,                  # Repeated cross-section
-#     bstrap = TRUE                   # Enable bootstrapping
-#   )
-#   
-#   # Plot group-time average treatment effects
-#   gtid_plot <- ggdid(did_result) +
-#     ggtitle(paste0("Group-Time ATT: log ", emotion, " (", lowest_decade, "-", highest_decade, ")"))
-#   
-#   # Save group-time plot
-#   ggsave(filename = paste0(output_dir, "/group_time_log_", emotion, "_", lowest_decade, "_", highest_decade, ".png"),
-#          plot = gtid_plot,
-#          width = 10, height = 7)
-#   
-#   # Aggregate results by relative time (dynamic effects)
-#   did_dynamic <- aggte(did_result, type = "dynamic", na.rm = TRUE)
-#   
-#   # Plot dynamic average treatment effects
-#   dynamic_plot <- ggdid(did_dynamic) +
-#     ggtitle(paste0("Dynamic ATT: log ", emotion, " (", lowest_decade, "-", highest_decade, ")"))
-#   
-#   # Save dynamic plot
-#   ggsave(filename = paste0(output_dir, "/dynamic_log_", emotion, "_", lowest_decade, "_", highest_decade, ".png"),
-#          plot = dynamic_plot,
-#          width = 10, height = 7)
-#   
-#   # Aggregate results by calendar time
-#   did_calendar <- aggte(did_result, type = "calendar", na.rm = TRUE)
-#   
-#   # Plot calendar average treatment effects
-#   calendar_plot <- ggdid(did_calendar) +
-#     ggtitle(paste0("Calendar ATT: log ", emotion, " (", lowest_decade, "-", highest_decade, ")"))
-#   
-#   # Save calendar plot
-#   ggsave(filename = paste0(output_dir, "/calendar_log_", emotion, "_", lowest_decade, "_", highest_decade, ".png"),
-#          plot = calendar_plot,
-#          width = 10, height = 7)
-#   
-#   # Log progress
-#   cat("Finished analysis for: log ", emotion, "\n")
-# }
-# 
-# # ==== Summary ====
-# cat("All plots saved in:", output_dir, "\n")
+# ==== Create output directory ====
+output_dir <- paste0("Figures/plots_logs", lowest_decade, "_", highest_decade, "_emotions")
+if (!dir.exists(output_dir)) {
+  dir.create(output_dir)
+}
+
+# Precompute log-transformed columns
+for (emotion in emotion_columns) {
+  # Add a new column with log-transformed values
+  reg_data_indiv[[paste0("log_", emotion)]] <- log(reg_data_indiv[[emotion]] + 0.000001)
+}
+
+# Loop through emotions
+for (emotion in emotion_columns) {
+  # Define the new log-transformed column name
+  log_emotion <- paste0("log_", emotion)
+
+  # Run the staggered DiD for the current log emotion
+  did_result <- att_gt(
+    yname = log_emotion,            # Precomputed log column
+    tname = "decade",               # Time variable (decade)
+    gname = "rail_opened_decade",   # Treatment period (decade)
+    data = reg_data_indiv,          # Dataset
+    panel = FALSE,                  # Repeated cross-section
+    bstrap = TRUE                   # Enable bootstrapping
+  )
+
+  # Plot group-time average treatment effects
+  gtid_plot <- ggdid(did_result) +
+    ggtitle(paste0("Group-Time ATT: log ", emotion, " (", lowest_decade, "-", highest_decade, ")"))
+
+  # Save group-time plot
+  ggsave(filename = paste0(output_dir, "/group_time_log_", emotion, "_", lowest_decade, "_", highest_decade, ".png"),
+         plot = gtid_plot,
+         width = 10, height = 7)
+
+  # Aggregate results by relative time (dynamic effects)
+  did_dynamic <- aggte(did_result, type = "dynamic", na.rm = TRUE)
+
+  # Plot dynamic average treatment effects
+  dynamic_plot <- ggdid(did_dynamic) +
+    ggtitle(paste0("Dynamic ATT: log ", emotion, " (", lowest_decade, "-", highest_decade, ")"))
+
+  # Save dynamic plot
+  ggsave(filename = paste0(output_dir, "/dynamic_log_", emotion, "_", lowest_decade, "_", highest_decade, ".png"),
+         plot = dynamic_plot,
+         width = 10, height = 7)
+
+  # Aggregate results by calendar time
+  did_calendar <- aggte(did_result, type = "calendar", na.rm = TRUE)
+
+  # Plot calendar average treatment effects
+  calendar_plot <- ggdid(did_calendar) +
+    ggtitle(paste0("Calendar ATT: log ", emotion, " (", lowest_decade, "-", highest_decade, ")"))
+
+  # Save calendar plot
+  ggsave(filename = paste0(output_dir, "/calendar_log_", emotion, "_", lowest_decade, "_", highest_decade, ".png"),
+         plot = calendar_plot,
+         width = 10, height = 7)
+
+  # Log progress
+  cat("Finished analysis for: log ", emotion, "\n")
+}
+
+# ==== Summary ====
+cat("All plots saved in:", output_dir, "\n")
 
 
 ###########################

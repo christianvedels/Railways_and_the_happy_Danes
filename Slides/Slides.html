@@ -24,7 +24,7 @@ class: center, middle, inverse, title-slide
 ### Tom Görges<span class="math inline"><sup>1</sup></span>, Paul Sharp<span class="math inline"><sup>2</sup></span>, Christian Vedel<span class="math inline"><sup>2</sup></span>, Magnus Ørberg<span class="math inline"><sup>2</sup></span> .small123[<br><br>TU Dortmund University<span class="math inline"><sup>1</sup></span>, University of Southern Denmark<span class="math inline"><sup>2</sup></span>, University of Copenhagen<span class="math inline"><sup>3</sup></span>]<br><br> Email: <a href="mailto:christian-vs@sam.sdu.dk" class="email">christian-vs@sam.sdu.dk</a><br> Twitter: <span class="citation">@ChristianVedel&lt;br</span>&gt;<br><br> .small123[<em><a href="https://github.com/christianvedels/Railways_and_the_happy_Danes">github.com/christianvedels/Railways_and_the_happy_Danes</a></em>]
 ]
 .date[
-### Updated 2024-10-31
+### Updated 2024-11-28
 ]
 
 ---
@@ -129,12 +129,12 @@ class: center, middle, inverse, title-slide
 # Railways and the Happy Danes
 
 ### Motivaiton
-- People are complex and hence economics. There is a complex interplay between geography, culture and institutions that shape society
-- **Hypothesis:** Danish railways brought modernity but also Grudtvigianism - so-called 'happy' Danes. Maybe they also smiled more?
+- Does economic development cause increased level of well-being?
+- Railways brings prosperity and new ideas, but is this then converted into increased levels of happiness?
+
 
 ### This presentation
-- Using off-the-shelf ML, we analyzing 2M pictures to find an answer
-- Brief historical background
+- Using off-the-shelf ML, we analyzing 2M geo-located pictures to find an answer
 - Some preliminary results
 ]
 
@@ -178,7 +178,6 @@ class: center, middle
 # Literature
 
 .pull-left[
-*Vast literature*
 .small123[
 - Fogel (1964): Social savings reveals small effect
 - Atack, Bateman, Haines, Margo, (2010): DiD reveals large effect
@@ -189,7 +188,8 @@ class: center, middle
 - Bogart, You, Alvarez-Palau, Satchell, Shaw-Taylor (2022): Urbanization and structural change
 - Cermeño, Enflo, Lindvall (2022): Railroads, state and schooling
 - Melander (2023): Railroads and social movements in Sweden
-- Vedel (2024): Water infrastructure: 26 percent population growth in DK  
+- Vedel (2024): Water infrastructure: 26 percent population growth in DK 
+- Voth &amp; Yanagizawa-Drott (2024): Image(s)
 
 ...*So much more*
 ]
@@ -205,7 +205,8 @@ class: center, middle
 .pull-left[
 - First line opened between Roskilde and Copenhagen in 1847
 - Many lines initiated in Fyn and Jutland by Petro, Brassey and Betts
-- State railway company formed when they went bankrupt 
+- State railway company formed when they went bankrupt
+- Main lines operated as state lines in most of the relevant period
 ]
 
 .pull-right[
@@ -591,90 +592,46 @@ class: middle
 ]
 
 ---
-# Railways and emotions - opening
+# Railways and emotions
 .pull-left-narrow[
-- TWFE of average emotions in parish on railway connection
-- **NOTE:** Shanky imputation procedure to balance data. Needs to be fixed. 
-- Need to run this in one of the new DiD estimators
-- Very long run (100s of years!)
+- CS22 DiD estimator for individual pictures and whether their location (parish) is connected to the railway
+- Very long run
 ]
 
 .pull-right-wide[
 .panelset[
 .panel[.panel-name[Angry]
-.center[&lt;img src="Figures/Railways_on_emotions_opened/emotion_score_angry.png" width="75%" alt="Angry"&gt;]
+.center[&lt;img src="Figures/plots_1840_2020_emotions/dynamic_emotion_score_angry_1840_2020.png" width="75%" alt="Angry"&gt;]
 ]
 
 .panel[.panel-name[Disgust]
-.center[&lt;img src="Figures/Railways_on_emotions_opened/emotion_score_disgust.png" width="75%" alt="Disgust"&gt;]
+.center[&lt;img src="Figures/plots_1840_2020_emotions/dynamic_emotion_score_disgust_1840_2020.png" width="75%" alt="Disgust"&gt;]
 ]
 
 .panel[.panel-name[Fear]
-.center[&lt;img src="Figures/Railways_on_emotions_opened/emotion_score_fear.png" width="75%" alt="Fear"&gt;]
+.center[&lt;img src="Figures/plots_1840_2020_emotions/dynamic_emotion_score_fear_1840_2020.png" width="75%" alt="Fear"&gt;]
 ]
 
 .panel[.panel-name[Happy]
-.center[&lt;img src="Figures/Railways_on_emotions_opened/emotion_score_happy.png" width="75%" alt="Happy"&gt;]
+.center[&lt;img src="Figures/plots_1840_2020_emotions/dynamic_emotion_score_happy_1840_2020.png" width="75%" alt="Happy"&gt;]
 ]
 
 .panel[.panel-name[Neutral]
-.center[&lt;img src="Figures/Railways_on_emotions_opened/emotion_score_neutral.png" width="75%" alt="Neutral"&gt;]
+.center[&lt;img src="Figures/plots_1840_2020_emotions/dynamic_emotion_score_neutral_1840_2020.png" width="75%" alt="Neutral"&gt;]
 ]
 
 .panel[.panel-name[Sad]
-.center[&lt;img src="Figures/Railways_on_emotions_opened/emotion_score_sad.png" width="75%" alt="Sad"&gt;]
+.center[&lt;img src="Figures/plots_1840_2020_emotions/dynamic_emotion_score_sad_1840_2020.png" width="75%" alt="Sad"&gt;]
 ]
 
 .panel[.panel-name[Surprise]
-.center[&lt;img src="Figures/Railways_on_emotions_opened/emotion_score_surprise.png" width="75%" alt="Surprise"&gt;]
+.center[&lt;img src="Figures/plots_1840_2020_emotions/dynamic_emotion_score_surprise_1840_2020.png" width="75%" alt="Surprise"&gt;]
 ]
 
 ]
 
 ]
 
----
-# Railways and emotions - closing
-.pull-left-narrow[
-- TWFE of average emotions in parish on railway connection
-- **NOTE:** Shanky imputation procedure to balance data. Needs to be fixed. 
-- Need to run this in one of the new DiD estimators
-- Very long run (100s of years!)
-]
-
-.pull-right-wide[
-.panelset[
-.panel[.panel-name[Angry]
-.center[&lt;img src="Figures/Railways_on_emotions_closed/emotion_score_angry.png" width="75%" alt="Angry"&gt;]
-]
-
-.panel[.panel-name[Disgust]
-.center[&lt;img src="Figures/Railways_on_emotions_closed/emotion_score_disgust.png" width="75%" alt="Disgust"&gt;]
-]
-
-.panel[.panel-name[Fear]
-.center[&lt;img src="Figures/Railways_on_emotions_closed/emotion_score_fear.png" width="75%" alt="Fear"&gt;]
-]
-
-.panel[.panel-name[Happy]
-.center[&lt;img src="Figures/Railways_on_emotions_closed/emotion_score_happy.png" width="75%" alt="Happy"&gt;]
-]
-
-.panel[.panel-name[Neutral]
-.center[&lt;img src="Figures/Railways_on_emotions_closed/emotion_score_neutral.png" width="75%" alt="Neutral"&gt;]
-]
-
-.panel[.panel-name[Sad]
-.center[&lt;img src="Figures/Railways_on_emotions_closed/emotion_score_sad.png" width="75%" alt="Sad"&gt;]
-]
-
-.panel[.panel-name[Surprise]
-.center[&lt;img src="Figures/Railways_on_emotions_closed/emotion_score_surprise.png" width="75%" alt="Surprise"&gt;]
-]
-
-]
-
-]
 
 
 ---
@@ -685,6 +642,7 @@ class: middle
 - Scratching the surface of the complex interplay between institutions, geography, culture and institutions
 - Railways improved classical economic outcomes and caused ideas to spread.
 - Did people become happier?
+- One or two papers?
 
 **Feel free to reach out**  
 Twitter: @ChristianVedel  
