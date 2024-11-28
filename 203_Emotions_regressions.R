@@ -5,8 +5,6 @@
 # Purpose:        Runs a few simple regressions on emotions and rail opening
 #                 This is only the effect of the opening, disregarding the closing and the very long run effects
 
-rm(list = ls())
-
 # ==== Libraries ====
 library(tidyverse)
 library(fixest)
@@ -16,15 +14,14 @@ library(foreach)
 library(tm)
 source("Data_cleaning_scripts/000_Functions.R")
 
-
-
 # ==== Load data ====
 reg_data_indiv <- read_csv2("../Data not redistributable/Picture_regression_data_indiv.csv", guess_max = 100000) %>%
   filter(midpoint_year >= 1840) %>% # almost no obs. until 1840, no significant openings after 1920, rapid decline after 1930
   filter(Detected == "person" & !is.na(emotion_score_happy) & !is.na(rail_opened)) %>% # loose many obs.
   select(midpoint_year, decade, rail_opened, contains("emotion_score")) %>% 
   mutate(rail_opened_decade = floor(rail_opened / 10) * 10) %>% # rail decade
-  sample_frac(1.0)
+  # sample_frac(0.1) %>% 
+  ungroup()
 
 # ==== Extract lowest and highest decades ====
 lowest_decade <- min(reg_data_indiv$decade, na.rm = TRUE)
