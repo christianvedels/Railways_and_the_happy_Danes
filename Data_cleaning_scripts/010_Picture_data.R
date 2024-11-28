@@ -11,6 +11,7 @@ library(sf)
 library(foreach)
 library(progress)
 source("Picture_data_cleaning/000_Functions.R")
+source("Data_cleaning_scripts/000_Functions.R")
 
 # ==== Setup ====
 progress_bar_format = "[:bar] :elapsedfull -- :current of :total -- :percent eta: :eta"
