@@ -1,6 +1,6 @@
 ---
 title: "Railroads and the happy Danes"
-author: 'Tom Görges$^1$, Paul Sharp$^2$, Christian Vedel$^2$, Magnus Ørberg$^2$ .small123[<br><br>TU Dortmund University$^1$, University of Southern Denmark$^2$, University of Copenhagen$^3$]<br><br>
+author: 'Tom Görges$^1$, Paul Sharp$^2$, Christian Vedel$^2$, Magnus Ørberg$^3$ .small123[<br><br>TU Dortmund University$^1$, University of Southern Denmark$^2$, University of Copenhagen$^3$]<br><br>
 Email: christian-vs@sam.sdu.dk<br>
 Twitter: @ChristianVedel<br><br><br>
 .small123[*[github.com/christianvedels/Railways_and_the_happy_Danes](https://github.com/christianvedels/Railways_and_the_happy_Danes)*]'
@@ -108,6 +108,7 @@ xaringanExtra::use_progress_bar(color = "#808080", location = "top")
 ### Motivaiton
 - Does economic development cause increased level of well-being?
 - Railways brings prosperity and new ideas, but is this then converted into increased levels of happiness?
+- Broader story mostly, but also a specific Danish story
 
 
 ### This presentation
