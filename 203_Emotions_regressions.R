@@ -16,9 +16,7 @@ library(foreach)
 library(tm)
 source("Data_cleaning_scripts/000_Functions.R")
 
-########################
-# === Individuals ==== #
-########################
+
 
 # ==== Load data ====
 reg_data_indiv <- read_csv2("../Data not redistributable/Picture_regression_data_indiv.csv", guess_max = 100000) %>%
@@ -94,10 +92,7 @@ for (emotion in emotion_columns) {
 # ==== Summary ====
 cat("All plots saved in:", output_dir, "\n")
 
-#########################
-# === SAME WITH LOG === #
-#########################
-
+# Below: Repeated with logs
 # ==== Create output directory ====
 output_dir <- paste0("Figures/plots_logs", lowest_decade, "_", highest_decade, "_emotions")
 if (!dir.exists(output_dir)) {
@@ -166,10 +161,7 @@ for (emotion in emotion_columns) {
 cat("All plots saved in:", output_dir, "\n")
 
 
-###########################
-# === Number of pics ==== #
-###########################
-
+# ==== Number of pics ====
 # ==== Load data ====
 reg_data_n_pics = read_csv2("Data/Picture_regression_data_number_of_pictures.csv", guess_max = 100000)
 
