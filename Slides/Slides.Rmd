@@ -524,6 +524,7 @@ class: middle
 - Social support 
 - Freedom to make life choices (education)
 - Generosity 
+- Health
 ]
 
 .pull-right-wide[
@@ -574,6 +575,8 @@ class: middle
 .pull-left-narrow[
 - CS22 DiD estimator for individual pictures and whether their location (parish) is connected to the railway
 - Very long run
+- Based on 667,381 faces detected in 394,320 pictures
+- Big nothing. Remarkable. 
 ]
 
 .pull-right-wide[
@@ -617,9 +620,11 @@ class: middle
 # Conclusion
 .pull-left[
 - We turn pictures into data that we can analyze
-- Scratching the surface of the complex interplay between institutions, geography, culture and institutions
+- Scratching the surface of the complex interplay between institutions, geography, culture and well-being
 - Railways improved classical economic outcomes and caused ideas to spread.
-- Did people become happier?
+- Did people become happier?  
+
+
 - One or two papers?
 
 **Feel free to reach out**  
