@@ -168,6 +168,7 @@ class: center, middle
 - Melander (2023): Railroads and social movements in Sweden
 - Vedel (2024): Water infrastructure: 26 percent population growth in DK 
 - Voth & Yanagizawa-Drott (2024): Image(s)
+- Gorin, Heblich, Zylberberg (2024): State of the art
 
 ...*So much more*
 ]
