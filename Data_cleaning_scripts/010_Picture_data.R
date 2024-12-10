@@ -11,6 +11,7 @@ library(sf)
 library(foreach)
 library(progress)
 source("Picture_data_cleaning/000_Functions.R")
+source("Data_cleaning_scripts/000_Functions.R")
 
 # ==== Setup ====
 progress_bar_format = "[:bar] :elapsedfull -- :current of :total -- :percent eta: :eta"
@@ -79,8 +80,8 @@ railways = railways %>%
     rail_closed = treatment_disapear(Year, Connected_rail)
   ) %>% 
   mutate(
-    treat_time_opened = ifelse(rail_opened != 0, rail_opened - midpoint_year, 0),
-    treat_time_closed = ifelse(rail_closed != 0, rail_closed - midpoint_year, 0)
+    treat_time_opened = ifelse(rail_opened != 0, rail_opened - Year, 0),
+    treat_time_closed = ifelse(rail_closed != 0, rail_closed - Year, 0)
   )
 
 # ==== Parish-level ====
@@ -148,7 +149,9 @@ reg_data_indiv = df %>% # TODO: Move creation of regdata in sepperate script
   ) %>% 
   left_join(railways, by = c("GIS_ID_w_closest"="GIS_ID", "midpoint_year"="Year")) %>% 
   # filter(`Face Detected` == "Yes") %>% 
-  # drop_na(coords_long) %>% # Only point data
+  mutate(
+    approximate_coordiate = is.na(coords_long) # If shape, then this is NA
+  ) %>% 
   select(
     Image,
     Detected,
@@ -161,7 +164,8 @@ reg_data_indiv = df %>% # TODO: Move creation of regdata in sepperate script
     rail_opened,
     rail_closed,
     treat_time_opened,
-    treat_time_closed
+    treat_time_closed,
+    approximate_coordiate
   ) %>% 
   filter(midpoint_year>=1800)
 
