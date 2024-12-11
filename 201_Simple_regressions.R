@@ -7,7 +7,7 @@
 # ==== Libraries ====
 library(tidyverse)
 library(fixest)
-source("000_Functions.R")
+source("Data_cleaning_scripts/000_Functions.R")
 
 # ==== Load data ====
 grundtvig = read_csv2("Data/REGRESSION_DATA_Grundtvigianism.csv")
