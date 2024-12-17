@@ -1,10 +1,4 @@
 ---
-title: "Railroads and the happy Danes"
-author: 'Tom Görges$^1$, Paul Sharp$^2$, Christian Vedel$^2$, Magnus Ørberg$^3$ .small123[<br><br>TU Dortmund University$^1$, University of Southern Denmark$^2$, University of Copenhagen$^3$]<br><br>
-Email: christian-vs@sam.sdu.dk<br>
-Twitter: @ChristianVedel<br><br><br>
-.small123[*[github.com/christianvedels/Railways_and_the_happy_Danes](https://github.com/christianvedels/Railways_and_the_happy_Danes)*]'
-date: "Updated `r Sys.Date()`" 
 output:
   xaringan::moon_reader:
     includes:
@@ -16,11 +10,11 @@ output:
       highlightLines: true
       countIncrementalSlides: false
       ratio: '16:9'
+    seal: false
 editor_options: 
   chunk_output_type: console
 ---
-
-
+class: inverse, middle, center
 
 ```{r xaringan-panelset, echo=FALSE}
 xaringanExtra::use_panelset()
@@ -100,6 +94,22 @@ xaringanExtra::use_progress_bar(color = "#808080", location = "top")
 }
 ```
 
+# Railroads and the happy Danes
+
+### Tom Görges, TU Dortmund University
+### Paul Sharp, University of Southern Denmark
+### Christian Vedel, University of Southern Denmark
+### Magnus Ørberg, University of Copenhagen
+
+#### *Updated `r Sys.Date()`*
+
+**Email:** <christian-vs@sam.sdu.dk>  
+**Twitter:** [@ChristianVedel](https://twitter.com/ChristianVedel)  
+**BlueSky:** [@christianvedel.bsky.social](https://bsky.app/profile/christianvedel.bsky.social)  
+**GitHub:** [github.com/christianvedels/Railways_and_the_happy_Danes](https://github.com/christianvedels/Railways_and_the_happy_Danes)
+
+---
+
 
 
 .pull-left-wide[
@@ -112,8 +122,10 @@ xaringanExtra::use_progress_bar(color = "#808080", location = "top")
 
 
 ### This presentation
+- Classical and semi-classical results: Railways brought prosperity and ideas
 - Using off-the-shelf ML, we analyzing 2M geo-located pictures to find an answer
 - Some preliminary results
+- Divorce in the making? 
 ]
 
 .pull-right-narrow[
