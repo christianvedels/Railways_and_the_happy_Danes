@@ -3,11 +3,11 @@
   <head>
     <title>Slides.knit</title>
     <meta charset="utf-8" />
-    <script src="libs/header-attrs-2.25/header-attrs.js"></script>
+    <script src="libs/header-attrs-2.28/header-attrs.js"></script>
     <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
     <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
-    <link href="libs/panelset-0.2.6/panelset.css" rel="stylesheet" />
-    <script src="libs/panelset-0.2.6/panelset.js"></script>
+    <link href="libs/panelset-0.3.0/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset-0.3.0/panelset.js"></script>
     <link href="libs/tile-view-0.2.6/tile-view.css" rel="stylesheet" />
     <script src="libs/tile-view-0.2.6/tile-view.js"></script>
     <script src="libs/xaringanExtra-progressBar-0.0.1/progress-bar.js"></script>
@@ -115,7 +115,7 @@ class: inverse, middle, center
 ### Christian Vedel, University of Southern Denmark
 ### Magnus Ørberg, University of Copenhagen
 
-#### *Updated 2024-12-17*
+#### *Updated 2025-04-04*
 
 **Email:** &lt;christian-vs@sam.sdu.dk&gt;  
 **Twitter:** [@ChristianVedel](https://twitter.com/ChristianVedel)  
@@ -132,14 +132,12 @@ class: inverse, middle, center
 ### Motivaiton
 - Does economic development cause increased level of well-being?
 - Railways brings prosperity and new ideas, but is this then converted into increased levels of happiness?
-- Broader story mostly, but also a specific Danish story
+- Broader story mostly
 
 
 ### This presentation
-- Classical and semi-classical results: Railways brought prosperity and ideas
-- Using off-the-shelf ML, we analyzing 2M geo-located pictures to find an answer
+- Using off-the-shelf ML, we analyzing 2M (600K for now) geo-located pictures to find an answer
 - Some preliminary results
-- Divorce in the making? 
 ]
 
 .pull-right-narrow[
@@ -153,6 +151,28 @@ https://arkiv.dk/vis/178152
 ]
 ]
 
+---
+# This project has become two papers
+
+.pull-left[
+#### This first paper ('basic results+')
+
+- Findings: 
+  + Railways brought prosperity (population density, manufacturing)
+  + Grundtvigianism: A turn to local inclusive instutions, which shaped how Denmark 'got to Denmark'
+  + Later lines more important than early 'main' lines.
+
+#### The second paper ('novelty')
+- The new picture based stuff
+- Did railways then also make people (visibly) happier?
+]
+
+.pull-right[
+![arXiv](Figures/arxiv.png)
+
+https://arxiv.org/abs/2502.12323
+]
+
 
 ---
 class: inverse, center, middle
@@ -162,12 +182,12 @@ class: inverse, center, middle
 ---
 class: center, middle
 
-# The hypothesis in summary (preview)
+# The hypothesis in summary
 
 .pull-center[
-1. Railways brought modern production and modern ideas 
-2. In the Danish case the central idea was Grundtvigianism 
-3. Railways made people happier. Market access shapes emotional well-being (?*) 
+1. Railways brought modern production and modern ideas (paper 1)
+2. In the Danish case the central idea was Grundtvigianism (paper 1)
+3. Railways made people happier. Market access shapes emotional well-being (paper 2)
 ]
 
 
@@ -244,76 +264,6 @@ Grundtvigian Community House of Funen in Odense
 
 
 ---
-# Grundtvig's alleged impact on prosperity
-
-.pull-left[
-- Community Building: Social capital and trust, trustworthy institutions
-- Human capital 
-- Cultural identity
-- Local democracy and societies
-- *"Leave two Danes in a room and they will form at least three societies"*
-
-&lt;img src="Figures/Generalforsamling_i_Ansager_Andelsmejeri.jpg" width="80%" alt="Ansager"&gt;  
-.small123[*Agersnap, H. (1885) Generalforsamling i Ansager Andelsmejeri [wikimedia](https://commons.wikimedia.org/wiki/File:Generalforsamling_i_Ansager_Andelsmejeri.jpg)*]
-]
-
-.pull-right[
-.small123[
-&lt;img src="Figures/Grundtvig_wikimedia.jpg" width="75%" alt="Grundtvig"&gt;  
-C.A. Jensen (1843) 'Nikolaj Frederik Severin Grundtvig'. [Wikimedia commons](https://commons.wikimedia.org/wiki/File:N-f-s-grundtvig-portr%C3%A6t.jpg)
-]
-]
-
----
-
-# Meanwhile in America...
-.pull-left[
-### Sad Danes - Inner Mission
-.center[
-&lt;img src="Figures/Sad_Dane.png" width="40%" alt="Sad Dane"&gt;  
-]
-(Holy Danes)
-- Emphasis on assimilation 
-- Focus on America
-- Strict religious view
-]
-
-.pull-right[
-### Happy Danes - Grundtvigianism 
-.center[
-&lt;img src="Figures/HappyDane.png" width="50%" alt="Happy Dane"&gt;  
-]
-
-- Danish language and traditon (folkliness) 
-- Connection between belief and nationality
-- Liberal values
-- We show in Boberg et al (2023) how influential this was in the US-Danish communities
-]
-
----
-class: inverse, center, middle
-
-# Testing out our idea in data
-
----
-class: center, middle
-
-# The hypothesis in summary
-
-.pull-center[
-1. Railways brought modern production and modern ideas 
-2. In the Danish case the central idea was Grundtvigianism 
-3. Railways made people happier. Market access shapes emotional well-being (?*) 
-]
-
-
-.footnote[
-.small123[
-  *The null finding is also rather interesting: Interconnectedness having no effect on well-being.
-]
-]
-
----
 class: center
 
 # The hypothesis in pictures
@@ -382,10 +332,10 @@ class: center
 ---
 class: middle
 # Hypothesis in terms of things we can measure:
-1. Railways and markets
-2. Railways and modern ideas
-3. Pictures and happiness
-4. Railways and happiness
+1. Railways and markets (check)
+2. Railways and modern ideas (check)
+3. Pictures and happiness (?)
+4. Railways and happiness (?)
 
 
 
@@ -393,12 +343,8 @@ class: middle
 # Data
 
 .pull-left[
-- Census data 1787-1901 (Link lives)
-- HISCO codes for census descriptions (Dahl, Johansen, Vedel, 2024)
-- Linking with parish borders and consistency (Vedel, 2024)
+- Census data (1787-1901)
 - Railroads shape files (Fertner 2013)
-- Location of assembly houses (Trap 3/4; Bentzen, Boberg-Fazlic, Sharp, Skovsgaard, Vedel, 2023)
-- For identification: Elevation data from Open Street Map
 - Indidivual level happiness from pictures
 ]
 
@@ -480,64 +426,6 @@ class: middle
 ![Rails](Figures/Rails.jpg)
 ]
 
----
-# Least Cost Path instrument
-.pull-left[
-- The task of the first stage is to predict well (Mullainathan &amp; Spiess, 2017)
-- Classical approach: Linear trunk-lines
-- But we can do much better: Least Cost Path (Herzog, 2013)
-- Costs:
-  + `\(cost(s) = 1 + (s/S)^2\)`, where `\(S\)` is a parameter
-  + It pays to cross a slope until it doesn't
-- Compute optimal cost path using Dijkstra's algorithm
-]
-
-.pull-right[
-.panelset[
-.panel[.panel-name[Old map]
-&lt;img src="Figures/Course of railways in terrain.png" width="80%" alt="Predicted lines"&gt;
-]
-.panel[.panel-name[Predicted lines]
-&lt;img src="Figures/LCP_IV_crit2.png" width="100%" alt="Predicted lines"&gt;
-]
-]
-]
-
----
-# Railways and the Economy
-.panelset[
-.panel[.panel-name[Railways and the Economy]
-.small123[
-| |(1) log(Pop)           |(2) log(Child women ratio) |(3) log(Manufacturing 789) |(4) log(hisclass avg) |(5) log(Born different county) |
-|:-----------|:-----------|:-----------|:-----------|:-----------|:-----------|
-|Connected_rail  |0.0652*** (0.0106) |0.0005 (0.0099)        |0.1202*** (0.0193)     |-0.0018 (0.0020)  |0.1465*** (0.0410)         |
-|GIS_ID FE        |Yes                |Yes                    |Yes                    |Yes               |Yes                        |
-|Year FE          |Yes                |Yes                    |Yes                    |Yes               |Yes                        |
-|Observations    |6,374              |6,352                  |6,357                  |6,373             |6,282                      |
-- Classical effect as expected
-- Still novel for the DK setting
-]
-
-]
-.panel[.panel-name[Railways and the Ideas (Grundtvig)]
-.small123[
-|Dependent Var.: |(1) Assembly house    |(2) log(MA assembly) |(3) High School        |(4) log(MA High) |
-|:---------------|:-----------------|:----------------|:-----------------|:----------------|
-|                |                  |                 |                  |                 |
-|Connected_rail  |0.0560** (0.0185) |-0.0126 (0.0082) |0.0140** (0.0050) |0.0056 (0.0056)  |
-|GIS_ID FE       |Yes               |Yes              |Yes               |Yes              |
-|Year FE         |Yes               |Yes              |Yes               |Yes              |
-|Observations    |100,485           |102,245          |324,005           |324,005          |
-- Grudtvigian institutions specifically placed in connected places
-]
-]
-]
-
-.footnote[
-.small123[
-**This also holds using the CS estimator*
-]
-]
 
 ---
 # Do smiling people correlate with happiness?
@@ -651,11 +539,8 @@ class: middle
 - Railways improved classical economic outcomes and caused ideas to spread.
 - Did people become happier?  
 
-
-- One or two papers?
-
 **Feel free to reach out**  
-Twitter: @ChristianVedel  
+BlueSky: ChristianVedel.bsky.social 
 christian-vs@sam.sdu.dk  
 ]
 
@@ -668,7 +553,88 @@ https://arkiv.dk/vis/1117673
 
 ]
 
+---
+class: inverse, middle, center
 
+# Appendix
+
+---
+class: middle
+
+# Baseline railway results
+.pull-left-wide[
+![paper1 basic results](Figures/base_res_table3_tracks_to_modernity.png)
+]
+
+.footnote[
+.small123[
+*Table 3 in Görges et al (2025) https://arxiv.org/abs/2502.21141*
+]
+]
+
+---
+class: middle
+# Baseline results decomposed
+.pull-left-wide[
+![Decomposed](Figures/base_res_decomposed_tracks_to_modernity.png)
+.small123[
+*Figure 6 in Görges et al (2025) https://arxiv.org/abs/2502.21141*
+]
+]
+
+.pull-right-narrow[
+- Lines have different effects by
+- Later lines generally mattered more (or at least differently)
+]
+
+
+---
+class: middle
+# 'Institutional' effect (Grundtvigianism)
+
+.pull-left-wide[
+.pull-left[
+### Assembly houses
+![Assembly](Figures/p3_Density_Assembly_houses_MA.png)
+]
+
+.pull-right[
+### Folk high schools
+![highschools](Figures/p4_Density_Folk_high_schools_MA.png)
+]
+]
+
+
+.footnote[
+.small123[
+*Treatment effect by year (DiD)*  
+*Fig. 7C &amp; 7D in in Görges et al (2025) https://arxiv.org/abs/2502.21141*
+]
+]
+
+
+---
+# Least Cost Path instrument
+.pull-left[
+- The task of the first stage is to predict well (Mullainathan &amp; Spiess, 2017)
+- Classical approach: Linear trunk-lines
+- But we can do much better: Least Cost Path (Herzog, 2013)
+- Costs:
+  + `\(cost(s) = 1 + (s/S)^2\)`, where `\(S\)` is a parameter
+  + It pays to cross a slope until it doesn't
+- Compute optimal cost path using Dijkstra's algorithm
+]
+
+.pull-right[
+.panelset[
+.panel[.panel-name[Old map]
+&lt;img src="Figures/Course of railways in terrain.png" width="80%" alt="Predicted lines"&gt;
+]
+.panel[.panel-name[Predicted lines]
+&lt;img src="Figures/LCP_IV_crit2.png" width="100%" alt="Predicted lines"&gt;
+]
+]
+]
 
 
 
@@ -678,10 +644,10 @@ https://arkiv.dk/vis/1117673
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({
-"highlightStyle": "github",
-"highlightLines": true,
-"countIncrementalSlides": false,
-"ratio": "16:9"
+  "highlightStyle": "github",
+  "highlightLines": true,
+  "countIncrementalSlides": false,
+  "ratio": "16:9"
 });
 if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
   window.dispatchEvent(new Event('resize'));
